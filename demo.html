@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object Clone Utilities Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .demo-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+        }
+        .output {
+            background-color: #e8f5e8;
+            padding: 10px;
+            border-radius: 3px;
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            background-color: #007cba;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005a87;
+        }
+    </style>
+</head>
+<body>
+    <h1>Object Clone Utilities Demo</h1>
+    <p>Interactive demonstration of shallow and deep cloning functionality.</p>
+
+    <div class="demo-section">
+        <h2>Basic Object Cloning</h2>
+        <button onclick="demonstrateBasicCloning()">Run Basic Demo</button>
+        <div id="basic-output" class="output"></div>
+    </div>
+
+    <div class="demo-section">
+        <h2>Array Cloning</h2>
+        <button onclick="demonstrateArrayCloning()">Run Array Demo</button>
+        <div id="array-output" class="output"></div>
+    </div>
+
+    <div class="demo-section">
+        <h2>Complex Objects (Date, RegExp, Map, Set)</h2>
+        <button onclick="demonstrateComplexObjects()">Run Complex Demo</button>
+        <div id="complex-output" class="output"></div>
+    </div>
+
+    <div class="demo-section">
+        <h2>Circular References</h2>
+        <button onclick="demonstrateCircularReferences()">Run Circular Demo</button>
+        <div id="circular-output" class="output"></div>
+    </div>
+
+    <div class="demo-section">
+        <h2>Performance Comparison</h2>
+        <button onclick="demonstratePerformance()">Run Performance Test</button>
+        <div id="performance-output" class="output"></div>
+    </div>
+
+    <script src="src/utils/clone.js"></script>
+    <script>
+        const { shallowClone, deepClone, clone } = window.CloneUtils;
+
+        function log(elementId, content) {
+            document.getElementById(elementId).innerHTML = content;
+        }
+
+        function demonstrateBasicCloning() {
+            const original = {
+                name: 'John',
+                age: 30,
+                address: {
+                    city: 'New York',
+                    zip: '10001'
+                }
+            };
+
+            const shallow = shallowClone(original);
+            const deep = deepClone(original);
+
+            // Modify copies
+            shallow.name = 'Jane';
+            shallow.address.city = 'Boston';
+
+            deep.name = 'Bob';
+            deep.address.city = 'Chicago';
+
+            const output = `
+Original: ${JSON.stringify(original, null, 2)}
+
+Shallow Clone (name changed to Jane, city to Boston):
+- shallow.name: ${shallow.name}
+- shallow.address.city: ${shallow.address.city}
+- original.address.city: ${original.address.city} (also changed!)
+
+Deep Clone (name changed to Bob, city to Chicago):
+- deep.name: ${deep.name}
+- deep.address.city: ${deep.address.city}
+- original.address.city: ${original.address.city} (unchanged)
+            `;
+
+            log('basic-output', `<pre>${output}</pre>`);
+        }
+
+        function demonstrateArrayCloning() {
+            const originalArray = [1, 2, [3, 4, [5, 6]]];
+            
+            const shallowArray = shallowClone(originalArray);
+            const deepArray = deepClone(originalArray);
+
+            // Modify arrays
+            shallowArray[0] = 99;
+            shallowArray[2][0] = 88;
+
+            deepArray[0] = 77;
+            deepArray[2][0] = 66;
+
+            const output = `
+Original Array: ${JSON.stringify(originalArray)}
+
+Shallow Clone (modified first element and nested element):
+- Shallow: ${JSON.stringify(shallowArray)}
+- Original: ${JSON.stringify(originalArray)} (nested changed!)
+
+Deep Clone (modified first element and nested element):
+- Deep: ${JSON.stringify(deepArray)}
+- Original: ${JSON.stringify(originalArray)} (unchanged)
+            `;
+
+            log('array-output', `<pre>${output}</pre>`);
+        }
+
+        function demonstrateComplexObjects() {
+            const complex = {
+                date: new Date('2023-01-01'),
+                regex: /test/gi,
+                map: new Map([['key1', 'value1'], ['key2', 'value2']]),
+                set: new Set([1, 2, 3])
+            };
+
+            const cloned = deepClone(complex);
+            
+            const output = `
+Original Object Types:
+- date: ${complex.date.constructor.name} (${complex.date.toISOString()})
+- regex: ${complex.regex.constructor.name} (${complex.regex.toString()})
+- map: ${complex.map.constructor.name} (size: ${complex.map.size})
+- set: ${complex.set.constructor.name} (size: ${complex.set.size})
+
+Cloned Object Types:
+- date: ${cloned.date.constructor.name} (${cloned.date.toISOString()})
+- regex: ${cloned.regex.constructor.name} (${cloned.regex.toString()})
+- map: ${cloned.map.constructor.name} (size: ${cloned.map.size})
+- set: ${cloned.set.constructor.name} (size: ${cloned.set.size})
+
+Reference Equality:
+- date === original.date: ${cloned.date === complex.date}
+- regex === original.regex: ${cloned.regex === complex.regex}
+- map === original.map: ${cloned.map === complex.map}
+- set === original.set: ${cloned.set === complex.set}
+            `;
+
+            log('complex-output', `<pre>${output}</pre>`);
+        }
+
+        function demonstrateCircularReferences() {
+            const circular = { name: 'circular' };
+            circular.self = circular;
+            circular.nested = { parent: circular };
+
+            try {
+                const cloned = deepClone(circular);
+                
+                const output = `
+Original Object:
+- name: ${circular.name}
+- self === original: ${circular.self === circular}
+- nested.parent === original: ${circular.nested.parent === circular}
+
+Cloned Object:
+- name: ${cloned.name}
+- self === cloned: ${cloned.self === cloned}
+- nested.parent === cloned: ${cloned.nested.parent === cloned}
+- cloned !== original: ${cloned !== circular}
+
+✅ Circular references handled successfully!
+                `;
+
+                log('circular-output', `<pre>${output}</pre>`);
+            } catch (error) {
+                log('circular-output', `<pre>Error: ${error.message}</pre>`);
+            }
+        }
+
+        function demonstratePerformance() {
+            const largeObject = {
+                data: Array.from({ length: 1000 }, (_, i) => ({
+                    id: i,
+                    name: `Item ${i}`,
+                    nested: {
+                        values: Array.from({ length: 10 }, (_, j) => j * i)
+                    }
+                }))
+            };
+
+            // Shallow clone performance
+            const shallowStart = performance.now();
+            const shallowResult = shallowClone(largeObject);
+            const shallowTime = performance.now() - shallowStart;
+
+            // Deep clone performance  
+            const deepStart = performance.now();
+            const deepResult = deepClone(largeObject);
+            const deepTime = performance.now() - deepStart;
+
+            const output = `
+Performance Test (1000 objects with nested arrays):
+
+Shallow Clone:
+- Time: ${shallowTime.toFixed(2)}ms
+- Memory: Shares references to nested objects
+
+Deep Clone:
+- Time: ${deepTime.toFixed(2)}ms
+- Memory: Creates independent copies of all nested objects
+- Ratio: ${(deepTime / shallowTime).toFixed(1)}x slower
+
+Object sizes:
+- Original data array length: ${largeObject.data.length}
+- Shallow clone data array length: ${shallowResult.data.length}
+- Deep clone data array length: ${deepResult.data.length}
+
+Reference equality (should be different for deep clone):
+- Shallow: data[0] === original.data[0]: ${shallowResult.data[0] === largeObject.data[0]}
+- Deep: data[0] === original.data[0]: ${deepResult.data[0] === largeObject.data[0]}
+            `;
+
+            log('performance-output', `<pre>${output}</pre>`);
+        }
+    </script>
+</body>
+</html>

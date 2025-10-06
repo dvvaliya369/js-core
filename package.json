@@ -1,0 +1,33 @@
+{
+  "name": "js-core",
+  "version": "1.0.0",
+  "description": "A comprehensive JavaScript utilities library including object cloning functions",
+  "main": "src/utils/clone.js",
+  "scripts": {
+    "test": "node test/clone.test.js",
+    "test:clone": "node test/clone.test.js"
+  },
+  "keywords": [
+    "javascript",
+    "clone",
+    "deep-clone",
+    "shallow-clone",
+    "object",
+    "utilities",
+    "copy"
+  ],
+  "author": "js-core contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/username/js-core.git"
+  },
+  "files": [
+    "src/",
+    "test/",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}
