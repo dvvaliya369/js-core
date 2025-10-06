@@ -1,6 +1,6 @@
 /**
- * Object cloning utilities for JavaScript
- * Provides both shallow and deep cloning functionality
+ * Utility functions for JavaScript
+ * Provides object cloning and debounce functionality
  */
 
 /**
