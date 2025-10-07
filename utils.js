@@ -88,11 +88,84 @@ function shallowClone(obj) {
   return { ...obj };
 }
 
+/**
+ * Creates a debounced version of a function that delays its execution
+ * until after the specified delay period has passed since the last invocation
+ * @param {Function} func - The function to debounce
+ * @param {number} delay - The delay in milliseconds
+ * @param {boolean} [immediate=false] - If true, trigger on the leading edge instead of trailing
+ * @returns {Function} A debounced version of the input function
+ * 
+ * @example
+ * // Basic usage - delays execution until 300ms of inactivity
+ * const debouncedSearch = debounce((query) => {
+ *   console.log('Searching for:', query);
+ * }, 300);
+ * 
+ * // Usage with immediate execution on first call
+ * const debouncedClick = debounce(() => {
+ *   console.log('Button clicked!');
+ * }, 1000, true);
+ * 
+ * // The returned function also has a cancel method
+ * debouncedSearch.cancel(); // Cancels pending execution
+ */
+function debounce(func, delay, immediate = false) {
+  let timeoutId;
+  let lastArgs;
+  let lastThis;
+  
+  const debounced = function(...args) {
+    lastArgs = args;
+    lastThis = this;
+    
+    const callNow = immediate && !timeoutId;
+    
+    // Clear existing timeout
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    
+    // Set new timeout
+    timeoutId = setTimeout(() => {
+      timeoutId = null;
+      if (!immediate) {
+        func.apply(lastThis, lastArgs);
+      }
+    }, delay);
+    
+    // Call immediately if configured to do so
+    if (callNow) {
+      func.apply(lastThis, lastArgs);
+    }
+  };
+  
+  // Add cancel method to the debounced function
+  debounced.cancel = function() {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+  };
+  
+  // Add flush method to execute immediately
+  debounced.flush = function() {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+      func.apply(lastThis, lastArgs);
+    }
+  };
+  
+  return debounced;
+}
+
 // CommonJS export
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     cloneObject,
-    shallowClone
+    shallowClone,
+    debounce
   };
 }
 
@@ -101,4 +174,5 @@ if (typeof window !== 'undefined') {
   window.Utils = window.Utils || {};
   window.Utils.cloneObject = cloneObject;
   window.Utils.shallowClone = shallowClone;
+  window.Utils.debounce = debounce;
 }
