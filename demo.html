@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utils Debounce Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .demo-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        #output {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 3px;
+            min-height: 50px;
+        }
+        .counter {
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Utils.js Debounce Function Demo</h1>
+    
+    <div class="demo-section">
+        <h2>Debounced Search Input</h2>
+        <p>Type in the input below. The search function is debounced with a 500ms delay:</p>
+        <input type="text" id="searchInput" placeholder="Type to search...">
+        <div id="output">
+            <div>Search results will appear here...</div>
+            <div>Function calls: <span id="searchCounter" class="counter">0</span></div>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Debounced vs Regular Button</h2>
+        <p>Click the buttons rapidly to see the difference:</p>
+        <button id="regularButton">Regular Button</button>
+        <button id="debouncedButton">Debounced Button (1000ms)</button>
+        <button id="immediateButton">Immediate Debounced (1000ms)</button>
+        <div>
+            <div>Regular clicks: <span id="regularCounter" class="counter">0</span></div>
+            <div>Debounced clicks: <span id="debouncedCounter" class="counter">0</span></div>
+            <div>Immediate debounced clicks: <span id="immediateCounter" class="counter">0</span></div>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Throttled Scroll Demo</h2>
+        <p>Scroll in the box below to see throttled vs regular event handling:</p>
+        <div id="scrollBox" style="height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+            <div style="height: 1000px; background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);">
+                <p>Scroll me!</p>
+                <p>Keep scrolling...</p>
+                <p style="margin-top: 200px;">More content...</p>
+                <p style="margin-top: 200px;">Even more content...</p>
+                <p style="margin-top: 200px;">Last bit of content</p>
+            </div>
+        </div>
+        <div>
+            <div>Regular scroll events: <span id="scrollCounter" class="counter">0</span></div>
+            <div>Throttled scroll events: <span id="throttledScrollCounter" class="counter">0</span></div>
+        </div>
+    </div>
+
+    <script src="utils.js"></script>
+    <script>
+        // Counters for demonstration
+        let searchCount = 0;
+        let regularClickCount = 0;
+        let debouncedClickCount = 0;
+        let immediateClickCount = 0;
+        let scrollCount = 0;
+        let throttledScrollCount = 0;
+
+        // Debounced search function
+        const debouncedSearch = Utils.debounce((query) => {
+            searchCount++;
+            document.getElementById('searchCounter').textContent = searchCount;
+            document.getElementById('output').innerHTML = `
+                <div>Searching for: "${query}"</div>
+                <div>Function calls: <span class="counter">${searchCount}</span></div>
+            `;
+        }, 500);
+
+        // Regular button click
+        document.getElementById('regularButton').addEventListener('click', () => {
+            regularClickCount++;
+            document.getElementById('regularCounter').textContent = regularClickCount;
+        });
+
+        // Debounced button click
+        const debouncedClick = Utils.debounce(() => {
+            debouncedClickCount++;
+            document.getElementById('debouncedCounter').textContent = debouncedClickCount;
+        }, 1000);
+
+        // Immediate debounced button click
+        const immediateClick = Utils.debounce(() => {
+            immediateClickCount++;
+            document.getElementById('immediateCounter').textContent = immediateClickCount;
+        }, 1000, true);
+
+        // Scroll event handlers
+        const scrollBox = document.getElementById('scrollBox');
+        
+        scrollBox.addEventListener('scroll', () => {
+            scrollCount++;
+            document.getElementById('scrollCounter').textContent = scrollCount;
+        });
+
+        const throttledScroll = Utils.throttle(() => {
+            throttledScrollCount++;
+            document.getElementById('throttledScrollCounter').textContent = throttledScrollCount;
+        }, 100);
+
+        scrollBox.addEventListener('scroll', throttledScroll);
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            debouncedSearch(e.target.value);
+        });
+
+        document.getElementById('debouncedButton').addEventListener('click', debouncedClick);
+        document.getElementById('immediateButton').addEventListener('click', immediateClick);
+    </script>
+</body>
+</html>
