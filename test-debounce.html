@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debounce Function Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 16px;
+        }
+        
+        input {
+            width: 300px;
+        }
+        
+        .output {
+            background: #f5f5f5;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            min-height: 100px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        
+        .counter {
+            font-weight: bold;
+            color: #007cba;
+        }
+    </style>
+</head>
+<body>
+    <h1>Debounce Function Testing</h1>
+    
+    <div class="test-section">
+        <h2>Search Input Debounce Test</h2>
+        <p>Type in the input below. The search will only trigger 300ms after you stop typing.</p>
+        <input type="text" id="searchInput" placeholder="Type to search...">
+        <div class="output" id="searchOutput">Search results will appear here...</div>
+        <div class="counter">Search count: <span id="searchCount">0</span></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Button Click Debounce Test</h2>
+        <p>Click the button multiple times quickly. Only the last click will be processed after 1 second.</p>
+        <button id="debounceButton">Click Me (Debounced)</button>
+        <div class="output" id="buttonOutput">Button clicks will appear here...</div>
+        <div class="counter">Button clicks processed: <span id="buttonCount">0</span></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Immediate Debounce Test</h2>
+        <p>Click this button multiple times. The first click executes immediately, then debouncing prevents further execution for 2 seconds.</p>
+        <button id="immediateButton">Immediate Debounce Button</button>
+        <div class="output" id="immediateOutput">Immediate execution results will appear here...</div>
+        <div class="counter">Immediate executions: <span id="immediateCount">0</span></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Throttle Test (Bonus)</h2>
+        <p>Move your mouse over this area. Events are throttled to once every 100ms.</p>
+        <div id="mouseArea" style="height: 100px; background: #e0e0e0; cursor: crosshair; text-align: center; line-height: 100px;">
+            Move mouse here
+        </div>
+        <div class="output" id="throttleOutput">Mouse events will appear here...</div>
+        <div class="counter">Throttled events: <span id="throttleCount">0</span></div>
+    </div>
+
+    <script type="module">
+        import { debounce, throttle } from './utils.js';
+
+        // Search input debounce test
+        let searchCount = 0;
+        const searchOutput = document.getElementById('searchOutput');
+        const searchCountEl = document.getElementById('searchCount');
+        
+        const debouncedSearch = debounce((query) => {
+            searchCount++;
+            const timestamp = new Date().toLocaleTimeString();
+            searchOutput.textContent += `[${timestamp}] Searching for: "${query}"\n`;
+            searchCountEl.textContent = searchCount;
+            searchOutput.scrollTop = searchOutput.scrollHeight;
+        }, 300);
+        
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            debouncedSearch(e.target.value);
+        });
+
+        // Button click debounce test
+        let buttonCount = 0;
+        const buttonOutput = document.getElementById('buttonOutput');
+        const buttonCountEl = document.getElementById('buttonCount');
+        
+        const debouncedClick = debounce(() => {
+            buttonCount++;
+            const timestamp = new Date().toLocaleTimeString();
+            buttonOutput.textContent += `[${timestamp}] Button clicked and processed!\n`;
+            buttonCountEl.textContent = buttonCount;
+            buttonOutput.scrollTop = buttonOutput.scrollHeight;
+        }, 1000);
+        
+        document.getElementById('debounceButton').addEventListener('click', debouncedClick);
+
+        // Immediate debounce test
+        let immediateCount = 0;
+        const immediateOutput = document.getElementById('immediateOutput');
+        const immediateCountEl = document.getElementById('immediateCount');
+        
+        const immediateDebounce = debounce(() => {
+            immediateCount++;
+            const timestamp = new Date().toLocaleTimeString();
+            immediateOutput.textContent += `[${timestamp}] Immediate execution triggered!\n`;
+            immediateCountEl.textContent = immediateCount;
+            immediateOutput.scrollTop = immediateOutput.scrollHeight;
+        }, 2000, true);
+        
+        document.getElementById('immediateButton').addEventListener('click', immediateDebounce);
+
+        // Throttle test
+        let throttleCount = 0;
+        const throttleOutput = document.getElementById('throttleOutput');
+        const throttleCountEl = document.getElementById('throttleCount');
+        
+        const throttledMouseMove = throttle((e) => {
+            throttleCount++;
+            const timestamp = new Date().toLocaleTimeString();
+            const x = e.offsetX;
+            const y = e.offsetY;
+            throttleOutput.textContent += `[${timestamp}] Mouse at (${x}, ${y})\n`;
+            throttleCountEl.textContent = throttleCount;
+            throttleOutput.scrollTop = throttleOutput.scrollHeight;
+        }, 100);
+        
+        document.getElementById('mouseArea').addEventListener('mousemove', throttledMouseMove);
+
+        // Add some initial instructions
+        searchOutput.textContent = "Start typing in the search box above to see debounced search results...\n";
+        buttonOutput.textContent = "Click the button above to see debounced button clicks...\n";
+        immediateOutput.textContent = "Click the button above to see immediate debounce behavior...\n";
+        throttleOutput.textContent = "Move your mouse in the area above to see throttled events...\n";
+    </script>
+</body>
+</html>
