@@ -160,12 +160,158 @@ function debounce(func, delay, immediate = false) {
   return debounced;
 }
 
+/**
+ * Creates a throttled version of a function that limits its execution
+ * to at most once per specified time period
+ * @param {Function} func - The function to throttle
+ * @param {number} delay - The throttle delay in milliseconds
+ * @param {Object} [options={}] - Configuration options
+ * @param {boolean} [options.leading=true] - Execute on the leading edge
+ * @param {boolean} [options.trailing=true] - Execute on the trailing edge
+ * @returns {Function} A throttled version of the input function
+ * 
+ * @example
+ * // Basic usage - limits execution to once per 1000ms
+ * const throttledScroll = throttle(() => {
+ *   console.log('Scroll event handled');
+ * }, 1000);
+ * 
+ * // Usage with options - only execute on leading edge
+ * const throttledClick = throttle(() => {
+ *   console.log('Button clicked!');
+ * }, 500, { leading: true, trailing: false });
+ * 
+ * // Usage with options - only execute on trailing edge
+ * const throttledInput = throttle((value) => {
+ *   console.log('Input value:', value);
+ * }, 300, { leading: false, trailing: true });
+ * 
+ * // The returned function has cancel and flush methods
+ * throttledScroll.cancel(); // Cancels pending execution
+ * throttledScroll.flush();  // Immediately executes if pending
+ */
+function throttle(func, delay, options = {}) {
+  // Validate inputs
+  if (typeof func !== 'function') {
+    throw new TypeError('Expected a function');
+  }
+  
+  if (typeof delay !== 'number' || delay < 0) {
+    throw new TypeError('Expected a non-negative number for delay');
+  }
+
+  const { leading = true, trailing = true } = options;
+  
+  let timeoutId;
+  let lastCallTime = 0;
+  let lastArgs;
+  let lastThis;
+  let result;
+
+  const invokeFunc = (time) => {
+    const args = lastArgs;
+    const thisArg = lastThis;
+    
+    lastArgs = lastThis = undefined;
+    lastCallTime = time;
+    result = func.apply(thisArg, args);
+    return result;
+  };
+
+  const leadingEdge = (time) => {
+    // Reset the last call time
+    lastCallTime = time;
+    
+    // Start the timer for the trailing edge
+    timeoutId = setTimeout(timerExpired, delay);
+    
+    // If leading, invoke the function immediately
+    return leading ? invokeFunc(time) : result;
+  };
+
+  const remainingWait = (time) => {
+    const timeSinceLastCall = time - lastCallTime;
+    return delay - timeSinceLastCall;
+  };
+
+  const shouldInvoke = (time) => {
+    const timeSinceLastCall = time - lastCallTime;
+    
+    // Either this is the first call, activity has stopped and we're at the
+    // trailing edge, the system time has gone backwards and we're treating
+    // it as the trailing edge, or we've hit the `maxWait` limit.
+    return (lastCallTime === 0 || (timeSinceLastCall >= delay) ||
+            (timeSinceLastCall < 0));
+  };
+
+  const timerExpired = () => {
+    const time = Date.now();
+    if (shouldInvoke(time)) {
+      return trailingEdge(time);
+    }
+    // Restart the timer
+    timeoutId = setTimeout(timerExpired, remainingWait(time));
+  };
+
+  const trailingEdge = (time) => {
+    timeoutId = undefined;
+
+    // Only invoke if we have `lastArgs` which means `func` has been
+    // debounced at least once.
+    if (trailing && lastArgs) {
+      return invokeFunc(time);
+    }
+    lastArgs = lastThis = undefined;
+    return result;
+  };
+
+  const throttled = function(...args) {
+    const time = Date.now();
+    const isInvoking = shouldInvoke(time);
+
+    lastArgs = args;
+    lastThis = this;
+
+    if (isInvoking) {
+      if (timeoutId === undefined) {
+        return leadingEdge(time);
+      }
+      // Handle invocations in a tight loop
+      timeoutId = setTimeout(timerExpired, delay);
+      return leading ? invokeFunc(time) : result;
+    }
+    
+    if (timeoutId === undefined) {
+      timeoutId = setTimeout(timerExpired, remainingWait(time));
+    }
+    
+    return result;
+  };
+
+  // Add cancel method to the throttled function
+  throttled.cancel = function() {
+    if (timeoutId !== undefined) {
+      clearTimeout(timeoutId);
+    }
+    lastCallTime = 0;
+    lastArgs = lastThis = timeoutId = undefined;
+  };
+
+  // Add flush method to execute immediately if pending
+  throttled.flush = function() {
+    return timeoutId === undefined ? result : trailingEdge(Date.now());
+  };
+
+  return throttled;
+}
+
 // CommonJS export
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     cloneObject,
     shallowClone,
-    debounce
+    debounce,
+    throttle
   };
 }
 
@@ -175,4 +321,5 @@ if (typeof window !== 'undefined') {
   window.Utils.cloneObject = cloneObject;
   window.Utils.shallowClone = shallowClone;
   window.Utils.debounce = debounce;
+  window.Utils.throttle = throttle;
 }
