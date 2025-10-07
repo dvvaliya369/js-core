@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Utils Debounce Demo</title>
+    <title>Utils.js Demo - Debounce, Throttle & DateTime Formatter</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -17,17 +17,18 @@
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-        input[type="text"] {
+        input[type="text"], select {
             width: 300px;
             padding: 10px;
             font-size: 16px;
+            margin: 5px;
         }
         button {
             padding: 10px 20px;
             font-size: 16px;
             margin: 10px 5px;
         }
-        #output {
+        #output, .datetime-output {
             margin-top: 10px;
             padding: 10px;
             background-color: #f5f5f5;
@@ -38,10 +39,98 @@
             font-weight: bold;
             color: #007bff;
         }
+        .format-example {
+            padding: 8px;
+            margin: 5px 0;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .format-label {
+            font-weight: bold;
+            color: #333;
+        }
+        .format-result {
+            font-family: monospace;
+            color: #666;
+        }
     </style>
 </head>
 <body>
-    <h1>Utils.js Debounce Function Demo</h1>
+    <h1>Utils.js Function Demos</h1>
+    
+    <div class="demo-section">
+        <h2>DateTime Formatter</h2>
+        <p>Format dates and times in various ways with locale and timezone support:</p>
+        
+        <div>
+            <label>Select Date: </label>
+            <input type="datetime-local" id="dateInput" value="">
+        </div>
+        
+        <div>
+            <label>Format Type: </label>
+            <select id="formatSelect">
+                <option value="iso">ISO Format</option>
+                <option value="short">Short</option>
+                <option value="medium" selected>Medium</option>
+                <option value="long">Long</option>
+                <option value="full">Full</option>
+                <option value="date-only">Date Only</option>
+                <option value="time-only">Time Only</option>
+                <option value="relative">Relative Time</option>
+                <option value="timestamp">Timestamp</option>
+                <option value="custom">Custom Format</option>
+            </select>
+        </div>
+        
+        <div id="customFormatDiv" style="display: none;">
+            <label>Custom Format: </label>
+            <input type="text" id="customFormat" placeholder="YYYY-MM-DD HH:mm:ss" value="YYYY-MM-DD HH:mm:ss">
+            <small>Use tokens like YYYY, MM, DD, HH, mm, ss, etc.</small>
+        </div>
+        
+        <div>
+            <label>Locale: </label>
+            <select id="localeSelect">
+                <option value="en-US" selected>English (US)</option>
+                <option value="en-GB">English (UK)</option>
+                <option value="de-DE">German</option>
+                <option value="fr-FR">French</option>
+                <option value="ja-JP">Japanese</option>
+                <option value="zh-CN">Chinese (Simplified)</option>
+                <option value="es-ES">Spanish</option>
+            </select>
+        </div>
+        
+        <div>
+            <label>Timezone: </label>
+            <select id="timezoneSelect">
+                <option value="">System Default</option>
+                <option value="UTC">UTC</option>
+                <option value="America/New_York">Eastern Time</option>
+                <option value="America/Chicago">Central Time</option>
+                <option value="America/Denver">Mountain Time</option>
+                <option value="America/Los_Angeles">Pacific Time</option>
+                <option value="Europe/London">London</option>
+                <option value="Europe/Paris">Paris</option>
+                <option value="Asia/Tokyo">Tokyo</option>
+                <option value="Asia/Shanghai">Shanghai</option>
+            </select>
+        </div>
+        
+        <button id="formatButton">Format Date</button>
+        
+        <div class="datetime-output" id="datetimeResult">
+            <div class="format-example">
+                <span class="format-label">Formatted Result:</span>
+                <div class="format-result">Select options and click "Format Date" to see the result</div>
+            </div>
+        </div>
+        
+        <h3>Quick Examples</h3>
+        <div id="quickExamples"></div>
+    </div>
     
     <div class="demo-section">
         <h2>Debounced Search Input</h2>
@@ -86,6 +175,105 @@
 
     <script src="utils.js"></script>
     <script>
+        // Initialize datetime input with current date
+        const now = new Date();
+        const dateInput = document.getElementById('dateInput');
+        dateInput.value = now.toISOString().slice(0, 16);
+        
+        // DateTime Formatter Demo
+        function updateDateTimeFormat() {
+            const dateValue = new Date(dateInput.value);
+            const format = document.getElementById('formatSelect').value;
+            const customFormat = document.getElementById('customFormat').value;
+            const locale = document.getElementById('localeSelect').value;
+            const timezone = document.getElementById('timezoneSelect').value;
+            
+            try {
+                let result;
+                const options = {
+                    locale: locale,
+                    timezone: timezone || undefined
+                };
+                
+                if (format === 'custom') {
+                    result = Utils.formatDateTime(dateValue, customFormat, options);
+                } else {
+                    result = Utils.formatDateTime(dateValue, format, options);
+                }
+                
+                document.getElementById('datetimeResult').innerHTML = `
+                    <div class="format-example">
+                        <span class="format-label">Formatted Result:</span>
+                        <div class="format-result">${result}</div>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('datetimeResult').innerHTML = `
+                    <div class="format-example">
+                        <span class="format-label">Error:</span>
+                        <div class="format-result" style="color: red;">${error.message}</div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Show/hide custom format input
+        document.getElementById('formatSelect').addEventListener('change', (e) => {
+            const customDiv = document.getElementById('customFormatDiv');
+            customDiv.style.display = e.target.value === 'custom' ? 'block' : 'none';
+            updateDateTimeFormat();
+        });
+        
+        // Event listeners for datetime formatter
+        document.getElementById('formatButton').addEventListener('click', updateDateTimeFormat);
+        document.getElementById('dateInput').addEventListener('change', updateDateTimeFormat);
+        document.getElementById('customFormat').addEventListener('input', updateDateTimeFormat);
+        document.getElementById('localeSelect').addEventListener('change', updateDateTimeFormat);
+        document.getElementById('timezoneSelect').addEventListener('change', updateDateTimeFormat);
+        
+        // Generate quick examples
+        function generateQuickExamples() {
+            const exampleDate = new Date();
+            const pastDate = new Date(Date.now() - 2 * 60 * 60 * 1000); // 2 hours ago
+            
+            const examples = [
+                { format: 'iso', date: exampleDate, label: 'ISO Format' },
+                { format: 'short', date: exampleDate, label: 'Short Format' },
+                { format: 'medium', date: exampleDate, label: 'Medium Format' },
+                { format: 'YYYY-MM-DD HH:mm:ss', date: exampleDate, label: 'Custom: Database Format' },
+                { format: 'MMM DD, YYYY at hh:mm A', date: exampleDate, label: 'Custom: Human Readable' },
+                { format: 'dddd, MMMM Do, YYYY', date: exampleDate, label: 'Custom: Full Date with Ordinal' },
+                { format: 'relative', date: pastDate, label: 'Relative Time (2 hours ago)' }
+            ];
+            
+            const quickExamplesDiv = document.getElementById('quickExamples');
+            quickExamplesDiv.innerHTML = examples.map(example => {
+                try {
+                    const result = Utils.formatDateTime(example.date, example.format);
+                    return `
+                        <div class="format-example">
+                            <span class="format-label">${example.label}:</span>
+                            <div class="format-result">${result}</div>
+                        </div>
+                    `;
+                } catch (error) {
+                    return `
+                        <div class="format-example">
+                            <span class="format-label">${example.label}:</span>
+                            <div class="format-result" style="color: red;">Error: ${error.message}</div>
+                        </div>
+                    `;
+                }
+            }).join('');
+        }
+        
+        // Initialize examples
+        generateQuickExamples();
+        updateDateTimeFormat();
+        
+        // Refresh examples every minute to show relative time updates
+        setInterval(generateQuickExamples, 60000);
+
         // Counters for demonstration
         let searchCount = 0;
         let regularClickCount = 0;
