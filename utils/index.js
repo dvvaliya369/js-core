@@ -11,6 +11,8 @@ const {
   getRelativeTime
 } = require('./dateTimeFormatter');
 
+const { debounce } = require('./debounce');
+
 module.exports = {
   // Date/Time formatting utilities
   DateTimeFormatter,
@@ -18,5 +20,8 @@ module.exports = {
   formatDate,
   customFormatDate,
   formatForLocale,
-  getRelativeTime
+  getRelativeTime,
+  
+  // Performance utilities
+  debounce
 };
