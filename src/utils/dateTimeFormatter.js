@@ -212,6 +212,74 @@ function isValidDate(date) {
 }
 
 /**
+ * Creates a debounced version of a function that delays execution until after 
+ * a specified delay has passed since the last time it was invoked
+ * @param {Function} func - The function to debounce
+ * @param {number} delay - The delay in milliseconds
+ * @param {Object} options - Additional options
+ * @param {boolean} options.immediate - Execute on the leading edge instead of trailing
+ * @returns {Function} The debounced function
+ */
+function debounce(func, delay, options = {}) {
+    if (typeof func !== 'function') {
+        throw new Error('First argument must be a function');
+    }
+    
+    if (typeof delay !== 'number' || delay < 0) {
+        throw new Error('Delay must be a non-negative number');
+    }
+
+    const { immediate = false } = options;
+    let timeoutId;
+    let lastArgs;
+    let lastThis;
+    let result;
+
+    const debounced = function(...args) {
+        lastArgs = args;
+        lastThis = this;
+
+        const callNow = immediate && !timeoutId;
+
+        clearTimeout(timeoutId);
+
+        timeoutId = setTimeout(() => {
+            timeoutId = null;
+            if (!immediate) {
+                result = func.apply(lastThis, lastArgs);
+            }
+        }, delay);
+
+        if (callNow) {
+            result = func.apply(lastThis, lastArgs);
+        }
+
+        return result;
+    };
+
+    // Add utility methods to the debounced function
+    debounced.cancel = function() {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+    };
+
+    debounced.flush = function() {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+            timeoutId = null;
+            result = func.apply(lastThis, lastArgs);
+        }
+        return result;
+    };
+
+    debounced.pending = function() {
+        return !!timeoutId;
+    };
+
+    return debounced;
+}
+
+/**
  * Common date format presets
  */
 const DATE_FORMATS = {
@@ -231,6 +299,7 @@ module.exports = {
     formatCustomDate,
     getRelativeTime,
     isValidDate,
+    debounce,
     DATE_FORMATS
 };
 
@@ -242,5 +311,6 @@ module.exports = {
 //     formatCustomDate,
 //     getRelativeTime,
 //     isValidDate,
+//     debounce,
 //     DATE_FORMATS
 // };
