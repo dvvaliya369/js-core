@@ -280,6 +280,91 @@ function debounce(func, delay, options = {}) {
 }
 
 /**
+ * Creates a throttled version of a function that limits execution to at most 
+ * once per specified time interval
+ * @param {Function} func - The function to throttle
+ * @param {number} limit - The time limit in milliseconds
+ * @param {Object} options - Additional options
+ * @param {boolean} options.leading - Execute on the leading edge (default: true)
+ * @param {boolean} options.trailing - Execute on the trailing edge (default: true)
+ * @returns {Function} The throttled function
+ */
+function throttle(func, limit, options = {}) {
+    if (typeof func !== 'function') {
+        throw new Error('First argument must be a function');
+    }
+    
+    if (typeof limit !== 'number' || limit < 0) {
+        throw new Error('Limit must be a non-negative number');
+    }
+
+    const { leading = true, trailing = true } = options;
+    
+    let timeoutId;
+    let lastExecTime = 0;
+    let lastArgs;
+    let lastThis;
+    let result;
+
+    const throttled = function(...args) {
+        lastArgs = args;
+        lastThis = this;
+        
+        const now = Date.now();
+        
+        // If this is the first call and leading is false, set lastExecTime to now
+        if (!lastExecTime && !leading) {
+            lastExecTime = now;
+        }
+        
+        const remaining = limit - (now - lastExecTime);
+        
+        if (remaining <= 0 || remaining > limit) {
+            // Time to execute
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+            }
+            
+            lastExecTime = now;
+            result = func.apply(lastThis, lastArgs);
+        } else if (!timeoutId && trailing) {
+            // Schedule execution for the trailing edge
+            timeoutId = setTimeout(() => {
+                lastExecTime = leading ? Date.now() : 0;
+                timeoutId = null;
+                result = func.apply(lastThis, lastArgs);
+            }, remaining);
+        }
+        
+        return result;
+    };
+
+    // Add utility methods to the throttled function
+    throttled.cancel = function() {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+        lastExecTime = 0;
+    };
+
+    throttled.flush = function() {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+            timeoutId = null;
+            lastExecTime = Date.now();
+            result = func.apply(lastThis, lastArgs);
+        }
+        return result;
+    };
+
+    throttled.pending = function() {
+        return !!timeoutId;
+    };
+
+    return throttled;
+}
+
+/**
  * Common date format presets
  */
 const DATE_FORMATS = {
@@ -300,6 +385,7 @@ module.exports = {
     getRelativeTime,
     isValidDate,
     debounce,
+    throttle,
     DATE_FORMATS
 };
 
@@ -312,5 +398,6 @@ module.exports = {
 //     getRelativeTime,
 //     isValidDate,
 //     debounce,
+//     throttle,
 //     DATE_FORMATS
 // };
