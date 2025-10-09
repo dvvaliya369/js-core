@@ -139,19 +139,114 @@ function debounce(func, wait, immediate = false) {
   };
 }
 
+/**
+ * Creates a throttled function that only invokes the provided function at most once 
+ * per every wait milliseconds. Unlike debounce, throttle guarantees execution at 
+ * regular intervals while the function is being called repeatedly.
+ * This is useful for limiting the rate of execution for performance-intensive operations
+ * like scroll handlers, mousemove events, or API calls that need regular updates.
+ * 
+ * @param {Function} func - The function to throttle
+ * @param {number} wait - The number of milliseconds to wait between executions
+ * @param {Object} [options={}] - Options object
+ * @param {boolean} [options.leading=true] - Specify invoking on the leading edge of the timeout
+ * @param {boolean} [options.trailing=true] - Specify invoking on the trailing edge of the timeout
+ * @returns {Function} The throttled function
+ * 
+ * @example
+ * // Throttle a scroll handler to improve performance
+ * const throttledScroll = throttle(function() {
+ *   console.log('Scroll position:', window.scrollY);
+ *   // Update UI elements based on scroll position
+ * }, 100);
+ * 
+ * window.addEventListener('scroll', throttledScroll);
+ * 
+ * @example
+ * // Throttle API calls for live search
+ * const throttledApiCall = throttle(function(query) {
+ *   console.log('Making API call for:', query);
+ *   fetch('/api/search?q=' + encodeURIComponent(query))
+ *     .then(response => response.json())
+ *     .then(data => console.log(data));
+ * }, 500);
+ * 
+ * @example
+ * // Throttle with custom options (no leading edge)
+ * const throttledSave = throttle(function(data) {
+ *   console.log('Saving data:', data);
+ *   // Save data to server
+ * }, 2000, { leading: false, trailing: true });
+ * 
+ * @example
+ * // Throttle mouse move events
+ * const throttledMouseMove = throttle(function(event) {
+ *   console.log('Mouse position:', event.clientX, event.clientY);
+ * }, 50);
+ * 
+ * document.addEventListener('mousemove', throttledMouseMove);
+ */
+function throttle(func, wait, options = {}) {
+  let timeout;
+  let previous = 0;
+  let result;
+  
+  const { leading = true, trailing = true } = options;
+  
+  const later = function(context, args) {
+    previous = leading === false ? 0 : Date.now();
+    timeout = null;
+    result = func.apply(context, args);
+    if (!timeout) context = args = null;
+  };
+  
+  const throttled = function(...args) {
+    const now = Date.now();
+    
+    if (!previous && leading === false) previous = now;
+    
+    const remaining = wait - (now - previous);
+    
+    if (remaining <= 0 || remaining > wait) {
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = null;
+      }
+      previous = now;
+      result = func.apply(this, args);
+      if (!timeout) args = null;
+    } else if (!timeout && trailing !== false) {
+      timeout = setTimeout(() => later(this, args), remaining);
+    }
+    
+    return result;
+  };
+  
+  // Add cancel method to the throttled function
+  throttled.cancel = function() {
+    clearTimeout(timeout);
+    previous = 0;
+    timeout = null;
+  };
+  
+  return throttled;
+}
+
 // Export for different module systems
 if (typeof module !== 'undefined' && module.exports) {
   // CommonJS
-  module.exports = { deepClone, debounce };
+  module.exports = { deepClone, debounce, throttle };
 } else if (typeof window !== 'undefined') {
   // Browser global
   window.utils = window.utils || {};
   window.utils.deepClone = deepClone;
   window.utils.debounce = debounce;
+  window.utils.throttle = throttle;
 }
 
 // Also support ES6 modules if needed
 if (typeof exports !== 'undefined') {
   exports.deepClone = deepClone;
   exports.debounce = debounce;
+  exports.throttle = throttle;
 }
