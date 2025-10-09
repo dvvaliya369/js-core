@@ -84,17 +84,74 @@ function deepClone(obj, visited = new WeakMap()) {
   return clonedObj;
 }
 
+/**
+ * Creates a debounced function that delays the execution of the provided function 
+ * until after wait milliseconds have elapsed since the last time it was invoked.
+ * This is useful for limiting the rate at which a function can fire, particularly
+ * for events like scrolling, resizing, or input field changes.
+ * 
+ * @param {Function} func - The function to debounce
+ * @param {number} wait - The number of milliseconds to delay
+ * @param {boolean} [immediate=false] - If true, trigger the function on the leading edge instead of trailing
+ * @returns {Function} The debounced function
+ * 
+ * @example
+ * // Debounce a search function to avoid excessive API calls
+ * const debouncedSearch = debounce(function(query) {
+ *   console.log('Searching for:', query);
+ *   // Make API call here
+ * }, 300);
+ * 
+ * // Usage with input field
+ * document.getElementById('search').addEventListener('input', function(e) {
+ *   debouncedSearch(e.target.value);
+ * });
+ * 
+ * @example
+ * // Debounce window resize handler
+ * const debouncedResize = debounce(function() {
+ *   console.log('Window resized to:', window.innerWidth, 'x', window.innerHeight);
+ * }, 250);
+ * 
+ * window.addEventListener('resize', debouncedResize);
+ * 
+ * @example
+ * // Immediate execution example
+ * const debouncedImmediate = debounce(function() {
+ *   console.log('Executed immediately, then debounced');
+ * }, 1000, true);
+ */
+function debounce(func, wait, immediate = false) {
+  let timeout;
+  
+  return function executedFunction(...args) {
+    const later = () => {
+      timeout = null;
+      if (!immediate) func.apply(this, args);
+    };
+    
+    const callNow = immediate && !timeout;
+    
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    
+    if (callNow) func.apply(this, args);
+  };
+}
+
 // Export for different module systems
 if (typeof module !== 'undefined' && module.exports) {
   // CommonJS
-  module.exports = { deepClone };
+  module.exports = { deepClone, debounce };
 } else if (typeof window !== 'undefined') {
   // Browser global
   window.utils = window.utils || {};
   window.utils.deepClone = deepClone;
+  window.utils.debounce = debounce;
 }
 
 // Also support ES6 modules if needed
 if (typeof exports !== 'undefined') {
   exports.deepClone = deepClone;
+  exports.debounce = debounce;
 }
