@@ -224,11 +224,194 @@ export function formatDateTime(date, format = 'yyyy-MM-dd HH:mm:ss', options = {
   return result;
 }
 
+/**
+ * Creates a clone of an object or value
+ * 
+ * @param {*} obj - The object or value to clone
+ * @param {boolean} [deep=false] - Whether to perform deep cloning
+ * @returns {*} The cloned object or value
+ * 
+ * @example
+ * // Shallow clone
+ * const original = { a: 1, b: { c: 2 } };
+ * const shallowClone = clone(original);
+ * shallowClone.a = 999;
+ * console.log(original.a); // 1 (unchanged)
+ * shallowClone.b.c = 999;
+ * console.log(original.b.c); // 999 (changed because b is shared)
+ * 
+ * // Deep clone
+ * const deepClone = clone(original, true);
+ * deepClone.b.c = 777;
+ * console.log(original.b.c); // 2 (unchanged)
+ * 
+ * // Works with arrays
+ * const arr = [1, 2, { x: 3 }];
+ * const clonedArr = clone(arr, true);
+ * 
+ * // Works with dates
+ * const date = new Date();
+ * const clonedDate = clone(date);
+ */
+export function clone(obj, deep = false) {
+  // Handle null and undefined
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+
+  // Handle primitive types
+  if (typeof obj !== 'object') {
+    return obj;
+  }
+
+  // Handle Date objects
+  if (obj instanceof Date) {
+    return new Date(obj.getTime());
+  }
+
+  // Handle RegExp objects
+  if (obj instanceof RegExp) {
+    return new RegExp(obj.source, obj.flags);
+  }
+
+  // Handle Arrays
+  if (Array.isArray(obj)) {
+    if (deep) {
+      return obj.map(item => clone(item, true));
+    } else {
+      return [...obj];
+    }
+  }
+
+  // Handle Functions (return as-is since functions are typically shared)
+  if (typeof obj === 'function') {
+    return obj;
+  }
+
+  // Handle plain objects
+  if (obj.constructor === Object || obj.constructor === undefined) {
+    const cloned = {};
+    
+    if (deep) {
+      // Deep clone - recursively clone all properties
+      // Use a WeakMap to track circular references
+      return cloneDeepWithCircularCheck(obj, new WeakMap());
+    } else {
+      // Shallow clone - copy enumerable own properties
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          cloned[key] = obj[key];
+        }
+      }
+      return cloned;
+    }
+  }
+
+  // For other object types (custom classes, etc.), return a shallow copy
+  // or the original object depending on the deep flag
+  if (deep) {
+    // Attempt to create a new instance and copy properties
+    try {
+      const cloned = Object.create(Object.getPrototypeOf(obj));
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          cloned[key] = clone(obj[key], true);
+        }
+      }
+      return cloned;
+    } catch (e) {
+      // If we can't clone it, return the original
+      return obj;
+    }
+  } else {
+    return obj;
+  }
+}
+
+/**
+ * Internal helper function for deep cloning with circular reference detection
+ * 
+ * @private
+ * @param {*} obj - The object to clone
+ * @param {WeakMap} visited - Map to track visited objects for circular reference detection
+ * @returns {*} The deeply cloned object
+ */
+function cloneDeepWithCircularCheck(obj, visited) {
+  // Handle null and undefined
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+
+  // Handle primitive types
+  if (typeof obj !== 'object') {
+    return obj;
+  }
+
+  // Check for circular references
+  if (visited.has(obj)) {
+    throw new Error('Cannot clone object with circular references');
+  }
+
+  // Handle Date objects
+  if (obj instanceof Date) {
+    return new Date(obj.getTime());
+  }
+
+  // Handle RegExp objects
+  if (obj instanceof RegExp) {
+    return new RegExp(obj.source, obj.flags);
+  }
+
+  // Handle Functions
+  if (typeof obj === 'function') {
+    return obj;
+  }
+
+  // Mark this object as visited
+  visited.set(obj, true);
+
+  let cloned;
+
+  // Handle Arrays
+  if (Array.isArray(obj)) {
+    cloned = [];
+    for (let i = 0; i < obj.length; i++) {
+      cloned[i] = cloneDeepWithCircularCheck(obj[i], visited);
+    }
+  } else if (obj.constructor === Object || obj.constructor === undefined) {
+    // Handle plain objects
+    cloned = {};
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        cloned[key] = cloneDeepWithCircularCheck(obj[key], visited);
+      }
+    }
+  } else {
+    // Handle other object types
+    try {
+      cloned = Object.create(Object.getPrototypeOf(obj));
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          cloned[key] = cloneDeepWithCircularCheck(obj[key], visited);
+        }
+      }
+    } catch (e) {
+      cloned = obj;
+    }
+  }
+
+  // Remove from visited map after cloning
+  visited.delete(obj);
+
+  return cloned;
+}
+
 export default {
   debounce,
   throttle,
   delay,
   isDefined,
   once,
-  formatDateTime
+  formatDateTime,
+  clone
 };

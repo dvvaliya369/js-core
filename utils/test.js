@@ -1,5 +1,5 @@
-// Simple test file to verify the debounce function works correctly
-import { debounce, throttle, delay, isDefined, once } from './index.js';
+// Simple test file to verify the utility functions work correctly
+import { debounce, throttle, delay, isDefined, once, clone } from './index.js';
 
 console.log('Testing utility functions...\n');
 
@@ -66,7 +66,45 @@ setTimeout(() => {
     delay(100).then(() => {
       const endTime = Date.now();
       const elapsed = endTime - startTime;
-      console.log(`  Delay completed in ${elapsed}ms (should be ~100ms)`);
+      console.log(`  Delay completed in ${elapsed}ms (should be ~100ms)\n`);
+      
+      // Test clone function
+      console.log('5. Testing clone function:');
+      
+      // Test shallow clone
+      const original = { a: 1, b: { c: 2 }, d: [3, 4] };
+      const shallowClone = clone(original);
+      console.log(`  Original: ${JSON.stringify(original)}`);
+      console.log(`  Shallow clone: ${JSON.stringify(shallowClone)}`);
+      
+      // Modify shallow clone
+      shallowClone.a = 999;
+      shallowClone.b.c = 999; // This will affect original too
+      console.log(`  After modifying shallow clone:`);
+      console.log(`    Original.a: ${original.a} (should be 1)`);
+      console.log(`    Original.b.c: ${original.b.c} (should be 999 - shared reference)`);
+      
+      // Test deep clone
+      const originalForDeep = { a: 1, b: { c: 2 }, d: [3, { e: 4 }] };
+      const deepClone = clone(originalForDeep, true);
+      deepClone.a = 777;
+      deepClone.b.c = 777;
+      deepClone.d[1].e = 777;
+      console.log(`  After modifying deep clone:`);
+      console.log(`    Original.a: ${originalForDeep.a} (should be 1)`);
+      console.log(`    Original.b.c: ${originalForDeep.b.c} (should be 2)`);
+      console.log(`    Original.d[1].e: ${originalForDeep.d[1].e} (should be 4)`);
+      
+      // Test cloning different types
+      const dateOriginal = new Date();
+      const dateClone = clone(dateOriginal);
+      console.log(`  Date clone works: ${dateClone instanceof Date && dateClone.getTime() === dateOriginal.getTime()}`);
+      
+      const arrayOriginal = [1, 2, { x: 3 }];
+      const arrayClone = clone(arrayOriginal, true);
+      arrayClone[2].x = 999;
+      console.log(`  Array deep clone works: ${arrayOriginal[2].x === 3} (original unchanged)`);
+      
       console.log('\nAll tests completed!');
     });
 
