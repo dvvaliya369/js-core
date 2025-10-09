@@ -151,10 +151,121 @@ export function once<T extends (...args: any[]) => any>(func: T): T {
   }) as T;
 }
 
+/**
+ * Options for datetime formatting
+ */
+export interface DateTimeFormatOptions {
+  /** The locale for formatting (default: 'en-US') */
+  locale?: string;
+  /** The timezone for formatting (e.g., 'UTC', 'America/New_York') */
+  timeZone?: string;
+}
+
+/**
+ * Formats a date/time value into a string according to the specified format
+ * 
+ * @param {Date | number | string} date - The date to format (Date object, timestamp, or date string)
+ * @param {string} [format='yyyy-MM-dd HH:mm:ss'] - The format string
+ * @param {DateTimeFormatOptions} [options={}] - Additional formatting options
+ * @returns {string} The formatted date string
+ * 
+ * Format tokens:
+ * - yyyy: 4-digit year
+ * - MM: 2-digit month (01-12)
+ * - dd: 2-digit day (01-31)
+ * - HH: 2-digit hour in 24h format (00-23)
+ * - mm: 2-digit minute (00-59)
+ * - ss: 2-digit second (00-59)
+ * - SSS: 3-digit millisecond (000-999)
+ * 
+ * @example
+ * ```typescript
+ * const now = new Date();
+ * 
+ * // Basic formatting
+ * formatDateTime(now); // '2023-12-25 14:30:45'
+ * formatDateTime(now, 'MM/dd/yyyy'); // '12/25/2023'
+ * formatDateTime(now, 'yyyy-MM-dd'); // '2023-12-25'
+ * formatDateTime(now, 'HH:mm:ss'); // '14:30:45'
+ * 
+ * // With timezone
+ * formatDateTime(now, 'yyyy-MM-dd HH:mm:ss', { timeZone: 'UTC' });
+ * formatDateTime(now, 'yyyy-MM-dd HH:mm:ss', { timeZone: 'America/New_York' });
+ * 
+ * // From timestamp
+ * formatDateTime(1703520645000, 'yyyy-MM-dd HH:mm:ss');
+ * ```
+ */
+export function formatDateTime(
+  date: Date | number | string, 
+  format: string = 'yyyy-MM-dd HH:mm:ss', 
+  options: DateTimeFormatOptions = {}
+): string {
+  // Convert input to Date object
+  let dateObj: Date;
+  if (date instanceof Date) {
+    dateObj = date;
+  } else if (typeof date === 'number') {
+    dateObj = new Date(date);
+  } else if (typeof date === 'string') {
+    dateObj = new Date(date);
+  } else {
+    throw new Error('Invalid date input. Expected Date object, number timestamp, or date string.');
+  }
+
+  // Check if date is valid
+  if (isNaN(dateObj.getTime())) {
+    throw new Error('Invalid date provided.');
+  }
+
+  const { locale = 'en-US', timeZone } = options;
+
+  // Create formatter options
+  const formatOptions: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  };
+
+  if (timeZone) {
+    formatOptions.timeZone = timeZone;
+  }
+
+  // Get formatted parts using Intl.DateTimeFormat
+  const formatter = new Intl.DateTimeFormat(locale, formatOptions);
+  const parts = formatter.formatToParts(dateObj);
+
+  // Create a map of part types to values
+  const partMap: { [key: string]: string } = {};
+  parts.forEach(part => {
+    partMap[part.type] = part.value;
+  });
+
+  // Get milliseconds separately since Intl.DateTimeFormat doesn't include them
+  const milliseconds = dateObj.getMilliseconds().toString().padStart(3, '0');
+
+  // Replace format tokens
+  let result = format
+    .replace(/yyyy/g, partMap.year)
+    .replace(/MM/g, partMap.month)
+    .replace(/dd/g, partMap.day)
+    .replace(/HH/g, partMap.hour)
+    .replace(/mm/g, partMap.minute)
+    .replace(/ss/g, partMap.second)
+    .replace(/SSS/g, milliseconds);
+
+  return result;
+}
+
 export default {
   debounce,
   throttle,
   delay,
   isDefined,
-  once
+  once,
+  formatDateTime
 };
