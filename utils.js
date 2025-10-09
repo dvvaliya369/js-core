@@ -379,18 +379,285 @@ function formatWithCustomPattern(date, pattern, utc = false) {
   return formatted;
 }
 
+/**
+ * Creates a deep clone of an object, array, or primitive value.
+ * 
+ * This function recursively clones nested objects and arrays, handles special
+ * object types like Date, RegExp, and Map/Set, and preserves the prototype chain.
+ * It also handles circular references to prevent infinite recursion.
+ * 
+ * Supported types:
+ * - Primitives (string, number, boolean, null, undefined, symbol, bigint)
+ * - Objects (plain objects, with prototype preservation)
+ * - Arrays (including nested arrays and sparse arrays)
+ * - Date objects (creates new Date with same timestamp)
+ * - RegExp objects (preserves flags and pattern)
+ * - Map and Set objects (clones entries/values)
+ * - Functions (returns reference, not cloned)
+ * - Built-in objects (Error, etc.)
+ * 
+ * @param {*} obj - The value to clone
+ * @param {WeakMap} seen - Internal parameter for circular reference detection
+ * @returns {*} A deep clone of the input value
+ * 
+ * @example
+ * // Basic object cloning
+ * const original = { a: 1, b: { c: 2, d: [3, 4] } };
+ * const cloned = cloneObject(original);
+ * cloned.b.c = 999;
+ * console.log(original.b.c); // Still 2 (original unchanged)
+ * console.log(cloned.b.c);   // 999
+ * 
+ * // Array cloning
+ * const originalArray = [1, [2, 3], { a: 4 }];
+ * const clonedArray = cloneObject(originalArray);
+ * clonedArray[1][0] = 999;
+ * console.log(originalArray[1][0]); // Still 2
+ * console.log(clonedArray[1][0]);   // 999
+ * 
+ * // Date cloning
+ * const originalDate = new Date('2023-12-25');
+ * const clonedDate = cloneObject(originalDate);
+ * clonedDate.setFullYear(2024);
+ * console.log(originalDate.getFullYear()); // 2023 (unchanged)
+ * console.log(clonedDate.getFullYear());   // 2024
+ * 
+ * // RegExp cloning
+ * const originalRegex = /hello/gi;
+ * const clonedRegex = cloneObject(originalRegex);
+ * console.log(originalRegex === clonedRegex); // false (different objects)
+ * console.log(clonedRegex.source); // 'hello'
+ * console.log(clonedRegex.flags);  // 'gi'
+ * 
+ * // Circular reference handling
+ * const circular = { name: 'test' };
+ * circular.self = circular; // Circular reference
+ * const clonedCircular = cloneObject(circular);
+ * console.log(clonedCircular.self === clonedCircular); // true
+ * 
+ * // Map and Set cloning
+ * const originalMap = new Map([['key1', 'value1'], ['key2', { nested: 'object' }]]);
+ * const clonedMap = cloneObject(originalMap);
+ * clonedMap.get('key2').nested = 'modified';
+ * console.log(originalMap.get('key2').nested); // Still 'object'
+ * 
+ * const originalSet = new Set([1, { a: 2 }, [3, 4]]);
+ * const clonedSet = cloneObject(originalSet);
+ * // Set contents are deeply cloned
+ * 
+ * // Class instance cloning (preserves prototype)
+ * class Person {
+ *   constructor(name) {
+ *     this.name = name;
+ *   }
+ *   greet() {
+ *     return `Hello, I'm ${this.name}`;
+ *   }
+ * }
+ * 
+ * const originalPerson = new Person('Alice');
+ * const clonedPerson = cloneObject(originalPerson);
+ * console.log(clonedPerson instanceof Person); // true
+ * console.log(clonedPerson.greet()); // "Hello, I'm Alice"
+ * 
+ * // Function handling (functions are not cloned, reference is returned)
+ * const objWithFunction = {
+ *   data: { count: 1 },
+ *   increment() { this.data.count++; }
+ * };
+ * const clonedObjWithFunction = cloneObject(objWithFunction);
+ * console.log(clonedObjWithFunction.increment === objWithFunction.increment); // true
+ */
+function cloneObject(obj, seen = new WeakMap()) {
+  // Handle null and undefined
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+
+  // Handle primitives (string, number, boolean, symbol, bigint)
+  if (typeof obj !== 'object' && typeof obj !== 'function') {
+    return obj;
+  }
+
+  // Handle functions - return the function reference (functions aren't typically cloned)
+  if (typeof obj === 'function') {
+    return obj;
+  }
+
+  // Handle circular references
+  if (seen.has(obj)) {
+    return seen.get(obj);
+  }
+
+  // Handle Date objects
+  if (obj instanceof Date) {
+    const clonedDate = new Date(obj.getTime());
+    seen.set(obj, clonedDate);
+    return clonedDate;
+  }
+
+  // Handle RegExp objects
+  if (obj instanceof RegExp) {
+    const clonedRegex = new RegExp(obj.source, obj.flags);
+    seen.set(obj, clonedRegex);
+    return clonedRegex;
+  }
+
+  // Handle Map objects
+  if (obj instanceof Map) {
+    const clonedMap = new Map();
+    seen.set(obj, clonedMap);
+    
+    for (const [key, value] of obj.entries()) {
+      clonedMap.set(cloneObject(key, seen), cloneObject(value, seen));
+    }
+    return clonedMap;
+  }
+
+  // Handle Set objects
+  if (obj instanceof Set) {
+    const clonedSet = new Set();
+    seen.set(obj, clonedSet);
+    
+    for (const value of obj.values()) {
+      clonedSet.add(cloneObject(value, seen));
+    }
+    return clonedSet;
+  }
+
+  // Handle Arrays
+  if (Array.isArray(obj)) {
+    const clonedArray = new Array(obj.length);
+    seen.set(obj, clonedArray);
+    
+    for (let i = 0; i < obj.length; i++) {
+      // Handle sparse arrays (arrays with holes)
+      if (i in obj) {
+        clonedArray[i] = cloneObject(obj[i], seen);
+      }
+    }
+    return clonedArray;
+  }
+
+  // Handle Error objects and other built-in objects
+  if (obj instanceof Error) {
+    const clonedError = new obj.constructor(obj.message);
+    seen.set(obj, clonedError);
+    
+    // Copy error properties
+    clonedError.name = obj.name;
+    clonedError.stack = obj.stack;
+    
+    // Copy any additional properties
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        clonedError[key] = cloneObject(obj[key], seen);
+      }
+    }
+    return clonedError;
+  }
+
+  // Handle plain objects and class instances
+  let clonedObj;
+  
+  // Preserve prototype chain for class instances
+  if (obj.constructor !== Object) {
+    // For class instances, create new instance with same prototype
+    clonedObj = Object.create(Object.getPrototypeOf(obj));
+  } else {
+    // For plain objects
+    clonedObj = {};
+  }
+  
+  // Register the clone in the seen map to handle circular references
+  seen.set(obj, clonedObj);
+
+  // Copy all enumerable own properties
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      clonedObj[key] = cloneObject(obj[key], seen);
+    }
+  }
+
+  // Copy non-enumerable own properties (like those defined with Object.defineProperty)
+  const propertyDescriptors = Object.getOwnPropertyDescriptors(obj);
+  for (const key of Object.getOwnPropertyNames(obj)) {
+    if (!obj.propertyIsEnumerable(key) && key !== 'constructor') {
+      const descriptor = propertyDescriptors[key];
+      if (descriptor.value !== undefined) {
+        descriptor.value = cloneObject(descriptor.value, seen);
+      }
+      Object.defineProperty(clonedObj, key, descriptor);
+    }
+  }
+
+  // Copy symbol properties
+  const symbolKeys = Object.getOwnPropertySymbols(obj);
+  for (const symKey of symbolKeys) {
+    const descriptor = Object.getOwnPropertyDescriptor(obj, symKey);
+    if (descriptor.value !== undefined) {
+      descriptor.value = cloneObject(descriptor.value, seen);
+    }
+    Object.defineProperty(clonedObj, symKey, descriptor);
+  }
+
+  return clonedObj;
+}
+
+/**
+ * Creates a shallow clone of an object or array.
+ * 
+ * This is a lighter alternative to deep cloning when you only need to clone
+ * the first level of an object or array. Nested objects and arrays will
+ * still reference the original values.
+ * 
+ * @param {Object|Array} obj - The object or array to shallow clone
+ * @returns {Object|Array} A shallow clone of the input
+ * 
+ * @example
+ * const original = { a: 1, b: { c: 2 } };
+ * const shallow = shallowClone(original);
+ * 
+ * shallow.a = 999;           // Doesn't affect original
+ * shallow.b.c = 999;         // Affects original (shared reference)
+ * 
+ * console.log(original.a);   // 1 (unchanged)
+ * console.log(original.b.c); // 999 (changed, shared reference)
+ * 
+ * // Array example
+ * const originalArray = [1, [2, 3]];
+ * const shallowArray = shallowClone(originalArray);
+ * shallowArray[0] = 999;     // Doesn't affect original
+ * shallowArray[1][0] = 999;  // Affects original (shared reference)
+ */
+function shallowClone(obj) {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return [...obj];
+  }
+
+  return { ...obj };
+}
+
 // Export for different module systems
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { debounce, throttle, formatDateTime };
+  module.exports = { debounce, throttle, formatDateTime, cloneObject, shallowClone };
 } else if (typeof exports !== 'undefined') {
   exports.debounce = debounce;
   exports.throttle = throttle;
   exports.formatDateTime = formatDateTime;
+  exports.cloneObject = cloneObject;
+  exports.shallowClone = shallowClone;
 } else if (typeof window !== 'undefined') {
   window.Utils = window.Utils || {};
   window.Utils.debounce = debounce;
   window.Utils.throttle = throttle;
   window.Utils.formatDateTime = formatDateTime;
+  window.Utils.cloneObject = cloneObject;
+  window.Utils.shallowClone = shallowClone;
 }
 
 /* 
@@ -638,4 +905,266 @@ if (typeof module !== 'undefined' && module.exports) {
  * logMessage('info', 'Application started');
  * logMessage('error', 'Database connection failed');
  * logMessage('debug', 'Processing user request');
+ * 
+ * // CLONEOBJECT EXAMPLES:
+ * // 1. Deep cloning complex objects
+ * const complexObject = {
+ *   id: 1,
+ *   name: 'John Doe',
+ *   address: {
+ *     street: '123 Main St',
+ *     city: 'Anytown',
+ *     country: 'USA'
+ *   },
+ *   hobbies: ['reading', 'swimming', { name: 'coding', level: 'expert' }],
+ *   createdAt: new Date('2023-01-01'),
+ *   preferences: new Map([
+ *     ['theme', 'dark'],
+ *     ['notifications', { email: true, sms: false }]
+ *   ]),
+ *   tags: new Set(['developer', 'reader']),
+ *   profile: /user-(\d+)/i
+ * };
+ * 
+ * const clonedComplex = cloneObject(complexObject);
+ * 
+ * // Modify nested values in clone
+ * clonedComplex.address.city = 'New City';
+ * clonedComplex.hobbies[2].level = 'beginner';
+ * clonedComplex.preferences.get('notifications').email = false;
+ * clonedComplex.tags.add('writer');
+ * 
+ * // Original remains unchanged
+ * console.log(complexObject.address.city);        // 'Anytown'
+ * console.log(complexObject.hobbies[2].level);    // 'expert'
+ * console.log(complexObject.preferences.get('notifications').email); // true
+ * console.log(complexObject.tags.has('writer'));  // false
+ * 
+ * // 2. Cloning arrays with nested objects
+ * const users = [
+ *   { id: 1, name: 'Alice', roles: ['admin', 'user'] },
+ *   { id: 2, name: 'Bob', roles: ['user'] },
+ *   { id: 3, name: 'Charlie', roles: ['moderator', 'user'] }
+ * ];
+ * 
+ * const clonedUsers = cloneObject(users);
+ * clonedUsers[0].name = 'Alice Smith';
+ * clonedUsers[0].roles.push('super-admin');
+ * 
+ * console.log(users[0].name);           // 'Alice' (unchanged)
+ * console.log(users[0].roles.length);   // 2 (unchanged)
+ * console.log(clonedUsers[0].name);     // 'Alice Smith'
+ * console.log(clonedUsers[0].roles.length); // 3
+ * 
+ * // 3. Class instance cloning
+ * class Task {
+ *   constructor(title, dueDate) {
+ *     this.title = title;
+ *     this.dueDate = dueDate;
+ *     this.completed = false;
+ *     this.subtasks = [];
+ *   }
+ * 
+ *   complete() {
+ *     this.completed = true;
+ *   }
+ * 
+ *   addSubtask(subtask) {
+ *     this.subtasks.push(subtask);
+ *   }
+ * }
+ * 
+ * const originalTask = new Task('Complete project', new Date('2024-01-15'));
+ * originalTask.addSubtask(new Task('Review code', new Date('2024-01-10')));
+ * originalTask.addSubtask(new Task('Write tests', new Date('2024-01-12')));
+ * 
+ * const clonedTask = cloneObject(originalTask);
+ * 
+ * // Both objects are instances of Task class
+ * console.log(originalTask instanceof Task); // true
+ * console.log(clonedTask instanceof Task);   // true
+ * 
+ * // Methods work on cloned object
+ * clonedTask.complete();
+ * clonedTask.subtasks[0].complete();
+ * 
+ * console.log(originalTask.completed);           // false (unchanged)
+ * console.log(originalTask.subtasks[0].completed); // false (unchanged)
+ * console.log(clonedTask.completed);             // true
+ * console.log(clonedTask.subtasks[0].completed); // true
+ * 
+ * // 4. Handling circular references
+ * const node1 = { id: 1, value: 'first' };
+ * const node2 = { id: 2, value: 'second' };
+ * const node3 = { id: 3, value: 'third' };
+ * 
+ * // Create circular references
+ * node1.next = node2;
+ * node2.next = node3;
+ * node3.next = node1; // Circular reference back to node1
+ * 
+ * const clonedNode1 = cloneObject(node1);
+ * 
+ * // Verify circular reference is preserved
+ * console.log(clonedNode1.next.next.next === clonedNode1); // true
+ * console.log(clonedNode1 !== node1); // true (different objects)
+ * 
+ * // 5. State management example
+ * const appState = {
+ *   user: {
+ *     id: 123,
+ *     profile: {
+ *       name: 'John',
+ *       email: 'john@example.com',
+ *       preferences: {
+ *         theme: 'dark',
+ *         language: 'en'
+ *       }
+ *     }
+ *   },
+ *   ui: {
+ *     sidebar: { collapsed: false },
+ *     modal: { open: false, type: null }
+ *   },
+ *   data: {
+ *     lastFetch: new Date(),
+ *     cache: new Map([['key1', { data: 'value1' }]])
+ *   }
+ * };
+ * 
+ * // Create immutable update
+ * function updateUserTheme(state, newTheme) {
+ *   const newState = cloneObject(state);
+ *   newState.user.profile.preferences.theme = newTheme;
+ *   return newState;
+ * }
+ * 
+ * const newState = updateUserTheme(appState, 'light');
+ * 
+ * console.log(appState.user.profile.preferences.theme); // 'dark' (unchanged)
+ * console.log(newState.user.profile.preferences.theme); // 'light'
+ * 
+ * // 6. Form data cloning for undo/redo functionality
+ * const formData = {
+ *   personalInfo: {
+ *     firstName: 'Jane',
+ *     lastName: 'Doe',
+ *     email: 'jane@example.com'
+ *   },
+ *   address: {
+ *     street: '456 Oak St',
+ *     city: 'Springfield',
+ *     zipCode: '12345'
+ *   },
+ *   selectedOptions: ['newsletter', 'updates'],
+ *   agreementDate: new Date('2023-12-01')
+ * };
+ * 
+ * // Save state for undo functionality
+ * const formHistory = [];
+ * formHistory.push(cloneObject(formData));
+ * 
+ * // User makes changes
+ * formData.personalInfo.firstName = 'Janet';
+ * formData.selectedOptions.push('promotions');
+ * 
+ * // Save new state
+ * formHistory.push(cloneObject(formData));
+ * 
+ * // Undo functionality
+ * function undo() {
+ *   if (formHistory.length > 1) {
+ *     formHistory.pop(); // Remove current state
+ *     return cloneObject(formHistory[formHistory.length - 1]); // Return previous state
+ *   }
+ *   return cloneObject(formHistory[0]);
+ * }
+ * 
+ * const undoData = undo();
+ * console.log(undoData.personalInfo.firstName); // 'Jane' (restored)
+ * console.log(undoData.selectedOptions.length); // 2 (restored)
+ * 
+ * // 7. Cloning configuration objects
+ * const defaultConfig = {
+ *   api: {
+ *     baseUrl: 'https://api.example.com',
+ *     timeout: 5000,
+ *     headers: {
+ *       'Content-Type': 'application/json',
+ *       'User-Agent': 'MyApp/1.0'
+ *     }
+ *   },
+ *   features: {
+ *     enableLogging: true,
+ *     enableAnalytics: false,
+ *     experimental: new Set(['feature-a'])
+ *   },
+ *   cache: {
+ *     ttl: 3600,
+ *     maxSize: 100
+ *   }
+ * };
+ * 
+ * // Create environment-specific configs
+ * const devConfig = cloneObject(defaultConfig);
+ * devConfig.api.baseUrl = 'http://localhost:3000';
+ * devConfig.features.enableLogging = true;
+ * devConfig.features.experimental.add('feature-b');
+ * 
+ * const prodConfig = cloneObject(defaultConfig);
+ * prodConfig.api.timeout = 10000;
+ * prodConfig.features.enableAnalytics = true;
+ * 
+ * // Original config remains unchanged
+ * console.log(defaultConfig.api.baseUrl);        // 'https://api.example.com'
+ * console.log(defaultConfig.features.enableAnalytics); // false
+ * console.log(defaultConfig.features.experimental.has('feature-b')); // false
+ * 
+ * // SHALLOWCLONE EXAMPLES:
+ * // 1. When you only need top-level cloning
+ * const userSettings = {
+ *   theme: 'dark',
+ *   language: 'en',
+ *   notifications: {
+ *     email: true,
+ *     push: false
+ *   }
+ * };
+ * 
+ * const shallowSettings = shallowClone(userSettings);
+ * shallowSettings.theme = 'light'; // Safe - won't affect original
+ * shallowSettings.notifications.email = false; // Affects original (shared reference)
+ * 
+ * console.log(userSettings.theme);              // 'dark' (unchanged)
+ * console.log(userSettings.notifications.email); // false (changed due to shared reference)
+ * 
+ * // 2. Array shallow cloning for adding/removing items
+ * const originalItems = [
+ *   { id: 1, name: 'Item 1' },
+ *   { id: 2, name: 'Item 2' }
+ * ];
+ * 
+ * const shallowItems = shallowClone(originalItems);
+ * shallowItems.push({ id: 3, name: 'Item 3' }); // Safe - doesn't affect original array
+ * shallowItems[0].name = 'Modified Item 1';     // Affects original (shared object reference)
+ * 
+ * console.log(originalItems.length);    // 2 (unchanged)
+ * console.log(originalItems[0].name);   // 'Modified Item 1' (changed due to shared reference)
+ * 
+ * // 3. Performance comparison example
+ * const largeObject = {
+ *   level1: { level2: { level3: { level4: { data: new Array(1000).fill('test') } } } }
+ * };
+ * 
+ * // For performance testing (not actual timing)
+ * console.time('Deep clone');
+ * const deepCloned = cloneObject(largeObject);
+ * console.timeEnd('Deep clone');
+ * 
+ * console.time('Shallow clone');
+ * const shallowCloned = shallowClone(largeObject);
+ * console.timeEnd('Shallow clone');
+ * 
+ * // Use shallow clone when you only need to modify top-level properties
+ * // Use deep clone when you need complete isolation of all nested data
  */
