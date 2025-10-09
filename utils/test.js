@@ -1,0 +1,74 @@
+// Simple test file to verify the debounce function works correctly
+import { debounce, throttle, delay, isDefined, once } from './index.js';
+
+console.log('Testing utility functions...\n');
+
+// Test debounce function
+console.log('1. Testing debounce function:');
+let debounceCallCount = 0;
+const debouncedFunction = debounce(() => {
+  debounceCallCount++;
+  console.log(`  Debounced function called! Count: ${debounceCallCount}`);
+}, 100);
+
+// Call multiple times quickly
+debouncedFunction();
+debouncedFunction();
+debouncedFunction();
+console.log('  Called debounced function 3 times quickly...');
+
+// Wait and check result
+setTimeout(() => {
+  console.log(`  Expected: 1 call, Actual: ${debounceCallCount} calls\n`);
+
+  // Test throttle function
+  console.log('2. Testing throttle function:');
+  let throttleCallCount = 0;
+  const throttledFunction = throttle(() => {
+    throttleCallCount++;
+    console.log(`  Throttled function called! Count: ${throttleCallCount}`);
+  }, 50);
+
+  // Call multiple times quickly
+  throttledFunction();
+  setTimeout(() => throttledFunction(), 10);
+  setTimeout(() => throttledFunction(), 20);
+  setTimeout(() => throttledFunction(), 60); // This should trigger again
+  
+  setTimeout(() => {
+    console.log(`  Expected: 2 calls, Actual: ${throttleCallCount} calls\n`);
+
+    // Test other functions
+    console.log('3. Testing other utility functions:');
+    
+    // Test isDefined
+    console.log(`  isDefined(null): ${isDefined(null)}`); // false
+    console.log(`  isDefined(undefined): ${isDefined(undefined)}`); // false
+    console.log(`  isDefined(''): ${isDefined('')}`); // true
+    console.log(`  isDefined(0): ${isDefined(0)}`); // true
+    
+    // Test once
+    let onceCallCount = 0;
+    const onceFunction = once(() => {
+      onceCallCount++;
+      console.log(`  Once function executed! Count: ${onceCallCount}`);
+      return 'result';
+    });
+    
+    const result1 = onceFunction();
+    const result2 = onceFunction();
+    console.log(`  Once function call count: ${onceCallCount} (should be 1)`);
+    console.log(`  Results equal: ${result1 === result2} (should be true)\n`);
+
+    // Test delay function
+    console.log('4. Testing delay function...');
+    const startTime = Date.now();
+    delay(100).then(() => {
+      const endTime = Date.now();
+      const elapsed = endTime - startTime;
+      console.log(`  Delay completed in ${elapsed}ms (should be ~100ms)`);
+      console.log('\nAll tests completed!');
+    });
+
+  }, 100);
+}, 150);
