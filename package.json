@@ -1,0 +1,33 @@
+{
+  "name": "button-component",
+  "version": "1.0.0",
+  "description": "A comprehensive React Button component with TypeScript support",
+  "main": "Button.tsx",
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "keywords": [
+    "react",
+    "button",
+    "component",
+    "typescript",
+    "ui",
+    "frontend"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Component Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: #f8f9fa;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .demo-section {
+            background: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .demo-section h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0.5rem;
+        }
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        .code-block code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+    <link rel="stylesheet" href="Button.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Button Component Demo</h1>
+        <p>This demo showcases the Button component with various configurations using plain HTML and CSS classes.</p>
+
+        <div class="demo-section">
+            <h2>Basic Variants</h2>
+            <div class="button-grid">
+                <button class="btn btn--primary btn--md">Primary</button>
+                <button class="btn btn--secondary btn--md">Secondary</button>
+                <button class="btn btn--outline btn--md">Outline</button>
+                <button class="btn btn--ghost btn--md">Ghost</button>
+                <button class="btn btn--danger btn--md">Danger</button>
+            </div>
+            
+            <div class="code-block">
+                <code>
+&lt;button class="btn btn--primary btn--md"&gt;Primary&lt;/button&gt;<br>
+&lt;button class="btn btn--secondary btn--md"&gt;Secondary&lt;/button&gt;<br>
+&lt;button class="btn btn--outline btn--md"&gt;Outline&lt;/button&gt;<br>
+&lt;button class="btn btn--ghost btn--md"&gt;Ghost&lt;/button&gt;<br>
+&lt;button class="btn btn--danger btn--md"&gt;Danger&lt;/button&gt;
+                </code>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Size Variants</h2>
+            <div class="button-grid">
+                <button class="btn btn--primary btn--sm">Small</button>
+                <button class="btn btn--primary btn--md">Medium</button>
+                <button class="btn btn--primary btn--lg">Large</button>
+            </div>
+            
+            <div class="code-block">
+                <code>
+&lt;button class="btn btn--primary btn--sm"&gt;Small&lt;/button&gt;<br>
+&lt;button class="btn btn--primary btn--md"&gt;Medium&lt;/button&gt;<br>
+&lt;button class="btn btn--primary btn--lg"&gt;Large&lt;/button&gt;
+                </code>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>States</h2>
+            <div class="button-grid">
+                <button class="btn btn--primary btn--md">Normal</button>
+                <button class="btn btn--primary btn--md btn--disabled" disabled>Disabled</button>
+                <button class="btn btn--primary btn--md btn--loading">
+                    <span class="btn__spinner">
+                        <svg class="btn__spinner-icon" viewBox="0 0 24 24">
+                            <circle class="btn__spinner-circle" cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="31.416" stroke-dashoffset="31.416"></circle>
+                        </svg>
+                    </span>
+                    <span class="btn__content btn__content--loading">Loading</span>
+                </button>
+            </div>
+            
+            <div class="code-block">
+                <code>
+&lt;button class="btn btn--primary btn--md"&gt;Normal&lt;/button&gt;<br>
+&lt;button class="btn btn--primary btn--md btn--disabled" disabled&gt;Disabled&lt;/button&gt;<br>
+&lt;button class="btn btn--primary btn--md btn--loading"&gt;...&lt;/button&gt;
+                </code>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>With Icons</h2>
+            <div class="button-grid">
+                <button class="btn btn--primary btn--md">
+                    <span class="btn__icon btn__icon--start">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                        </svg>
+                    </span>
+                    <span class="btn__content">Download</span>
+                </button>
+                
+                <button class="btn btn--outline btn--md">
+                    <span class="btn__content">Continue</span>
+                    <span class="btn__icon btn__icon--end">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+            
+            <div class="code-block">
+                <code>
+&lt;button class="btn btn--primary btn--md"&gt;<br>
+&nbsp;&nbsp;&lt;span class="btn__icon btn__icon--start"&gt;[icon]&lt;/span&gt;<br>
+&nbsp;&nbsp;&lt;span class="btn__content"&gt;Download&lt;/span&gt;<br>
+&lt;/button&gt;
+                </code>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Full Width</h2>
+            <button class="btn btn--primary btn--md btn--full-width">Full Width Button</button>
+            <br><br>
+            <button class="btn btn--outline btn--md btn--full-width">Full Width Outline</button>
+            
+            <div class="code-block">
+                <code>
+&lt;button class="btn btn--primary btn--md btn--full-width"&gt;Full Width Button&lt;/button&gt;
+                </code>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Interactive Example</h2>
+            <p>Click the buttons below to see JavaScript interactions:</p>
+            <div class="button-grid">
+                <button class="btn btn--primary btn--md" onclick="showAlert()">Show Alert</button>
+                <button class="btn btn--danger btn--md" onclick="showConfirm()">Confirm Action</button>
+                <button class="btn btn--secondary btn--md" onclick="toggleLoadingDemo()">Toggle Loading</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showAlert() {
+            alert('Button clicked! This demonstrates the onclick functionality.');
+        }
+
+        function showConfirm() {
+            if (confirm('Are you sure you want to proceed?')) {
+                alert('Action confirmed!');
+            } else {
+                alert('Action cancelled.');
+            }
+        }
+
+        let isLoading = false;
+        function toggleLoadingDemo() {
+            const button = event.target;
+            isLoading = !isLoading;
+            
+            if (isLoading) {
+                button.classList.add('btn--loading');
+                button.innerHTML = `
+                    <span class="btn__spinner">
+                        <svg class="btn__spinner-icon" viewBox="0 0 24 24">
+                            <circle class="btn__spinner-circle" cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="31.416" stroke-dashoffset="31.416"></circle>
+                        </svg>
+                    </span>
+                    <span class="btn__content btn__content--loading">Loading...</span>
+                `;
+                
+                setTimeout(() => {
+                    button.classList.remove('btn--loading');
+                    button.innerHTML = '<span class="btn__content">Toggle Loading</span>';
+                    isLoading = false;
+                }, 3000);
+            }
+        }
+
+        // Add hover effects and interactions
+        document.querySelectorAll('.btn:not(.btn--disabled)').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                if (!this.classList.contains('btn--loading')) {
+                    this.style.transform = 'translateY(-1px)';
+                }
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+    </script>
+</body>
+</html>
