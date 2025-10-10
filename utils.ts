@@ -2,26 +2,23 @@
  * Utility functions
  */
 
-// @ts-check
-
 /**
  * Creates a debounced function that delays invoking func until after wait milliseconds
  * have elapsed since the last time the debounced function was invoked.
  *
- * @param {(...args: any[]) => any} func - The function to debounce
- * @param {number} wait - The number of milliseconds to delay
- * @param {boolean} [immediate=false] - If true, trigger the function on the leading edge instead of trailing
- * @returns {(...args: any[]) => void} The debounced function
+ * @param func - The function to debounce
+ * @param wait - The number of milliseconds to delay
+ * @param immediate - If true, trigger the function on the leading edge instead of trailing
+ * @returns The debounced function
  *
  * @example
  * const debouncedSave = debounce(saveData, 300);
  * debouncedSave(); // Will only execute after 300ms of no calls
  */
-const debounce = (func, wait, immediate = false) => {
-    /** @type {number | null} */
-    let timeout = null;
+const debounce = (func: (...args: any[]) => any, wait: number, immediate: boolean = false): (...args: any[]) => void => {
+    let timeout: number | null = null;
 
-    return (...args) => {
+    return (...args: any[]) => {
         const later = () => {
             timeout = null;
             if (!immediate) func(...args);
@@ -29,7 +26,7 @@ const debounce = (func, wait, immediate = false) => {
 
         const callNow = immediate && !timeout;
 
-        clearTimeout(timeout);
+        if (timeout) clearTimeout(timeout);
         timeout = setTimeout(later, wait);
 
         if (callNow) func(...args);
@@ -47,5 +44,5 @@ if (typeof module !== 'undefined' && module.exports) {
 
 // Also make available globally if in browser
 if (typeof window !== 'undefined') {
-    window.debounce = debounce;
+    (window as any).debounce = debounce;
 }
