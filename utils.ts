@@ -1,17 +1,27 @@
 /**
- * Utility functions with modern JavaScript syntax
+ * Utility functions with TypeScript support
  */
+
+// TypeScript type definitions
+export type DebouncedFunction<T extends (...args: any[]) => any> = {
+  (...args: Parameters<T>): void;
+  cancel: () => void;
+  flush: () => void;
+};
+
+export interface DebounceOptions {
+  leading?: boolean;
+  trailing?: boolean;
+}
 
 /**
  * Creates a debounced function that delays invoking func until after wait milliseconds 
  * have elapsed since the last time the debounced function was invoked.
  * 
- * @param {Function} func - The function to debounce
- * @param {number} wait - The number of milliseconds to delay
- * @param {Object} options - Configuration options for debounce behavior
- * @param {boolean} options.leading - Execute on the leading edge
- * @param {boolean} options.trailing - Execute on the trailing edge
- * @returns {Function} The debounced function with cancel and flush methods
+ * @param func - The function to debounce
+ * @param wait - The number of milliseconds to delay
+ * @param options - Configuration options for debounce behavior
+ * @returns The debounced function with cancel and flush methods
  * 
  * @example
  * const debouncedSave = debounce(saveData, 300);
@@ -21,13 +31,17 @@
  * const debouncedSearch = debounce(search, 500, { leading: true });
  * debouncedSearch(); // Executes immediately, then debounces subsequent calls
  */
-const debounce = (func, wait, options = {}) => {
+export const debounce = <T extends (...args: any[]) => any>(
+  func: T,
+  wait: number,
+  options: DebounceOptions = {}
+): DebouncedFunction<T> => {
   const { leading = false, trailing = true } = options;
-  let timeout = null;
-  let lastArgs = null;
-  let lastThis = null;
+  let timeout: NodeJS.Timeout | null = null;
+  let lastArgs: Parameters<T> | null = null;
+  let lastThis: any = null;
 
-  const later = () => {
+  const later = (): void => {
     timeout = null;
     if (trailing && lastArgs) {
       func.apply(lastThis, lastArgs);
@@ -36,7 +50,7 @@ const debounce = (func, wait, options = {}) => {
     }
   };
 
-  const cancel = () => {
+  const cancel = (): void => {
     if (timeout) {
       clearTimeout(timeout);
       timeout = null;
@@ -45,14 +59,14 @@ const debounce = (func, wait, options = {}) => {
     }
   };
 
-  const flush = () => {
+  const flush = (): void => {
     if (timeout && lastArgs) {
       func.apply(lastThis, lastArgs);
       cancel();
     }
   };
 
-  const debounced = function (...args) {
+  const debounced = function (this: any, ...args: Parameters<T>): void {
     lastArgs = args;
     lastThis = this;
 
@@ -67,7 +81,7 @@ const debounce = (func, wait, options = {}) => {
     if (callNow) {
       func.apply(this, args);
     }
-  };
+  } as DebouncedFunction<T>;
 
   debounced.cancel = cancel;
   debounced.flush = flush;
@@ -76,23 +90,14 @@ const debounce = (func, wait, options = {}) => {
 };
 
 // For backward compatibility, keep the old function name as an alias
-const deeeebounceee = (func, wait, immediate = false) => {
+export const deeeebounceee = (
+  func: (...args: any[]) => any,
+  wait: number,
+  immediate: boolean = false
+) => {
   console.warn('deeeebounceee is deprecated. Use debounce() instead.');
   return debounce(func, wait, { leading: immediate });
 };
 
-// Export for different module systems
-if (typeof module !== 'undefined' && module.exports) {
-  // CommonJS
-  module.exports = { debounce, deeeebounceee };
-} else if (typeof exports !== 'undefined') {
-  // ES6 modules (for environments that support it)
-  exports.debounce = debounce;
-  exports.deeeebounceee = deeeebounceee;
-}
-
-// Also make available globally if in browser
-if (typeof window !== 'undefined') {
-  window.debounce = debounce;
-  window.deeeebounceee = deeeebounceee;
-}
+// Default export
+export default debounce;
