@@ -3,33 +3,33 @@
  */
 
 /**
- * Creates a debounced function that delays invoking func until after wait milliseconds 
+ * Creates a debounced function that delays invoking func until after wait milliseconds
  * have elapsed since the last time the debounced function was invoked.
- * 
- * @param {function} func - The function to debounce
+ *
+ * @param {(...args: any[]) => any} func - The function to debounce
  * @param {number} wait - The number of milliseconds to delay
  * @param {boolean} [immediate=false] - If true, trigger the function on the leading edge instead of trailing
- * @returns {function} The debounced function
- * 
+ * @returns {(...args: any[]) => void} The debounced function
+ *
  * @example
  * const debouncedSave = debounce(saveData, 300);
  * debouncedSave(); // Will only execute after 300ms of no calls
  */
 const debounce = (func, wait, immediate = false) => {
     let timeout;
-    
-    return function executedFunction(...args) {
+
+    return (...args) => {
         const later = () => {
             timeout = null;
-            if (!immediate) func.apply(this, args);
+            if (!immediate) func(...args);
         };
-        
+
         const callNow = immediate && !timeout;
-        
+
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
-        
-        if (callNow) func.apply(this, args);
+
+        if (callNow) func(...args);
     };
 };
 
