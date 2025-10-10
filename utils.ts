@@ -1,6 +1,28 @@
 /**
- * Utility functions - JavaScript version for backward compatibility
+ * Advanced debounce utility with TypeScript support
  */
+
+/**
+ * Type definition for a debounced function
+ */
+export interface DebouncedFunction<T extends (...args: any[]) => any> {
+  (...args: Parameters<T>): void;
+  cancel: () => void;
+  flush: () => ReturnType<T> | undefined;
+  pending: () => boolean;
+}
+
+/**
+ * Options for debounce configuration
+ */
+export interface DebounceOptions {
+  /** If true, trigger the function on the leading edge instead of trailing */
+  leading?: boolean;
+  /** If true, trigger the function on the trailing edge (default: true) */
+  trailing?: boolean;
+  /** Maximum time func is allowed to be delayed before it's invoked */
+  maxWait?: number;
+}
 
 /**
  * Creates a debounced function that delays invoking func until after wait milliseconds 
@@ -11,23 +33,21 @@
  * - flush(): Immediately invokes any pending function and returns its result
  * - pending(): Returns true if there are any pending function invocations
  * 
- * @param {Function} func - The function to debounce
- * @param {number} wait - The number of milliseconds to delay
- * @param {Object} options - Options object for advanced configuration
- * @param {boolean} options.leading - If true, trigger the function on the leading edge instead of trailing
- * @param {boolean} options.trailing - If true, trigger the function on the trailing edge (default: true)
- * @param {number} options.maxWait - Maximum time func is allowed to be delayed before it's invoked
- * @returns {Function} The debounced function with additional control methods
+ * @param func - The function to debounce
+ * @param wait - The number of milliseconds to delay
+ * @param options - Options object for advanced configuration
+ * @returns The debounced function with additional control methods
  * 
  * @example
+ * ```typescript
  * // Basic usage
- * const debouncedSave = debounce((data) => {
+ * const debouncedSave = debounce((data: string) => {
  *   console.log('Saving:', data);
  * }, 300);
  * 
  * // With options
  * const debouncedSearch = debounce(
- *   (query) => searchAPI(query),
+ *   (query: string) => searchAPI(query),
  *   500,
  *   { leading: true, maxWait: 1000 }
  * );
@@ -37,24 +57,29 @@
  * if (debouncedSave.pending()) {
  *   debouncedSave.cancel(); // Cancel pending execution
  * }
+ * ```
  */
-const debounce = (func, wait, options = {}) => {
+export const debounce = <T extends (...args: any[]) => any>(
+  func: T,
+  wait: number,
+  options: DebounceOptions = {}
+): DebouncedFunction<T> => {
   const {
     leading = false,
     trailing = true,
     maxWait
   } = options;
 
-  let timeoutId;
-  let maxTimeoutId;
-  let lastCallTime;
+  let timeoutId: NodeJS.Timeout | number | undefined;
+  let maxTimeoutId: NodeJS.Timeout | number | undefined;
+  let lastCallTime: number | undefined;
   let lastInvokeTime = 0;
-  let lastArgs;
-  let lastThis;
-  let result;
+  let lastArgs: Parameters<T> | undefined;
+  let lastThis: any;
+  let result: ReturnType<T> | undefined;
 
-  const invokeFunc = (time) => {
-    const args = lastArgs;
+  const invokeFunc = (time: number): ReturnType<T> => {
+    const args = lastArgs!;
     const thisArg = lastThis;
 
     lastArgs = undefined;
@@ -64,7 +89,7 @@ const debounce = (func, wait, options = {}) => {
     return result;
   };
 
-  const shouldInvoke = (time) => {
+  const shouldInvoke = (time: number): boolean => {
     const timeSinceLastCall = time - (lastCallTime || 0);
     const timeSinceLastInvoke = time - lastInvokeTime;
 
@@ -76,7 +101,7 @@ const debounce = (func, wait, options = {}) => {
     );
   };
 
-  const timerExpired = () => {
+  const timerExpired = (): ReturnType<T> | undefined => {
     const time = Date.now();
     if (shouldInvoke(time)) {
       return trailingEdge(time);
@@ -93,7 +118,7 @@ const debounce = (func, wait, options = {}) => {
     return result;
   };
 
-  const trailingEdge = (time) => {
+  const trailingEdge = (time: number): ReturnType<T> | undefined => {
     timeoutId = undefined;
 
     if (trailing && lastArgs) {
@@ -104,14 +129,14 @@ const debounce = (func, wait, options = {}) => {
     return result;
   };
 
-  const leadingEdge = (time) => {
+  const leadingEdge = (time: number): ReturnType<T> | undefined => {
     lastInvokeTime = time;
     timeoutId = setTimeout(timerExpired, wait);
 
     if (maxWait !== undefined) {
       maxTimeoutId = setTimeout(() => {
         if (timeoutId) {
-          clearTimeout(timeoutId);
+          clearTimeout(timeoutId as any);
           timerExpired();
         }
       }, maxWait);
@@ -120,12 +145,12 @@ const debounce = (func, wait, options = {}) => {
     return leading ? invokeFunc(time) : result;
   };
 
-  const cancel = () => {
+  const cancel = (): void => {
     if (timeoutId !== undefined) {
-      clearTimeout(timeoutId);
+      clearTimeout(timeoutId as any);
     }
     if (maxTimeoutId !== undefined) {
-      clearTimeout(maxTimeoutId);
+      clearTimeout(maxTimeoutId as any);
     }
     lastInvokeTime = 0;
     lastArgs = undefined;
@@ -135,15 +160,15 @@ const debounce = (func, wait, options = {}) => {
     maxTimeoutId = undefined;
   };
 
-  const flush = () => {
+  const flush = (): ReturnType<T> | undefined => {
     return timeoutId === undefined ? result : trailingEdge(Date.now());
   };
 
-  const pending = () => {
+  const pending = (): boolean => {
     return timeoutId !== undefined;
   };
 
-  const debounced = (...args) => {
+  const debounced = ((...args: Parameters<T>) => {
     const time = Date.now();
     const isInvoking = shouldInvoke(time);
 
@@ -164,7 +189,7 @@ const debounce = (func, wait, options = {}) => {
       timeoutId = setTimeout(timerExpired, wait);
     }
     return result;
-  };
+  }) as DebouncedFunction<T>;
 
   debounced.cancel = cancel;
   debounced.flush = flush;
@@ -177,20 +202,6 @@ const debounce = (func, wait, options = {}) => {
  * Legacy support - maintains backward compatibility with the old function name
  * @deprecated Use `debounce` instead
  */
-const deeeebounceee = debounce;
+export const deeeebounceee = debounce;
 
-// Export for different module systems
-if (typeof module !== 'undefined' && module.exports) {
-    // CommonJS
-    module.exports = { debounce, deeeebounceee };
-} else if (typeof exports !== 'undefined') {
-    // ES6 modules (for environments that support it)
-    exports.debounce = debounce;
-    exports.deeeebounceee = deeeebounceee;
-}
-
-// Also make available globally if in browser
-if (typeof window !== 'undefined') {
-    window.debounce = debounce;
-    window.deeeebounceee = deeeebounceee;
-}
+export default debounce;
