@@ -6,16 +6,16 @@
  * Creates a debounced function that delays invoking func until after wait milliseconds 
  * have elapsed since the last time the debounced function was invoked.
  * 
- * @param {Function} func - The function to debounce
+ * @param {function} func - The function to debounce
  * @param {number} wait - The number of milliseconds to delay
- * @param {boolean} immediate - If true, trigger the function on the leading edge instead of trailing
- * @returns {Function} The debounced function
+ * @param {boolean} [immediate=false] - If true, trigger the function on the leading edge instead of trailing
+ * @returns {function} The debounced function
  * 
  * @example
- * const debouncedSave = deeeebounceee(saveData, 300);
+ * const debouncedSave = debounce(saveData, 300);
  * debouncedSave(); // Will only execute after 300ms of no calls
  */
-function deeeebounceee(func, wait, immediate = false) {
+const debounce = (func, wait, immediate = false) => {
     let timeout;
     
     return function executedFunction(...args) {
@@ -31,18 +31,18 @@ function deeeebounceee(func, wait, immediate = false) {
         
         if (callNow) func.apply(this, args);
     };
-}
+};
 
 // Export for different module systems
 if (typeof module !== 'undefined' && module.exports) {
     // CommonJS
-    module.exports = { deeeebounceee };
+    module.exports = { debounce };
 } else if (typeof exports !== 'undefined') {
     // ES6 modules (for environments that support it)
-    exports.deeeebounceee = deeeebounceee;
+    exports.debounce = debounce;
 }
 
 // Also make available globally if in browser
 if (typeof window !== 'undefined') {
-    window.deeeebounceee = deeeebounceee;
+    window.debounce = debounce;
 }

@@ -1,7 +1,7 @@
 // Test file for the debounce function
-const { deeeebounceee } = require('./utils.js');
+const { debounce } = require('./utils.js');
 
-console.log('Testing deeeebounceee function...\n');
+console.log('Testing debounce function...\n');
 
 // Test 1: Basic debouncing
 console.log('Test 1: Basic debouncing');
@@ -11,7 +11,7 @@ const incrementCounter = () => {
     console.log(`Counter: ${counter}`);
 };
 
-const debouncedIncrement = deeeebounceee(incrementCounter, 300);
+const debouncedIncrement = debounce(incrementCounter, 300);
 
 // Rapid calls - should only execute once after 300ms
 console.log('Making rapid calls...');
@@ -32,7 +32,7 @@ setTimeout(() => {
         console.log(`Immediate counter: ${immediateCounter}`);
     };
     
-    const debouncedImmediate = deeeebounceee(immediateIncrement, 300, true);
+    const debouncedImmediate = debounce(immediateIncrement, 300, true);
     
     console.log('Making rapid calls with immediate=true...');
     debouncedImmediate(); // Should execute immediately
