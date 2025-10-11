@@ -33,16 +33,71 @@ const debounce = (func, wait, immediate = false) => {
     };
 };
 
+/**
+ * Creates a reusable button element with customizable options.
+ *
+ * @param {Object} options - Configuration options for the button
+ * @param {string} [options.text] - The text content of the button
+ * @param {string} [options.className] - CSS class name(s) for styling
+ * @param {function} [options.onClick] - Click event handler function
+ * @param {string} [options.id] - ID attribute for the button
+ * @param {boolean} [options.disabled=false] - Whether the button is disabled
+ * @param {string} [options.type='button'] - Button type attribute
+ * @returns {HTMLButtonElement} The created button element
+ *
+ * @example
+ * const myButton = createButton({
+ *     text: 'Click me',
+ *     className: 'btn btn-primary',
+ *     onClick: () => console.log('Button clicked!'),
+ *     id: 'my-btn'
+ * });
+ * document.body.appendChild(myButton);
+ */
+const createButton = (options = {}) => {
+    const button = document.createElement('button');
+
+    if (options.text) {
+        button.textContent = options.text;
+    }
+
+    if (options.className) {
+        button.className = options.className;
+    }
+
+    if (options.onClick && typeof options.onClick === 'function') {
+        button.addEventListener('click', options.onClick);
+    }
+
+    if (options.id) {
+        button.id = options.id;
+    }
+
+    if (options.disabled) {
+        button.disabled = true;
+    }
+
+    if (options.type) {
+        button.type = options.type;
+    } else {
+        button.type = 'button';
+    }
+
+    return button;
+};
+
 // Export for different module systems
 if (typeof module !== 'undefined' && module.exports) {
     // CommonJS
-    module.exports = { debounce };
+    module.exports = { debounce, createButton };
 } else if (typeof exports !== 'undefined') {
     // ES6 modules (for environments that support it)
     exports.debounce = debounce;
+    exports.createButton = createButton;
 }
 
 // Also make available globally if in browser
 if (typeof window !== 'undefined') {
     window.debounce = debounce;
+    window.createButton = createButton;
 }
