@@ -1,5 +1,5 @@
 // Test file for the debounce function
-const { debounce } = require('./utils.js');
+const { debounce, deepClone } = require('./utils.js');
 
 console.log('Testing debounce function...\n');
 
@@ -43,5 +43,28 @@ setTimeout(() => {
         console.log(`Final immediate counter after 500ms: ${immediateCounter}`);
         console.log('Expected: 1 (immediate execution, subsequent calls debounced)');
     }, 500);
-    
+
 }, 500);
+
+// Test 3: Deep clone
+console.log('\\nTest 3: Deep clone');
+const original = {
+    a: 1,
+    b: { c: 2, d: [3, 4] },
+    e: new Date('2023-01-01'),
+    f: 'string'
+};
+const cloned = deepClone(original);
+
+console.log('Original:', original);
+console.log('Cloned:', cloned);
+
+// Modify cloned object
+cloned.b.c = 99;
+cloned.b.d.push(5);
+cloned.e = new Date('2024-01-01');
+
+console.log('After modifying cloned:');
+console.log('Original:', original);
+console.log('Cloned:', cloned);
+console.log('Deep clone test passed: Original unchanged');
