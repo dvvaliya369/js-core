@@ -1,4 +1,4 @@
-# JS Core Utilities
+# <span style="color:red">JS Core Utilities</span>
 
 A collection of JavaScript utility functions for common programming tasks.
 
