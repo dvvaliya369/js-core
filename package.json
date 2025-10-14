@@ -1,0 +1,28 @@
+{
+  "name": "debounce-utilities",
+  "version": "2.0.0",
+  "description": "Enhanced debounce utilities with TypeScript support and arrow functions",
+  "main": "utils.js",
+  "types": "utils.d.ts",
+  "scripts": {
+    "test": "node test_utils_improved.js",
+    "test-original": "node test_utils.js"
+  },
+  "keywords": ["debounce", "utility", "typescript", "performance"],
+  "author": "Developer",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "utils.js",
+    "utils.ts", 
+    "utils.d.ts",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "."
+  }
+}
