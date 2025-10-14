@@ -1,153 +1,213 @@
-class ToastManager {
-    constructor() {
-        this.container = document.getElementById('toast-container');
-        this.toasts = [];
-        this.toastCounter = 0;
-    }
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('signupForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const submitButton = document.querySelector('.signup-btn');
+    const successMessage = document.getElementById('successMessage');
 
-    // Icons for different toast types
-    getIcon(type) {
-        const icons = {
-            success: '✓',
-            error: '✕',
-            warning: '⚠',
-            info: 'ⓘ'
-        };
-        return icons[type] || icons.info;
-    }
+    // Error message elements
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const confirmPasswordError = document.getElementById('confirmPasswordError');
 
-    // Create toast element
-    createToastElement(type, message, duration = 5000) {
-        const toastId = `toast-${++this.toastCounter}`;
+    // Validation patterns
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    // Real-time validation
+    emailInput.addEventListener('blur', validateEmail);
+    emailInput.addEventListener('input', clearEmailError);
+    
+    passwordInput.addEventListener('blur', validatePassword);
+    passwordInput.addEventListener('input', clearPasswordError);
+    
+    confirmPasswordInput.addEventListener('blur', validateConfirmPassword);
+    confirmPasswordInput.addEventListener('input', clearConfirmPasswordError);
+
+    // Form submission
+    form.addEventListener('submit', handleFormSubmit);
+
+    function validateEmail() {
+        const email = emailInput.value.trim();
         
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.id = toastId;
-        
-        toast.innerHTML = `
-            <div class="toast-icon">${this.getIcon(type)}</div>
-            <div class="toast-message">${message}</div>
-            <button class="toast-close" onclick="toastManager.removeToast('${toastId}')" aria-label="Close">×</button>
-            <div class="toast-progress"></div>
-        `;
-
-        return { toast, toastId, duration };
-    }
-
-    // Show toast
-    showToast(type, message, duration = 5000) {
-        const { toast, toastId } = this.createToastElement(type, message, duration);
-        
-        // Add to container
-        this.container.appendChild(toast);
-        this.toasts.push(toastId);
-
-        // Trigger animation
-        setTimeout(() => {
-            toast.classList.add('show');
-        }, 10);
-
-        // Start progress bar animation
-        const progressBar = toast.querySelector('.toast-progress');
-        if (progressBar) {
-            setTimeout(() => {
-                progressBar.style.width = '100%';
-                progressBar.style.transition = `width ${duration}ms linear`;
-            }, 50);
+        if (!email) {
+            showError(emailInput, emailError, 'Email is required');
+            return false;
         }
-
-        // Auto remove after duration
-        if (duration > 0) {
-            setTimeout(() => {
-                this.removeToast(toastId);
-            }, duration);
+        
+        if (!emailPattern.test(email)) {
+            showError(emailInput, emailError, 'Please enter a valid email address');
+            return false;
         }
-
-        return toastId;
+        
+        showSuccess(emailInput, emailError);
+        return true;
     }
 
-    // Remove toast
-    removeToast(toastId) {
-        const toast = document.getElementById(toastId);
-        if (!toast) return;
+    function validatePassword() {
+        const password = passwordInput.value;
+        
+        if (!password) {
+            showError(passwordInput, passwordError, 'Password is required');
+            return false;
+        }
+        
+        if (password.length < 8) {
+            showError(passwordInput, passwordError, 'Password must be at least 8 characters long');
+            return false;
+        }
+        
+        if (!passwordPattern.test(password)) {
+            showError(passwordInput, passwordError, 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character');
+            return false;
+        }
+        
+        showSuccess(passwordInput, passwordError);
+        
+        // Re-validate confirm password if it has a value
+        if (confirmPasswordInput.value) {
+            validateConfirmPassword();
+        }
+        
+        return true;
+    }
 
-        toast.classList.add('hide');
-        toast.classList.remove('show');
+    function validateConfirmPassword() {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        
+        if (!confirmPassword) {
+            showError(confirmPasswordInput, confirmPasswordError, 'Please confirm your password');
+            return false;
+        }
+        
+        if (password !== confirmPassword) {
+            showError(confirmPasswordInput, confirmPasswordError, 'Passwords do not match');
+            return false;
+        }
+        
+        showSuccess(confirmPasswordInput, confirmPasswordError);
+        return true;
+    }
 
+    function showError(input, errorElement, message) {
+        input.classList.remove('valid');
+        input.classList.add('error');
+        errorElement.textContent = message;
+    }
+
+    function showSuccess(input, errorElement) {
+        input.classList.remove('error');
+        input.classList.add('valid');
+        errorElement.textContent = '';
+    }
+
+    function clearEmailError() {
+        if (emailInput.classList.contains('error')) {
+            emailInput.classList.remove('error');
+            emailError.textContent = '';
+        }
+    }
+
+    function clearPasswordError() {
+        if (passwordInput.classList.contains('error')) {
+            passwordInput.classList.remove('error');
+            passwordError.textContent = '';
+        }
+    }
+
+    function clearConfirmPasswordError() {
+        if (confirmPasswordInput.classList.contains('error')) {
+            confirmPasswordInput.classList.remove('error');
+            confirmPasswordError.textContent = '';
+        }
+    }
+
+    function handleFormSubmit(e) {
+        e.preventDefault();
+        
+        // Validate all fields
+        const isEmailValid = validateEmail();
+        const isPasswordValid = validatePassword();
+        const isConfirmPasswordValid = validateConfirmPassword();
+        
+        // If all fields are valid, submit the form
+        if (isEmailValid && isPasswordValid && isConfirmPasswordValid) {
+            submitForm();
+        }
+    }
+
+    function submitForm() {
+        // Show loading state
+        submitButton.classList.add('loading');
+        submitButton.disabled = true;
+        
+        // Simulate API call
         setTimeout(() => {
-            if (toast.parentNode) {
-                toast.parentNode.removeChild(toast);
-            }
-            this.toasts = this.toasts.filter(id => id !== toastId);
-        }, 400);
+            // Hide loading state
+            submitButton.classList.remove('loading');
+            submitButton.disabled = false;
+            
+            // Show success message
+            showSuccessMessage();
+            
+            // Reset form after showing success
+            setTimeout(() => {
+                resetForm();
+            }, 3000);
+            
+        }, 2000); // Simulate 2 second API call
     }
 
-    // Remove all toasts
-    removeAllToasts() {
-        this.toasts.forEach(toastId => {
-            this.removeToast(toastId);
+    function showSuccessMessage() {
+        successMessage.classList.add('show');
+    }
+
+    function resetForm() {
+        // Hide success message
+        successMessage.classList.remove('show');
+        
+        // Reset form
+        form.reset();
+        
+        // Remove all validation classes
+        [emailInput, passwordInput, confirmPasswordInput].forEach(input => {
+            input.classList.remove('error', 'valid');
+        });
+        
+        // Clear error messages
+        [emailError, passwordError, confirmPasswordError].forEach(errorElement => {
+            errorElement.textContent = '';
         });
     }
 
-    // Show success toast
-    success(message, duration = 5000) {
-        return this.showToast('success', message, duration);
-    }
-
-    // Show error toast
-    error(message, duration = 5000) {
-        return this.showToast('error', message, duration);
-    }
-
-    // Show warning toast
-    warning(message, duration = 5000) {
-        return this.showToast('warning', message, duration);
-    }
-
-    // Show info toast
-    info(message, duration = 5000) {
-        return this.showToast('info', message, duration);
-    }
-}
-
-// Initialize toast manager
-const toastManager = new ToastManager();
-
-// Global function for easy access
-function showToast(type, message, duration = 5000) {
-    return toastManager.showToast(type, message, duration);
-}
-
-// Custom toast function for the demo
-function showCustomToast() {
-    const messageInput = document.getElementById('customMessage');
-    const typeSelect = document.getElementById('customType');
+    // Add some nice interactive effects
+    const inputs = [emailInput, passwordInput, confirmPasswordInput];
     
-    const message = messageInput.value.trim();
-    const type = typeSelect.value;
-    
-    if (!message) {
-        showToast('error', 'Please enter a message!');
-        return;
-    }
-    
-    showToast(type, message);
-    messageInput.value = ''; // Clear input after showing toast
-}
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'translateY(-2px)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'translateY(0)';
+        });
+    });
 
-// Add keyboard support for custom toast
-document.getElementById('customMessage')?.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        showCustomToast();
-    }
+    // Add keyboard navigation enhancement
+    form.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && e.target.type !== 'submit') {
+            e.preventDefault();
+            const formElements = Array.from(form.elements);
+            const currentIndex = formElements.indexOf(e.target);
+            const nextElement = formElements[currentIndex + 1];
+            
+            if (nextElement && nextElement.type !== 'submit') {
+                nextElement.focus();
+            } else {
+                submitButton.click();
+            }
+        }
+    });
 });
-
-// Example of programmatic usage (uncomment to test)
-// setTimeout(() => {
-//     toastManager.success('Welcome! This toast was shown automatically after page load.');
-// }, 1000);
-
-// Export for module usage (if needed)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { ToastManager, showToast };
-}
