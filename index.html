@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Card</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="profile-card">
+            <!-- Header Section -->
+            <div class="card-header">
+                <div class="background-pattern"></div>
+                <div class="profile-image">
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face" alt="Profile Picture" id="profileImg">
+                    <div class="status-indicator online"></div>
+                </div>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="profile-info">
+                <h1 class="name">Alex Johnson</h1>
+                <p class="title">Senior Full Stack Developer</p>
+                <p class="company">@ TechCorp Innovation</p>
+                
+                <div class="bio">
+                    <p>Passionate developer with 8+ years of experience building scalable web applications. 
+                    Love working with React, Node.js, and cloud technologies. Always eager to learn new tech!</p>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-number">127</span>
+                        <span class="stat-label">Projects</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">2.4k</span>
+                        <span class="stat-label">Followers</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">842</span>
+                        <span class="stat-label">Following</span>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="skills">
+                    <h3>Skills</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">Node.js</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">AWS</span>
+                        <span class="skill-tag">Docker</span>
+                    </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>alex.johnson@email.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>San Francisco, CA</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Joined March 2020</span>
+                    </div>
+                </div>
+
+                <!-- Social Links -->
+                <div class="social-links">
+                    <a href="#" class="social-link github">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="social-link linkedin">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="social-link twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-link website">
+                        <i class="fas fa-globe"></i>
+                    </a>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i>
+                        Follow
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-comment"></i>
+                        Message
+                    </button>
+                    <button class="btn btn-outline">
+                        <i class="fas fa-share"></i>
+                        Share
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
