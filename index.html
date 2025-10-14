@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Popup Example</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Modal Popup Demo</h1>
+        <p>Click the button below to open the modal popup.</p>
+        
+        <!-- Trigger button -->
+        <button id="openModalBtn" class="open-btn">Open Modal</button>
+        
+        <!-- Additional demo buttons -->
+        <div class="demo-buttons">
+            <button id="openModal2Btn" class="open-btn secondary">Open Modal 2</button>
+            <button id="openModal3Btn" class="open-btn success">Open Modal 3</button>
+        </div>
+    </div>
+
+    <!-- Modal 1 -->
+    <div id="modal1" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Welcome!</h2>
+                <span class="close" data-modal="modal1">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>This is a beautiful modal popup created with HTML, CSS, and JavaScript!</p>
+                <p>Features included:</p>
+                <ul>
+                    <li>Smooth animations</li>
+                    <li>Responsive design</li>
+                    <li>Click outside to close</li>
+                    <li>Escape key support</li>
+                    <li>Accessibility features</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-close="modal1">Got it!</button>
+                <button class="btn btn-secondary" data-close="modal1">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2 -->
+    <div id="modal2" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h2>Confirmation</h2>
+                <span class="close" data-modal="modal2">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to proceed with this action?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-close="modal2">Yes, Delete</button>
+                <button class="btn btn-secondary" data-close="modal2">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3 -->
+    <div id="modal3" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2>Image Gallery</h2>
+                <span class="close" data-modal="modal3">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="image-placeholder">
+                    <div class="placeholder-content">
+                        <div class="placeholder-icon">🖼️</div>
+                        <p>Image gallery would go here</p>
+                    </div>
+                </div>
+                <p>This modal demonstrates a larger size variation perfect for galleries, forms, or detailed content.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-close="modal3">Close Gallery</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
