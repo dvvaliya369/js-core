@@ -147,7 +147,26 @@ document.getElementById('customMessage')?.addEventListener('keypress', function(
 //     toastManager.success('Welcome! This toast was shown automatically after page load.');
 // }, 1000);
 
+// Deep clone function
+function deepClone(obj) {
+    if (obj === null || typeof obj !== 'object') return obj;
+
+    if (obj instanceof Date) return new Date(obj.getTime());
+    if (obj instanceof Array) return obj.map(item => deepClone(item));
+    if (obj instanceof RegExp) return new RegExp(obj);
+    if (obj instanceof Map) return new Map(Array.from(obj, ([key, val]) => [key, deepClone(val)]));
+    if (obj instanceof Set) return new Set(Array.from(obj, val => deepClone(val)));
+
+    const cloned = {};
+    for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            cloned[key] = deepClone(obj[key]);
+        }
+    }
+    return cloned;
+}
+
 // Export for module usage (if needed)
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { ToastManager, showToast };
+    module.exports = { ToastManager, showToast, deepClone };
 }
