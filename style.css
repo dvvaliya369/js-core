@@ -1,0 +1,320 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+/* Toggle Button */
+.panel-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    background: #2c3e50;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.panel-toggle:hover {
+    background: #34495e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.hamburger {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: white;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.hamburger::before,
+.hamburger::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.hamburger::before {
+    top: -6px;
+}
+
+.hamburger::after {
+    bottom: -6px;
+}
+
+/* Active state animation */
+.panel-toggle.active .hamburger {
+    background: transparent;
+}
+
+.panel-toggle.active .hamburger::before {
+    top: 0;
+    transform: rotate(45deg);
+}
+
+.panel-toggle.active .hamburger::after {
+    bottom: 0;
+    transform: rotate(-45deg);
+}
+
+/* Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Side Panel */
+.side-panel {
+    position: fixed;
+    top: 0;
+    left: -320px;
+    width: 320px;
+    height: 100vh;
+    background: white;
+    z-index: 999;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.side-panel.active {
+    left: 0;
+}
+
+/* Panel Header */
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #2c3e50;
+    color: white;
+    border-bottom: 1px solid #34495e;
+}
+
+.panel-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Panel Content */
+.panel-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+}
+
+.nav-list li {
+    border-bottom: 1px solid #eee;
+}
+
+.nav-list a {
+    display: block;
+    padding: 15px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+}
+
+.nav-list a:hover {
+    background: #f8f9fa;
+    color: #2c3e50;
+    padding-left: 30px;
+}
+
+/* Panel Footer */
+.panel-footer {
+    margin-top: auto;
+    padding: 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+}
+
+.social-links h3 {
+    margin-bottom: 15px;
+    font-size: 1rem;
+    color: #666;
+}
+
+.social-link {
+    display: block;
+    color: #2c3e50;
+    text-decoration: none;
+    padding: 5px 0;
+    transition: color 0.2s ease;
+}
+
+.social-link:hover {
+    color: #3498db;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 0;
+    min-height: 100vh;
+    padding: 80px 20px 40px;
+    transition: margin-left 0.3s ease;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.container h1 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.container p {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.demo-section {
+    margin: 40px 0;
+    padding: 30px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+}
+
+.demo-section h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.demo-section ul,
+.demo-section ol {
+    margin-left: 20px;
+    color: #666;
+}
+
+.demo-section li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .side-panel {
+        width: 280px;
+        left: -280px;
+    }
+    
+    .container {
+        padding: 20px;
+        margin: 0 10px;
+    }
+    
+    .container h1 {
+        font-size: 2rem;
+    }
+    
+    .main-content {
+        padding: 80px 10px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .side-panel {
+        width: 100%;
+        left: -100%;
+    }
+    
+    .panel-toggle {
+        top: 15px;
+        left: 15px;
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 15px;
+        margin: 0 5px;
+    }
+    
+    .container h1 {
+        font-size: 1.8rem;
+    }
+    
+    .demo-section {
+        padding: 20px;
+        margin: 30px 0;
+    }
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Focus styles for accessibility */
+.panel-toggle:focus,
+.close-btn:focus,
+.nav-list a:focus,
+.social-link:focus {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;
+}

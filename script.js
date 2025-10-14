@@ -1,153 +1,276 @@
-class ToastManager {
+// Side Panel Functionality
+class SidePanel {
     constructor() {
-        this.container = document.getElementById('toast-container');
-        this.toasts = [];
-        this.toastCounter = 0;
+        this.panel = document.getElementById('sidePanel');
+        this.overlay = document.getElementById('overlay');
+        this.toggleBtn = document.getElementById('panelToggle');
+        this.closeBtn = document.getElementById('closeBtn');
+        this.isOpen = false;
+
+        this.init();
     }
 
-    // Icons for different toast types
-    getIcon(type) {
-        const icons = {
-            success: '✓',
-            error: '✕',
-            warning: '⚠',
-            info: 'ⓘ'
-        };
-        return icons[type] || icons.info;
+    init() {
+        // Bind event listeners
+        this.toggleBtn.addEventListener('click', () => this.togglePanel());
+        this.closeBtn.addEventListener('click', () => this.closePanel());
+        this.overlay.addEventListener('click', () => this.closePanel());
+
+        // Handle keyboard navigation
+        document.addEventListener('keydown', (e) => this.handleKeydown(e));
+
+        // Handle window resize
+        window.addEventListener('resize', () => this.handleResize());
+
+        // Add smooth hover effects to nav items
+        this.addNavHoverEffects();
     }
 
-    // Create toast element
-    createToastElement(type, message, duration = 5000) {
-        const toastId = `toast-${++this.toastCounter}`;
-        
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.id = toastId;
-        
-        toast.innerHTML = `
-            <div class="toast-icon">${this.getIcon(type)}</div>
-            <div class="toast-message">${message}</div>
-            <button class="toast-close" onclick="toastManager.removeToast('${toastId}')" aria-label="Close">×</button>
-            <div class="toast-progress"></div>
-        `;
-
-        return { toast, toastId, duration };
+    togglePanel() {
+        if (this.isOpen) {
+            this.closePanel();
+        } else {
+            this.openPanel();
+        }
     }
 
-    // Show toast
-    showToast(type, message, duration = 5000) {
-        const { toast, toastId } = this.createToastElement(type, message, duration);
+    openPanel() {
+        this.panel.classList.add('active');
+        this.overlay.classList.add('active');
+        this.toggleBtn.classList.add('active');
+        this.isOpen = true;
         
-        // Add to container
-        this.container.appendChild(toast);
-        this.toasts.push(toastId);
+        // Prevent body scroll when panel is open
+        document.body.style.overflow = 'hidden';
+        
+        // Focus management for accessibility
+        this.closeBtn.focus();
+        
+        // Add animation callback
+        this.panel.addEventListener('transitionend', this.onPanelOpened.bind(this), { once: true });
+    }
 
-        // Trigger animation
-        setTimeout(() => {
-            toast.classList.add('show');
-        }, 10);
+    closePanel() {
+        this.panel.classList.remove('active');
+        this.overlay.classList.remove('active');
+        this.toggleBtn.classList.remove('active');
+        this.isOpen = false;
+        
+        // Restore body scroll
+        document.body.style.overflow = '';
+        
+        // Return focus to toggle button
+        this.toggleBtn.focus();
+        
+        // Add animation callback
+        this.panel.addEventListener('transitionend', this.onPanelClosed.bind(this), { once: true });
+    }
 
-        // Start progress bar animation
-        const progressBar = toast.querySelector('.toast-progress');
-        if (progressBar) {
-            setTimeout(() => {
-                progressBar.style.width = '100%';
-                progressBar.style.transition = `width ${duration}ms linear`;
-            }, 50);
+    onPanelOpened() {
+        console.log('Panel opened');
+        // Additional actions when panel is fully opened
+    }
+
+    onPanelClosed() {
+        console.log('Panel closed');
+        // Additional actions when panel is fully closed
+    }
+
+    handleKeydown(e) {
+        // Close panel on Escape key
+        if (e.key === 'Escape' && this.isOpen) {
+            this.closePanel();
         }
 
-        // Auto remove after duration
-        if (duration > 0) {
-            setTimeout(() => {
-                this.removeToast(toastId);
-            }, duration);
+        // Handle tab navigation within panel
+        if (e.key === 'Tab' && this.isOpen) {
+            this.handleTabNavigation(e);
         }
-
-        return toastId;
     }
 
-    // Remove toast
-    removeToast(toastId) {
-        const toast = document.getElementById(toastId);
-        if (!toast) return;
+    handleTabNavigation(e) {
+        const focusableElements = this.panel.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const firstFocusable = focusableElements[0];
+        const lastFocusable = focusableElements[focusableElements.length - 1];
 
-        toast.classList.add('hide');
-        toast.classList.remove('show');
-
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.parentNode.removeChild(toast);
+        if (e.shiftKey) {
+            // Shift + Tab
+            if (document.activeElement === firstFocusable) {
+                e.preventDefault();
+                lastFocusable.focus();
             }
-            this.toasts = this.toasts.filter(id => id !== toastId);
-        }, 400);
+        } else {
+            // Tab
+            if (document.activeElement === lastFocusable) {
+                e.preventDefault();
+                firstFocusable.focus();
+            }
+        }
     }
 
-    // Remove all toasts
-    removeAllToasts() {
-        this.toasts.forEach(toastId => {
-            this.removeToast(toastId);
+    handleResize() {
+        // Close panel on mobile orientation change for better UX
+        if (window.innerWidth > 768 && this.isOpen) {
+            // Optionally keep panel open on larger screens
+        }
+    }
+
+    addNavHoverEffects() {
+        const navLinks = document.querySelectorAll('.nav-list a');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(5px)';
+            });
+            
+            link.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
+            
+            // Add click animation
+            link.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent default for demo
+                
+                // Add active state animation
+                this.style.background = '#3498db';
+                this.style.color = 'white';
+                
+                setTimeout(() => {
+                    this.style.background = '';
+                    this.style.color = '';
+                }, 200);
+                
+                console.log('Navigation clicked:', this.textContent);
+            });
         });
     }
 
-    // Show success toast
-    success(message, duration = 5000) {
-        return this.showToast('success', message, duration);
+    // Public method to programmatically control the panel
+    open() {
+        if (!this.isOpen) this.openPanel();
     }
 
-    // Show error toast
-    error(message, duration = 5000) {
-        return this.showToast('error', message, duration);
+    close() {
+        if (this.isOpen) this.closePanel();
     }
 
-    // Show warning toast
-    warning(message, duration = 5000) {
-        return this.showToast('warning', message, duration);
+    toggle() {
+        this.togglePanel();
     }
 
-    // Show info toast
-    info(message, duration = 5000) {
-        return this.showToast('info', message, duration);
+    // Get panel state
+    getState() {
+        return {
+            isOpen: this.isOpen,
+            width: this.panel.offsetWidth,
+            height: this.panel.offsetHeight
+        };
     }
 }
 
-// Initialize toast manager
-const toastManager = new ToastManager();
+// Utility functions for enhanced functionality
+const PanelUtils = {
+    // Add loading state to navigation items
+    addLoadingState: (element) => {
+        element.innerHTML += ' <span class="loading">⟳</span>';
+        element.style.opacity = '0.6';
+    },
 
-// Global function for easy access
-function showToast(type, message, duration = 5000) {
-    return toastManager.showToast(type, message, duration);
-}
+    // Remove loading state
+    removeLoadingState: (element) => {
+        const loading = element.querySelector('.loading');
+        if (loading) loading.remove();
+        element.style.opacity = '1';
+    },
 
-// Custom toast function for the demo
-function showCustomToast() {
-    const messageInput = document.getElementById('customMessage');
-    const typeSelect = document.getElementById('customType');
-    
-    const message = messageInput.value.trim();
-    const type = typeSelect.value;
-    
-    if (!message) {
-        showToast('error', 'Please enter a message!');
-        return;
+    // Add notification badge
+    addBadge: (element, count) => {
+        const badge = document.createElement('span');
+        badge.className = 'nav-badge';
+        badge.textContent = count;
+        badge.style.cssText = `
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+            display: inline-block;
+            min-width: 18px;
+            text-align: center;
+        `;
+        element.appendChild(badge);
+    },
+
+    // Smooth scroll to section
+    scrollToSection: (sectionId) => {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
     }
-    
-    showToast(type, message);
-    messageInput.value = ''; // Clear input after showing toast
-}
+};
 
-// Add keyboard support for custom toast
-document.getElementById('customMessage')?.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        showCustomToast();
+// Theme switcher functionality
+const ThemeManager = {
+    themes: {
+        light: {
+            '--bg-color': '#f5f5f5',
+            '--panel-bg': 'white',
+            '--text-color': '#333',
+            '--header-bg': '#2c3e50'
+        },
+        dark: {
+            '--bg-color': '#1a1a1a',
+            '--panel-bg': '#2d2d2d',
+            '--text-color': '#e0e0e0',
+            '--header-bg': '#1f1f1f'
+        }
+    },
+
+    setTheme: (themeName) => {
+        const theme = this.themes[themeName];
+        if (theme) {
+            Object.entries(theme).forEach(([property, value]) => {
+                document.documentElement.style.setProperty(property, value);
+            });
+            localStorage.setItem('selectedTheme', themeName);
+        }
+    },
+
+    loadSavedTheme: () => {
+        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+        this.setTheme(savedTheme);
     }
+};
+
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize the side panel
+    const sidePanel = new SidePanel();
+    
+    // Load saved theme
+    ThemeManager.loadSavedTheme();
+    
+    // Make side panel globally accessible for debugging
+    window.sidePanel = sidePanel;
+    window.PanelUtils = PanelUtils;
+    window.ThemeManager = ThemeManager;
+    
+    // Add some demo badges after a delay
+    setTimeout(() => {
+        const blogLink = document.querySelector('a[href="#blog"]');
+        const contactLink = document.querySelector('a[href="#contact"]');
+        
+        if (blogLink) PanelUtils.addBadge(blogLink, '3');
+        if (contactLink) PanelUtils.addBadge(contactLink, '!');
+    }, 2000);
+    
+    console.log('Side Panel initialized successfully!');
+    console.log('Available methods: sidePanel.open(), sidePanel.close(), sidePanel.toggle()');
 });
-
-// Example of programmatic usage (uncomment to test)
-// setTimeout(() => {
-//     toastManager.success('Welcome! This toast was shown automatically after page load.');
-// }, 1000);
-
-// Export for module usage (if needed)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { ToastManager, showToast };
-}
