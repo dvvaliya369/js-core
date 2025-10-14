@@ -1,153 +1,196 @@
-class ToastManager {
-    constructor() {
-        this.container = document.getElementById('toast-container');
-        this.toasts = [];
-        this.toastCounter = 0;
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('signupForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const termsCheckbox = document.getElementById('terms');
+    const signupBtn = document.querySelector('.signup-btn');
+
+    // Error message elements
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const confirmPasswordError = document.getElementById('confirmPasswordError');
+    const termsError = document.getElementById('termsError');
+
+    // Email validation
+    function validateEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     }
 
-    // Icons for different toast types
-    getIcon(type) {
-        const icons = {
-            success: '✓',
-            error: '✕',
-            warning: '⚠',
-            info: 'ⓘ'
-        };
-        return icons[type] || icons.info;
+    // Password validation
+    function validatePassword(password) {
+        return password.length >= 8;
     }
 
-    // Create toast element
-    createToastElement(type, message, duration = 5000) {
-        const toastId = `toast-${++this.toastCounter}`;
-        
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.id = toastId;
-        
-        toast.innerHTML = `
-            <div class="toast-icon">${this.getIcon(type)}</div>
-            <div class="toast-message">${message}</div>
-            <button class="toast-close" onclick="toastManager.removeToast('${toastId}')" aria-label="Close">×</button>
-            <div class="toast-progress"></div>
-        `;
-
-        return { toast, toastId, duration };
-    }
-
-    // Show toast
-    showToast(type, message, duration = 5000) {
-        const { toast, toastId } = this.createToastElement(type, message, duration);
-        
-        // Add to container
-        this.container.appendChild(toast);
-        this.toasts.push(toastId);
-
-        // Trigger animation
-        setTimeout(() => {
-            toast.classList.add('show');
-        }, 10);
-
-        // Start progress bar animation
-        const progressBar = toast.querySelector('.toast-progress');
-        if (progressBar) {
-            setTimeout(() => {
-                progressBar.style.width = '100%';
-                progressBar.style.transition = `width ${duration}ms linear`;
-            }, 50);
+    // Real-time validation
+    emailInput.addEventListener('blur', function() {
+        const email = this.value.trim();
+        if (!email) {
+            emailError.textContent = 'Email is required';
+            this.classList.add('error');
+            this.classList.remove('success');
+        } else if (!validateEmail(email)) {
+            emailError.textContent = 'Please enter a valid email address';
+            this.classList.add('error');
+            this.classList.remove('success');
+        } else {
+            emailError.textContent = '';
+            this.classList.remove('error');
+            this.classList.add('success');
         }
+    });
 
-        // Auto remove after duration
-        if (duration > 0) {
-            setTimeout(() => {
-                this.removeToast(toastId);
-            }, duration);
-        }
-
-        return toastId;
-    }
-
-    // Remove toast
-    removeToast(toastId) {
-        const toast = document.getElementById(toastId);
-        if (!toast) return;
-
-        toast.classList.add('hide');
-        toast.classList.remove('show');
-
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.parentNode.removeChild(toast);
+    passwordInput.addEventListener('blur', function() {
+        const password = this.value;
+        if (!password) {
+            passwordError.textContent = 'Password is required';
+            this.classList.add('error');
+            this.classList.remove('success');
+        } else if (!validatePassword(password)) {
+            passwordError.textContent = 'Password must be at least 8 characters long';
+            this.classList.add('error');
+            this.classList.remove('success');
+        } else {
+            passwordError.textContent = '';
+            this.classList.remove('error');
+            this.classList.add('success');
+            
+            // Revalidate confirm password if it has a value
+            if (confirmPasswordInput.value) {
+                validateConfirmPassword();
             }
-            this.toasts = this.toasts.filter(id => id !== toastId);
-        }, 400);
+        }
+    });
+
+    function validateConfirmPassword() {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        
+        if (!confirmPassword) {
+            confirmPasswordError.textContent = 'Please confirm your password';
+            confirmPasswordInput.classList.add('error');
+            confirmPasswordInput.classList.remove('success');
+            return false;
+        } else if (password !== confirmPassword) {
+            confirmPasswordError.textContent = 'Passwords do not match';
+            confirmPasswordInput.classList.add('error');
+            confirmPasswordInput.classList.remove('success');
+            return false;
+        } else {
+            confirmPasswordError.textContent = '';
+            confirmPasswordInput.classList.remove('error');
+            confirmPasswordInput.classList.add('success');
+            return true;
+        }
     }
 
-    // Remove all toasts
-    removeAllToasts() {
-        this.toasts.forEach(toastId => {
-            this.removeToast(toastId);
+    confirmPasswordInput.addEventListener('blur', validateConfirmPassword);
+
+    // Clear error messages when user starts typing
+    emailInput.addEventListener('input', function() {
+        if (this.classList.contains('error')) {
+            emailError.textContent = '';
+            this.classList.remove('error');
+        }
+    });
+
+    passwordInput.addEventListener('input', function() {
+        if (this.classList.contains('error')) {
+            passwordError.textContent = '';
+            this.classList.remove('error');
+        }
+    });
+
+    confirmPasswordInput.addEventListener('input', function() {
+        if (this.classList.contains('error')) {
+            confirmPasswordError.textContent = '';
+            this.classList.remove('error');
+        }
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Clear all previous errors
+        emailError.textContent = '';
+        passwordError.textContent = '';
+        confirmPasswordError.textContent = '';
+        termsError.textContent = '';
+        
+        // Remove error classes
+        emailInput.classList.remove('error');
+        passwordInput.classList.remove('error');
+        confirmPasswordInput.classList.remove('error');
+        
+        let isValid = true;
+        
+        // Validate email
+        const email = emailInput.value.trim();
+        if (!email) {
+            emailError.textContent = 'Email is required';
+            emailInput.classList.add('error');
+            isValid = false;
+        } else if (!validateEmail(email)) {
+            emailError.textContent = 'Please enter a valid email address';
+            emailInput.classList.add('error');
+            isValid = false;
+        }
+        
+        // Validate password
+        const password = passwordInput.value;
+        if (!password) {
+            passwordError.textContent = 'Password is required';
+            passwordInput.classList.add('error');
+            isValid = false;
+        } else if (!validatePassword(password)) {
+            passwordError.textContent = 'Password must be at least 8 characters long';
+            passwordInput.classList.add('error');
+            isValid = false;
+        }
+        
+        // Validate confirm password
+        if (!validateConfirmPassword()) {
+            isValid = false;
+        }
+        
+        // Validate terms
+        if (!termsCheckbox.checked) {
+            termsError.textContent = 'You must agree to the Terms of Service and Privacy Policy';
+            isValid = false;
+        }
+        
+        if (isValid) {
+            // Show loading state
+            signupBtn.classList.add('loading');
+            signupBtn.textContent = 'Creating Account...';
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Reset button state
+                signupBtn.classList.remove('loading');
+                signupBtn.textContent = 'Sign Up';
+                
+                // Show success message (in a real app, you'd redirect or show a proper success state)
+                alert(`Account created successfully for ${email}!\n\nIn a real application, this would:\n- Send the data to a server\n- Create the user account\n- Redirect to a welcome page or login`);
+                
+                // Reset form
+                form.reset();
+                document.querySelectorAll('.success').forEach(el => el.classList.remove('success'));
+            }, 2000);
+        }
+    });
+    
+    // Add some interactive feedback
+    const inputs = document.querySelectorAll('input[type="email"], input[type="password"]');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'translateY(-2px)';
         });
-    }
-
-    // Show success toast
-    success(message, duration = 5000) {
-        return this.showToast('success', message, duration);
-    }
-
-    // Show error toast
-    error(message, duration = 5000) {
-        return this.showToast('error', message, duration);
-    }
-
-    // Show warning toast
-    warning(message, duration = 5000) {
-        return this.showToast('warning', message, duration);
-    }
-
-    // Show info toast
-    info(message, duration = 5000) {
-        return this.showToast('info', message, duration);
-    }
-}
-
-// Initialize toast manager
-const toastManager = new ToastManager();
-
-// Global function for easy access
-function showToast(type, message, duration = 5000) {
-    return toastManager.showToast(type, message, duration);
-}
-
-// Custom toast function for the demo
-function showCustomToast() {
-    const messageInput = document.getElementById('customMessage');
-    const typeSelect = document.getElementById('customType');
-    
-    const message = messageInput.value.trim();
-    const type = typeSelect.value;
-    
-    if (!message) {
-        showToast('error', 'Please enter a message!');
-        return;
-    }
-    
-    showToast(type, message);
-    messageInput.value = ''; // Clear input after showing toast
-}
-
-// Add keyboard support for custom toast
-document.getElementById('customMessage')?.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        showCustomToast();
-    }
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'translateY(0)';
+        });
+    });
 });
-
-// Example of programmatic usage (uncomment to test)
-// setTimeout(() => {
-//     toastManager.success('Welcome! This toast was shown automatically after page load.');
-// }, 1000);
-
-// Export for module usage (if needed)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { ToastManager, showToast };
-}
