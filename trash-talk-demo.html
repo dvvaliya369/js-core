@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trash Talk Feature Demo</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .trash-talk-section {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(238, 90, 36, 0.3);
+        }
+        
+        .trash-talk-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin: 1rem 0;
+        }
+        
+        .trash-talk-toggle {
+            background: #2d3436;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .trash-talk-toggle:hover {
+            background: #636e72;
+            transform: translateY(-2px);
+        }
+        
+        .trash-talk-toggle.active {
+            background: #00b894;
+            box-shadow: 0 0 20px rgba(0, 184, 148, 0.5);
+        }
+        
+        .opponent-input {
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #2d3436;
+            font-size: 1rem;
+            min-width: 200px;
+        }
+        
+        .roast-button {
+            background: #fdcb6e;
+            color: #2d3436;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .roast-button:hover {
+            background: #f39c12;
+            transform: scale(1.05);
+        }
+        
+        .roast-output {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            min-height: 100px;
+            border-left: 5px solid #fdcb6e;
+        }
+        
+        .roast-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+        
+        .roast-meta {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .category-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        
+        .category-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .category-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .history-section {
+            background: #74b9ff;
+            color: white;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 10px;
+        }
+        
+        .history-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            border-left: 3px solid #fdcb6e;
+        }
+        
+        .fire-emoji {
+            font-size: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .disabled-overlay {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>🗣️ Trash Talk Feature Demo <span class="fire-emoji">🔥</span></h1>
+        <p>A hilarious roasting system that generates funny insults for your opponents!</p>
+        
+        <!-- Original Toast Demo Section -->
+        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem;">
+            <h2>Original Toast Message Component</h2>
+            <p>Click the buttons below to show different types of toast messages:</p>
+            
+            <div class="button-group">
+                <button onclick="showToast('success', 'Success! Your action was completed successfully.')">Success Toast</button>
+                <button onclick="showToast('error', 'Error! Something went wrong. Please try again.')">Error Toast</button>
+                <button onclick="showToast('warning', 'Warning! This action cannot be undone.')">Warning Toast</button>
+                <button onclick="showToast('info', 'Info: Your data has been updated.')">Info Toast</button>
+            </div>
+        </div>
+
+        <!-- Trash Talk Feature Section -->
+        <div class="trash-talk-section">
+            <h2>🎯 Trash Talk Engine</h2>
+            <p>Toggle trash talk mode and roast your opponents with style!</p>
+            
+            <div class="trash-talk-controls">
+                <button id="trashTalkToggle" class="trash-talk-toggle" onclick="toggleTrashTalkMode()">
+                    🔥 Enable Trash Talk
+                </button>
+                
+                <input 
+                    type="text" 
+                    id="opponentInput" 
+                    class="opponent-input" 
+                    placeholder="Enter opponent's name..." 
+                    onchange="updateOpponent()"
+                    value="Bob the Builder"
+                />
+                
+                <button class="roast-button" onclick="generateRandomRoast()" id="roastBtn">
+                    Generate Roast! 💀
+                </button>
+            </div>
+            
+            <div class="category-buttons">
+                <button class="category-btn" onclick="generateCategoryRoast('general')">General</button>
+                <button class="category-btn" onclick="generateCategoryRoast('skillBased')">Skills</button>
+                <button class="category-btn" onclick="generateCategoryRoast('appearance')">Appearance</button>
+                <button class="category-btn" onclick="generateCategoryRoast('technology')">Tech</button>
+                <button class="category-btn" onclick="generateCategoryRoast('competitive')">Competitive</button>
+            </div>
+            
+            <div id="roastOutput" class="roast-output disabled-overlay">
+                <div class="roast-text">🤐 Trash talk is disabled. Enable it to start roasting!</div>
+                <div class="roast-meta">Status: Wholesome Mode</div>
+            </div>
+            
+            <div class="trash-talk-controls">
+                <button class="roast-button" onclick="generateWelcomeRoast()">Welcome Roast</button>
+                <button class="roast-button" onclick="generateVictoryRoast()">Victory Roast</button>
+                <button class="roast-button" onclick="generateDefeatRoast()">Defeat Roast</button>
+                <button class="roast-button" onclick="generateMultipleRoasts()">Triple Roast! 🔥🔥🔥</button>
+            </div>
+        </div>
+
+        <!-- History Section -->
+        <div id="historySection" class="history-section" style="display: none;">
+            <h3>🏆 Roast History</h3>
+            <div id="historyContainer"></div>
+            <button class="roast-button" onclick="clearRoastHistory()" style="background: #e17055;">
+                Clear History 🧹
+            </button>
+        </div>
+
+        <!-- Custom Toast Section (from original) -->
+        <div class="custom-toast-section">
+            <h2>Custom Toast</h2>
+            <input type="text" id="customMessage" placeholder="Enter your custom message..." />
+            <select id="customType">
+                <option value="success">Success</option>
+                <option value="error">Error</option>
+                <option value="warning">Warning</option>
+                <option value="info">Info</option>
+            </select>
+            <button onclick="showCustomToast()">Show Custom Toast</button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Include both scripts -->
+    <script src="script.js"></script>
+    <script src="trash-talk.js"></script>
+    
+    <script>
+        // Trash Talk Demo Functions
+        let isTrashTalkEnabled = false;
+        
+        function toggleTrashTalkMode() {
+            isTrashTalkEnabled = toggleTrashTalk();
+            const toggle = document.getElementById('trashTalkToggle');
+            const output = document.getElementById('roastOutput');
+            const roastBtn = document.getElementById('roastBtn');
+            
+            if (isTrashTalkEnabled) {
+                toggle.textContent = '🔥 Trash Talk ON';
+                toggle.classList.add('active');
+                output.classList.remove('disabled-overlay');
+                output.innerHTML = `
+                    <div class="roast-text">🔥 Trash talk mode ACTIVATED! Ready to roast!</div>
+                    <div class="roast-meta">Target: ${trashTalk.opponent} | Status: SAVAGE MODE</div>
+                `;
+                showToast('success', `🔥 Trash talk enabled! ${trashTalk.opponent} is about to get roasted!`);
+            } else {
+                toggle.textContent = '😇 Enable Trash Talk';
+                toggle.classList.remove('active');
+                output.classList.add('disabled-overlay');
+                output.innerHTML = `
+                    <div class="roast-text">🤐 Trash talk is disabled. Enable it to start roasting!</div>
+                    <div class="roast-meta">Status: Wholesome Mode</div>
+                `;
+                showToast('info', '😇 Trash talk disabled. Back to being nice!');
+            }
+            
+            updateHistoryVisibility();
+        }
+        
+        function updateOpponent() {
+            const input = document.getElementById('opponentInput');
+            setOpponent(input.value);
+            if (isTrashTalkEnabled) {
+                showToast('info', `🎯 New target acquired: ${input.value}`);
+                updateRoastOutput();
+            }
+        }
+        
+        function updateRoastOutput() {
+            const output = document.getElementById('roastOutput');
+            if (isTrashTalkEnabled) {
+                output.innerHTML = `
+                    <div class="roast-text">🔥 Ready to roast ${trashTalk.opponent}!</div>
+                    <div class="roast-meta">Target: ${trashTalk.opponent} | Status: LOCKED AND LOADED</div>
+                `;
+            }
+        }
+        
+        function generateRandomRoast() {
+            if (!isTrashTalkEnabled) {
+                showToast('warning', '😇 Please enable trash talk first!');
+                return;
+            }
+            
+            const roast = getRandomRoast();
+            displayRoast(roast, 'Random');
+        }
+        
+        function generateCategoryRoast(category) {
+            if (!isTrashTalkEnabled) {
+                showToast('warning', '😇 Please enable trash talk first!');
+                return;
+            }
+            
+            const roast = roastOpponent(category);
+            displayRoast(roast, category.charAt(0).toUpperCase() + category.slice(1));
+        }
+        
+        function generateWelcomeRoast() {
+            if (!isTrashTalkEnabled) {
+                showToast('warning', '😇 Please enable trash talk first!');
+                return;
+            }
+            
+            const roast = trashTalk.generateWelcomeRoast();
+            displayRoast(roast, 'Welcome');
+        }
+        
+        function generateVictoryRoast() {
+            if (!isTrashTalkEnabled) {
+                showToast('warning', '😇 Please enable trash talk first!');
+                return;
+            }
+            
+            const roast = trashTalk.generateVictoryRoast();
+            displayRoast(roast, 'Victory');
+        }
+        
+        function generateDefeatRoast() {
+            if (!isTrashTalkEnabled) {
+                showToast('warning', '😇 Please enable trash talk first!');
+                return;
+            }
+            
+            const roast = trashTalk.generateDefeatRoast();
+            displayRoast(roast, 'Defeat');
+        }
+        
+        function generateMultipleRoasts() {
+            if (!isTrashTalkEnabled) {
+                showToast('warning', '😇 Please enable trash talk first!');
+                return;
+            }
+            
+            const roasts = trashTalk.generateMultipleRoasts(3);
+            const roastText = roasts.join('<br><br>💀 ');
+            displayRoast('💀 ' + roastText, 'Triple Threat');
+        }
+        
+        function displayRoast(roast, category) {
+            const output = document.getElementById('roastOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            
+            output.innerHTML = `
+                <div class="roast-text">${roast}</div>
+                <div class="roast-meta">Category: ${category} | Target: ${trashTalk.opponent} | Time: ${timestamp}</div>
+            `;
+            
+            // Show toast notification
+            showToast('success', `🔥 Roast delivered to ${trashTalk.opponent}!`);
+            
+            updateHistoryDisplay();
+        }
+        
+        function updateHistoryVisibility() {
+            const historySection = document.getElementById('historySection');
+            if (isTrashTalkEnabled && trashTalk.roastHistory.length > 0) {
+                historySection.style.display = 'block';
+                updateHistoryDisplay();
+            } else {
+                historySection.style.display = 'none';
+            }
+        }
+        
+        function updateHistoryDisplay() {
+            const container = document.getElementById('historyContainer');
+            const history = trashTalk.getHistory(5);
+            
+            container.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <div>${item.roast}</div>
+                    <small>Target: ${item.opponent} | ${item.timestamp.toLocaleString()}</small>
+                </div>
+            `).join('');
+            
+            updateHistoryVisibility();
+        }
+        
+        function clearRoastHistory() {
+            trashTalk.clearHistory();
+            updateHistoryDisplay();
+            showToast('info', '🧹 Roast history cleared!');
+        }
+        
+        // Initialize with default opponent
+        updateOpponent();
+        
+        // Demo welcome message
+        setTimeout(() => {
+            showToast('info', '🗣️ Welcome to the Trash Talk Engine! Toggle it on to start roasting!', 6000);
+        }, 1000);
+    </script>
+</body>
+</html>
