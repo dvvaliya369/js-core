@@ -3,36 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toast Message Component</title>
+    <title>Todo App</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="demo-container">
-        <h1>Toast Message Component Demo</h1>
-        <p>Click the buttons below to show different types of toast messages:</p>
-        
-        <div class="button-group">
-            <button onclick="showToast('success', 'Success! Your action was completed successfully.')">Success Toast</button>
-            <button onclick="showToast('error', 'Error! Something went wrong. Please try again.')">Error Toast</button>
-            <button onclick="showToast('warning', 'Warning! This action cannot be undone.')">Warning Toast</button>
-            <button onclick="showToast('info', 'Info: Your data has been updated.')">Info Toast</button>
+    <div class="container">
+        <header class="app-header">
+            <h1><i class="fas fa-tasks"></i> My Todo App</h1>
+            <p>Stay organized and productive</p>
+        </header>
+
+        <div class="todo-input-section">
+            <div class="input-container">
+                <input type="text" id="todoInput" placeholder="Add a new task..." maxlength="100">
+                <button id="addBtn" class="add-btn">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
         </div>
 
-        <div class="custom-toast-section">
-            <h2>Custom Toast</h2>
-            <input type="text" id="customMessage" placeholder="Enter your custom message..." />
-            <select id="customType">
-                <option value="success">Success</option>
-                <option value="error">Error</option>
-                <option value="warning">Warning</option>
-                <option value="info">Info</option>
-            </select>
-            <button onclick="showCustomToast()">Show Custom Toast</button>
+        <div class="todo-stats">
+            <div class="stat">
+                <span class="stat-number" id="totalTodos">0</span>
+                <span class="stat-label">Total</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="completedTodos">0</span>
+                <span class="stat-label">Completed</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="remainingTodos">0</span>
+                <span class="stat-label">Remaining</span>
+            </div>
+        </div>
+
+        <div class="todo-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="active">Active</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
+        </div>
+
+        <ul id="todoList" class="todo-list">
+            <!-- Todos will be dynamically added here -->
+        </ul>
+
+        <div class="empty-state" id="emptyState">
+            <i class="fas fa-clipboard-list"></i>
+            <h3>No tasks yet</h3>
+            <p>Add your first task above to get started!</p>
+        </div>
+
+        <div class="app-footer">
+            <button id="clearCompleted" class="clear-btn">
+                <i class="fas fa-trash"></i> Clear Completed
+            </button>
         </div>
     </div>
-
-    <!-- Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
 
     <script src="script.js"></script>
 </body>
