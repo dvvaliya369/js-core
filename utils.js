@@ -3,6 +3,37 @@
  */
 
 /**
+ * Generates a random unique ID using crypto API if available, otherwise falls back to random-based generation.
+ *
+ * @param {number} [length=8] - The length of the ID to generate
+ * @returns {string} A random unique ID
+ *
+ * @example
+ * const id = generateUniqueId(); // e.g. "a1b2c3d4"
+ * const longId = generateUniqueId(16); // 16-character ID
+ */
+const generateUniqueId = (length = 8) => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+        // Use cryptographically secure random
+        const array = new Uint8Array(length);
+        crypto.getRandomValues(array);
+        for (let i = 0; i < length; i++) {
+            result += chars.charAt(array[i] % chars.length);
+        }
+    } else {
+        // Fallback to less secure method
+        for (let i = 0; i < length; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+    }
+    
+    return result;
+};
+
+/**
  * Creates a debounced function that delays invoking func until after wait milliseconds 
  * have elapsed since the last time the debounced function was invoked.
  * 
