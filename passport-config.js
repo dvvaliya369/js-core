@@ -1,5 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
 const bcrypt = require('bcryptjs');
 
 // Simple in-memory user store (in production, use a database)
@@ -28,6 +29,54 @@ passport.use(new LocalStrategy({
         return done(null, user);
     } catch (error) {
         return done(error);
+    }
+}));
+
+// Facebook OAuth Strategy Configuration
+passport.use(new FacebookStrategy({
+    clientID: process.env.FACEBOOK_APP_ID || 'your-facebook-app-id',
+    clientSecret: process.env.FACEBOOK_APP_SECRET || 'your-facebook-app-secret',
+    callbackURL: process.env.FACEBOOK_CALLBACK_URL || '/auth/facebook/callback',
+    profileFields: ['id', 'displayName', 'emails', 'photos']
+}, async (accessToken, refreshToken, profile, done) => {
+    try {
+        console.log('Facebook Profile:', profile);
+        
+        // Check if user already exists by Facebook ID
+        let user = users.find(u => u.facebookId === profile.id);
+        
+        if (user) {
+            return done(null, user);
+        }
+        
+        // Check if user exists by email
+        const email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
+        if (email) {
+            user = users.find(u => u.email === email);
+            if (user) {
+                // Link Facebook account to existing user
+                user.facebookId = profile.id;
+                user.facebookProfile = profile;
+                return done(null, user);
+            }
+        }
+        
+        // Create new user
+        const newUser = {
+            id: users.length + 1,
+            facebookId: profile.id,
+            name: profile.displayName,
+            email: email,
+            profilePicture: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : null,
+            provider: 'facebook',
+            facebookProfile: profile,
+            createdAt: new Date()
+        };
+        
+        users.push(newUser);
+        return done(null, newUser);
+    } catch (error) {
+        return done(error, null);
     }
 }));
 

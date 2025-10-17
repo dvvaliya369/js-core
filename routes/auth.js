@@ -104,4 +104,18 @@ router.get('/logout', (req, res) => {
     });
 });
 
+// Facebook authentication routes
+router.get('/facebook', passport.authenticate('facebook', { 
+    scope: ['email'] 
+}));
+
+// Facebook callback route
+router.get('/facebook/callback', 
+    passport.authenticate('facebook', { 
+        successRedirect: '/dashboard',
+        failureRedirect: '/auth/login',
+        failureFlash: true 
+    })
+);
+
 module.exports = router;

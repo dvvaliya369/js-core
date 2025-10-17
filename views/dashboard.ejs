@@ -229,8 +229,18 @@
                 <div class="user-details">
                     <h4>Your Information:</h4>
                     <p><strong>Name:</strong> <%= user.name %></p>
-                    <p><strong>Email:</strong> <%= user.email %></p>
+                    <% if (user.email) { %>
+                        <p><strong>Email:</strong> <%= user.email %></p>
+                    <% } %>
                     <p><strong>User ID:</strong> <%= user.id %></p>
+                    <% if (user.provider) { %>
+                        <p><strong>Login Provider:</strong> <%= user.provider %></p>
+                    <% } else { %>
+                        <p><strong>Login Provider:</strong> local</p>
+                    <% } %>
+                    <% if (user.profilePicture) { %>
+                        <p><strong>Profile Picture:</strong> <img src="<%= user.profilePicture %>" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; vertical-align: middle;"></p>
+                    <% } %>
                     <p><strong>Registered:</strong> <%= new Date(user.createdAt).toLocaleDateString() %></p>
                 </div>
             </div>
@@ -244,6 +254,7 @@
                     <li>Session management</li>
                     <li>Protected routes</li>
                     <li>Flash messages</li>
+                    <li>Facebook OAuth authentication</li>
                     <li>Responsive design</li>
                 </ul>
             </div>
