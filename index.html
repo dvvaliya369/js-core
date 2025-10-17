@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="buttonApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AngularJS Button Component Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body ng-controller="MainController as main">
+    <div class="demo-container">
+        <h1>AngularJS Button Component Demo</h1>
+        
+        <div class="demo-section">
+            <h3>Basic Button Types</h3>
+            <div class="button-row">
+                <custom-button text="Primary" type="primary" on-click="main.buttonClicked()"></custom-button>
+                <custom-button text="Secondary" type="secondary" on-click="main.buttonClicked()"></custom-button>
+                <custom-button text="Success" type="success" on-click="main.buttonClicked()"></custom-button>
+                <custom-button text="Danger" type="danger" on-click="main.buttonClicked()"></custom-button>
+                <custom-button text="Warning" type="warning" on-click="main.buttonClicked()"></custom-button>
+                <custom-button text="Info" type="info" on-click="main.buttonClicked()"></custom-button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>Button States</h3>
+            <div class="button-row">
+                <custom-button text="Normal Button" on-click="main.buttonClicked()"></custom-button>
+                <custom-button text="Disabled Button" disabled="true"></custom-button>
+                <custom-button 
+                    text="{{main.isDisabled ? 'Disabled' : 'Enabled'}}" 
+                    disabled="main.isDisabled" 
+                    on-click="main.buttonClicked()">
+                </custom-button>
+                <custom-button 
+                    text="Toggle Disabled" 
+                    type="secondary" 
+                    on-click="main.toggleDisabled()">
+                </custom-button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>Custom Text Examples</h3>
+            <div class="button-row">
+                <custom-button></custom-button>
+                <custom-button text="Save Changes" type="success" on-click="main.buttonClicked()"></custom-button>
+                <custom-button text="Cancel" type="secondary" on-click="main.buttonClicked()"></custom-button>
+                <custom-button text="Delete Item" type="danger" on-click="main.buttonClicked()"></custom-button>
+            </div>
+        </div>
+
+        <div class="message" ng-if="main.message">
+            <strong>{{main.message}}</strong>
+        </div>
+    </div>
+
+    <div class="demo-container">
+        <h2>Component Usage</h2>
+        <p>This button component supports the following properties:</p>
+        <ul>
+            <li><code>text</code> - The button text (default: "Click Me")</li>
+            <li><code>type</code> - Button style: primary, secondary, success, danger, warning, info (default: primary)</li>
+            <li><code>disabled</code> - Boolean to disable the button</li>
+            <li><code>on-click</code> - Function to call when button is clicked</li>
+        </ul>
+
+        <h3>Example Usage:</h3>
+        <pre><code>&lt;custom-button 
+    text="Save" 
+    type="success" 
+    disabled="false"
+    on-click="myFunction()"&gt;
+&lt;/custom-button&gt;</code></pre>
+    </div>
+
+    <!-- AngularJS CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <!-- Our app -->
+    <script src="app.js"></script>
+</body>
+</html>
