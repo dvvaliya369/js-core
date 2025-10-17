@@ -118,4 +118,18 @@ router.get('/facebook/callback',
     })
 );
 
+// Google authentication routes
+router.get('/google', passport.authenticate('google', { 
+    scope: ['profile', 'email'] 
+}));
+
+// Google callback route
+router.get('/google/callback', 
+    passport.authenticate('google', { 
+        successRedirect: '/dashboard',
+        failureRedirect: '/auth/login',
+        failureFlash: true 
+    })
+);
+
 module.exports = router;

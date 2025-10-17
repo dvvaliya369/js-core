@@ -1,6 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const bcrypt = require('bcryptjs');
 
 // Simple in-memory user store (in production, use a database)
@@ -70,6 +71,53 @@ passport.use(new FacebookStrategy({
             profilePicture: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : null,
             provider: 'facebook',
             facebookProfile: profile,
+            createdAt: new Date()
+        };
+        
+        users.push(newUser);
+        return done(null, newUser);
+    } catch (error) {
+        return done(error, null);
+    }
+}));
+
+// Google OAuth Strategy Configuration
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID || 'your-google-client-id',
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'your-google-client-secret',
+    callbackURL: process.env.GOOGLE_CALLBACK_URL || '/auth/google/callback'
+}, async (accessToken, refreshToken, profile, done) => {
+    try {
+        console.log('Google Profile:', profile);
+        
+        // Check if user already exists by Google ID
+        let user = users.find(u => u.googleId === profile.id);
+        
+        if (user) {
+            return done(null, user);
+        }
+        
+        // Check if user exists by email
+        const email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
+        if (email) {
+            user = users.find(u => u.email === email);
+            if (user) {
+                // Link Google account to existing user
+                user.googleId = profile.id;
+                user.googleProfile = profile;
+                return done(null, user);
+            }
+        }
+        
+        // Create new user
+        const newUser = {
+            id: users.length + 1,
+            googleId: profile.id,
+            name: profile.displayName,
+            email: email,
+            profilePicture: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : null,
+            provider: 'google',
+            googleProfile: profile,
             createdAt: new Date()
         };
         
