@@ -3,36 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toast Message Component</title>
+    <title>User Profile - Alex Johnson</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="demo-container">
-        <h1>Toast Message Component Demo</h1>
-        <p>Click the buttons below to show different types of toast messages:</p>
-        
-        <div class="button-group">
-            <button onclick="showToast('success', 'Success! Your action was completed successfully.')">Success Toast</button>
-            <button onclick="showToast('error', 'Error! Something went wrong. Please try again.')">Error Toast</button>
-            <button onclick="showToast('warning', 'Warning! This action cannot be undone.')">Warning Toast</button>
-            <button onclick="showToast('info', 'Info: Your data has been updated.')">Info Toast</button>
-        </div>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="profile-header">
+            <div class="profile-cover">
+                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=400&fit=crop" alt="Cover Photo" class="cover-image" id="cover-image">
+                <button class="edit-cover-btn" id="edit-cover-btn">
+                    <i class="fas fa-camera"></i>
+                </button>
+            </div>
+            <div class="profile-info">
+                <div class="profile-avatar">
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face" alt="Profile Avatar" class="avatar" id="avatar">
+                    <button class="edit-avatar-btn" id="edit-avatar-btn">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                </div>
+                <div class="profile-details">
+                    <h1 class="profile-name" id="profile-name">Alex Johnson</h1>
+                    <p class="profile-title" id="profile-title">Senior Software Engineer</p>
+                    <p class="profile-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="profile-location">San Francisco, CA</span>
+                    </p>
+                    <button class="edit-profile-btn" id="edit-profile-btn">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                </div>
+            </div>
+        </header>
 
-        <div class="custom-toast-section">
-            <h2>Custom Toast</h2>
-            <input type="text" id="customMessage" placeholder="Enter your custom message..." />
-            <select id="customType">
-                <option value="success">Success</option>
-                <option value="error">Error</option>
-                <option value="warning">Warning</option>
-                <option value="info">Info</option>
-            </select>
-            <button onclick="showCustomToast()">Show Custom Toast</button>
-        </div>
+        <!-- Navigation Tabs -->
+        <nav class="profile-nav">
+            <ul class="nav-tabs">
+                <li class="nav-tab active" data-tab="about">
+                    <i class="fas fa-user"></i> About
+                </li>
+                <li class="nav-tab" data-tab="skills">
+                    <i class="fas fa-code"></i> Skills
+                </li>
+                <li class="nav-tab" data-tab="experience">
+                    <i class="fas fa-briefcase"></i> Experience
+                </li>
+                <li class="nav-tab" data-tab="contact">
+                    <i class="fas fa-envelope"></i> Contact
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Content Sections -->
+        <main class="profile-content">
+            <!-- About Section -->
+            <section id="about-section" class="content-section active">
+                <div class="section-header">
+                    <h2><i class="fas fa-user"></i> About Me</h2>
+                </div>
+                <div class="about-content">
+                    <div class="bio-card">
+                        <h3>Bio</h3>
+                        <p id="profile-bio">
+                            Passionate software engineer with 8+ years of experience in full-stack development. 
+                            I love creating innovative solutions and mentoring junior developers. When I'm not coding, 
+                            you can find me hiking in the mountains or experimenting with new technologies.
+                        </p>
+                        <button class="edit-bio-btn" id="edit-bio-btn">
+                            <i class="fas fa-edit"></i> Edit Bio
+                        </button>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">150+</div>
+                            <div class="stat-label">Projects Completed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">8</div>
+                            <div class="stat-label">Years Experience</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">25</div>
+                            <div class="stat-label">Team Members Led</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">Technologies Mastered</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Skills Section -->
+            <section id="skills-section" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-code"></i> Skills & Technologies</h2>
+                </div>
+                <div class="skills-content">
+                    <div class="skill-category">
+                        <h3>Programming Languages</h3>
+                        <div class="skills-list">
+                            <div class="skill-item">
+                                <span class="skill-name">JavaScript</span>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-skill="95"></div>
+                                </div>
+                                <span class="skill-percentage">95%</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Python</span>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-skill="90"></div>
+                                </div>
+                                <span class="skill-percentage">90%</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">TypeScript</span>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-skill="88"></div>
+                                </div>
+                                <span class="skill-percentage">88%</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Java</span>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-skill="75"></div>
+                                </div>
+                                <span class="skill-percentage">75%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3>Frameworks & Libraries</h3>
+                        <div class="tech-tags">
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">Express</span>
+                            <span class="tech-tag">Django</span>
+                            <span class="tech-tag">Vue.js</span>
+                            <span class="tech-tag">Angular</span>
+                            <span class="tech-tag">Next.js</span>
+                            <span class="tech-tag">Flask</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3>Tools & Technologies</h3>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Git</span>
+                            <span class="tech-tag">Docker</span>
+                            <span class="tech-tag">AWS</span>
+                            <span class="tech-tag">MongoDB</span>
+                            <span class="tech-tag">PostgreSQL</span>
+                            <span class="tech-tag">Redis</span>
+                            <span class="tech-tag">Kubernetes</span>
+                            <span class="tech-tag">Jenkins</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Experience Section -->
+            <section id="experience-section" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-briefcase"></i> Work Experience</h2>
+                </div>
+                <div class="experience-content">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h3>Senior Software Engineer</h3>
+                                <h4>TechCorp Inc.</h4>
+                                <p class="timeline-date">2021 - Present</p>
+                                <p>Leading a team of 8 developers in building scalable web applications. Implemented microservices architecture that improved system performance by 40%.</p>
+                                <ul>
+                                    <li>Architected and developed RESTful APIs serving 1M+ daily requests</li>
+                                    <li>Mentored junior developers and conducted code reviews</li>
+                                    <li>Implemented CI/CD pipelines reducing deployment time by 60%</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h3>Full Stack Developer</h3>
+                                <h4>StartupXYZ</h4>
+                                <p class="timeline-date">2019 - 2021</p>
+                                <p>Developed and maintained multiple client projects using modern web technologies. Collaborated with design and product teams to deliver user-centric solutions.</p>
+                                <ul>
+                                    <li>Built responsive web applications using React and Node.js</li>
+                                    <li>Integrated third-party APIs and payment gateways</li>
+                                    <li>Optimized database queries improving load times by 50%</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h3>Junior Developer</h3>
+                                <h4>WebSolutions Ltd.</h4>
+                                <p class="timeline-date">2017 - 2019</p>
+                                <p>Started my professional journey developing small to medium-scale web applications. Gained experience in various technologies and best practices.</p>
+                                <ul>
+                                    <li>Developed custom WordPress themes and plugins</li>
+                                    <li>Created responsive designs for multiple client websites</li>
+                                    <li>Learned agile development methodologies</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact-section" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-envelope"></i> Get In Touch</h2>
+                </div>
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div class="contact-details">
+                                <h4>Email</h4>
+                                <p>alex.johnson@email.com</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div class="contact-details">
+                                <h4>Phone</h4>
+                                <p>+1 (555) 123-4567</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fab fa-linkedin"></i>
+                            <div class="contact-details">
+                                <h4>LinkedIn</h4>
+                                <p>linkedin.com/in/alexjohnson</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fab fa-github"></i>
+                            <div class="contact-details">
+                                <h4>GitHub</h4>
+                                <p>github.com/alexjohnson</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-form-container">
+                        <h3>Send a Message</h3>
+                        <form class="contact-form" id="contact-form">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <input type="text" id="subject" name="subject" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" name="message" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="submit-btn">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
 
-    <!-- Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
+    <!-- Edit Profile Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="edit-form">
+                    <div class="form-group">
+                        <label for="edit-name">Name</label>
+                        <input type="text" id="edit-name" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-title">Title</label>
+                        <input type="text" id="edit-title" name="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-location">Location</label>
+                        <input type="text" id="edit-location" name="location">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-bio">Bio</label>
+                        <textarea id="edit-bio" name="bio" rows="4"></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="cancel-btn">Cancel</button>
+                        <button type="submit" class="save-btn">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
