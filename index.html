@@ -3,37 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toast Message Component</title>
+    <title>Notifications</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="demo-container">
-        <h1>Toast Message Component Demo</h1>
-        <p>Click the buttons below to show different types of toast messages:</p>
-        
-        <div class="button-group">
-            <button onclick="showToast('success', 'Success! Your action was completed successfully.')">Success Toast</button>
-            <button onclick="showToast('error', 'Error! Something went wrong. Please try again.')">Error Toast</button>
-            <button onclick="showToast('warning', 'Warning! This action cannot be undone.')">Warning Toast</button>
-            <button onclick="showToast('info', 'Info: Your data has been updated.')">Info Toast</button>
+    <div class="container">
+        <header class="header">
+            <h1>Notifications</h1>
+            <div class="notification-count">
+                <span class="count">5</span>
+            </div>
+        </header>
+
+        <div class="notification-actions">
+            <button class="btn btn-secondary" onclick="markAllAsRead()">Mark all as read</button>
+            <button class="btn btn-danger" onclick="clearAll()">Clear all</button>
         </div>
 
-        <div class="custom-toast-section">
-            <h2>Custom Toast</h2>
-            <input type="text" id="customMessage" placeholder="Enter your custom message..." />
-            <select id="customType">
-                <option value="success">Success</option>
-                <option value="error">Error</option>
-                <option value="warning">Warning</option>
-                <option value="info">Info</option>
-            </select>
-            <button onclick="showCustomToast()">Show Custom Toast</button>
+        <div class="notification-list" id="notificationList">
+            <!-- New message notification -->
+            <div class="notification-item unread">
+                <div class="notification-icon message">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z"/>
+                    </svg>
+                </div>
+                <div class="notification-content">
+                    <h3>New message from John Doe</h3>
+                    <p>Hey! Just wanted to check in and see how the project is going...</p>
+                    <span class="notification-time">2 minutes ago</span>
+                </div>
+                <div class="notification-status">
+                    <div class="unread-dot"></div>
+                </div>
+            </div>
+
+            <!-- System update notification -->
+            <div class="notification-item unread">
+                <div class="notification-icon system">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.9 1 3 1.9 3 3V21C3 22.1 3.9 23 5 23H19C20.1 23 21 22.1 21 21V9H21ZM19 21H5V3H14V9H19V21Z"/>
+                    </svg>
+                </div>
+                <div class="notification-content">
+                    <h3>System Update Available</h3>
+                    <p>A new system update is available. Click to install now.</p>
+                    <span class="notification-time">15 minutes ago</span>
+                </div>
+                <div class="notification-status">
+                    <div class="unread-dot"></div>
+                </div>
+            </div>
+
+            <!-- Friend request notification -->
+            <div class="notification-item unread">
+                <div class="notification-icon social">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16 4C18.2 4 20 5.8 20 8S18.2 12 16 12S12 10.2 12 8S13.8 4 16 4M16 14C18.67 14 24 15.33 24 18V20H8V18C8 15.33 13.33 14 16 14M12.51 8.7C12.37 9.47 12.37 10.27 12.51 11.03C11.17 10.9 10 9.64 10 8.1C10 6.56 11.17 5.3 12.51 5.17C12.37 5.93 12.37 6.73 12.51 7.5C12.37 7.9 12.37 8.3 12.51 8.7M7.91 12C9.5 12 10.79 10.71 10.79 9.12S9.5 6.24 7.91 6.24S5.03 7.53 5.03 9.12S6.32 12 7.91 12M7.91 13.89C5.33 13.89 0.17 15.18 0.17 17.76V19.64H7.83V17.76C7.83 16.75 8.28 15.9 9.07 15.32C8.36 14.32 7.91 13.89 7.91 13.89Z"/>
+                    </svg>
+                </div>
+                <div class="notification-content">
+                    <h3>New Friend Request</h3>
+                    <p>Sarah Wilson wants to connect with you</p>
+                    <span class="notification-time">1 hour ago</span>
+                </div>
+                <div class="notification-status">
+                    <div class="unread-dot"></div>
+                </div>
+            </div>
+
+            <!-- Warning notification -->
+            <div class="notification-item read">
+                <div class="notification-icon warning">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z"/>
+                    </svg>
+                </div>
+                <div class="notification-content">
+                    <h3>Storage Almost Full</h3>
+                    <p>Your storage is 95% full. Consider deleting some files to free up space.</p>
+                    <span class="notification-time">3 hours ago</span>
+                </div>
+                <div class="notification-status"></div>
+            </div>
+
+            <!-- Success notification -->
+            <div class="notification-item read">
+                <div class="notification-icon success">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M11,16.5L18,9.5L16.59,8.09L11,13.67L7.41,10.09L6,11.5L11,16.5Z"/>
+                    </svg>
+                </div>
+                <div class="notification-content">
+                    <h3>Backup Completed</h3>
+                    <p>Your data has been successfully backed up to the cloud.</p>
+                    <span class="notification-time">6 hours ago</span>
+                </div>
+                <div class="notification-status"></div>
+            </div>
+        </div>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-icon">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor" opacity="0.3">
+                    <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z"/>
+                </svg>
+            </div>
+            <h3>No notifications</h3>
+            <p>You're all caught up! No new notifications at this time.</p>
         </div>
     </div>
 
-    <!-- Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
+    <script>
+        function markAllAsRead() {
+            const unreadItems = document.querySelectorAll('.notification-item.unread');
+            unreadItems.forEach(item => {
+                item.classList.remove('unread');
+                item.classList.add('read');
+                const dot = item.querySelector('.unread-dot');
+                if (dot) {
+                    dot.remove();
+                }
+            });
+            updateNotificationCount();
+        }
 
-    <script src="script.js"></script>
+        function clearAll() {
+            const notificationList = document.getElementById('notificationList');
+            const emptyState = document.getElementById('emptyState');
+            
+            notificationList.style.display = 'none';
+            emptyState.style.display = 'flex';
+            updateNotificationCount();
+        }
+
+        function updateNotificationCount() {
+            const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+            const countElement = document.querySelector('.count');
+            countElement.textContent = unreadCount;
+            
+            if (unreadCount === 0) {
+                countElement.parentElement.style.display = 'none';
+            }
+        }
+
+        // Add click event to notification items
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('click', function() {
+                if (this.classList.contains('unread')) {
+                    this.classList.remove('unread');
+                    this.classList.add('read');
+                    const dot = this.querySelector('.unread-dot');
+                    if (dot) {
+                        dot.remove();
+                    }
+                    updateNotificationCount();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
