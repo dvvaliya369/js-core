@@ -3,36 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toast Message Component</title>
+    <title>Notifications</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="demo-container">
-        <h1>Toast Message Component Demo</h1>
-        <p>Click the buttons below to show different types of toast messages:</p>
-        
-        <div class="button-group">
-            <button onclick="showToast('success', 'Success! Your action was completed successfully.')">Success Toast</button>
-            <button onclick="showToast('error', 'Error! Something went wrong. Please try again.')">Error Toast</button>
-            <button onclick="showToast('warning', 'Warning! This action cannot be undone.')">Warning Toast</button>
-            <button onclick="showToast('info', 'Info: Your data has been updated.')">Info Toast</button>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-bell"></i> Notifications</h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary" id="markAllRead">
+                    <i class="fas fa-check-double"></i> Mark All Read
+                </button>
+                <button class="btn btn-danger" id="clearAll">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+            </div>
+        </header>
+
+        <div class="filter-tabs">
+            <button class="tab-btn active" data-filter="all">
+                <i class="fas fa-inbox"></i> All <span class="count" id="allCount">8</span>
+            </button>
+            <button class="tab-btn" data-filter="unread">
+                <i class="fas fa-envelope"></i> Unread <span class="count" id="unreadCount">3</span>
+            </button>
+            <button class="tab-btn" data-filter="read">
+                <i class="fas fa-envelope-open"></i> Read <span class="count" id="readCount">5</span>
+            </button>
         </div>
 
-        <div class="custom-toast-section">
-            <h2>Custom Toast</h2>
-            <input type="text" id="customMessage" placeholder="Enter your custom message..." />
-            <select id="customType">
-                <option value="success">Success</option>
-                <option value="error">Error</option>
-                <option value="warning">Warning</option>
-                <option value="info">Info</option>
-            </select>
-            <button onclick="showCustomToast()">Show Custom Toast</button>
+        <div class="notifications-container">
+            <!-- Unread Notifications -->
+            <div class="notification-item unread" data-status="unread">
+                <div class="notification-icon success">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h3>Payment Successful</h3>
+                        <span class="timestamp">2 minutes ago</span>
+                    </div>
+                    <p class="notification-message">Your payment of $299.99 has been processed successfully.</p>
+                    <div class="notification-actions">
+                        <button class="action-btn view">View Details</button>
+                        <button class="action-btn dismiss">Dismiss</button>
+                    </div>
+                </div>
+                <div class="unread-indicator"></div>
+            </div>
+
+            <div class="notification-item unread" data-status="unread">
+                <div class="notification-icon warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h3>Security Alert</h3>
+                        <span class="timestamp">15 minutes ago</span>
+                    </div>
+                    <p class="notification-message">New login detected from Chrome on Windows. If this wasn't you, please secure your account immediately.</p>
+                    <div class="notification-actions">
+                        <button class="action-btn view">Check Activity</button>
+                        <button class="action-btn dismiss">Dismiss</button>
+                    </div>
+                </div>
+                <div class="unread-indicator"></div>
+            </div>
+
+            <div class="notification-item unread" data-status="unread">
+                <div class="notification-icon info">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h3>System Update</h3>
+                        <span class="timestamp">1 hour ago</span>
+                    </div>
+                    <p class="notification-message">A new system update is available. Update now to get the latest features and security improvements.</p>
+                    <div class="notification-actions">
+                        <button class="action-btn view">Update Now</button>
+                        <button class="action-btn dismiss">Later</button>
+                    </div>
+                </div>
+                <div class="unread-indicator"></div>
+            </div>
+
+            <!-- Read Notifications -->
+            <div class="notification-item read" data-status="read">
+                <div class="notification-icon success">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h3>New Team Member</h3>
+                        <span class="timestamp">3 hours ago</span>
+                    </div>
+                    <p class="notification-message">Sarah Johnson has joined your team as a Frontend Developer.</p>
+                    <div class="notification-actions">
+                        <button class="action-btn view">View Profile</button>
+                        <button class="action-btn dismiss">Dismiss</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="notification-item read" data-status="read">
+                <div class="notification-icon info">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h3>Meeting Reminder</h3>
+                        <span class="timestamp">5 hours ago</span>
+                    </div>
+                    <p class="notification-message">Don't forget about your meeting with the design team at 3:00 PM today.</p>
+                    <div class="notification-actions">
+                        <button class="action-btn view">Add to Calendar</button>
+                        <button class="action-btn dismiss">Dismiss</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="notification-item read" data-status="read">
+                <div class="notification-icon error">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h3>Failed Deployment</h3>
+                        <span class="timestamp">1 day ago</span>
+                    </div>
+                    <p class="notification-message">The deployment to production failed due to build errors. Please check the logs for more details.</p>
+                    <div class="notification-actions">
+                        <button class="action-btn view">View Logs</button>
+                        <button class="action-btn dismiss">Dismiss</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="notification-item read" data-status="read">
+                <div class="notification-icon info">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h3>New Feature Available</h3>
+                        <span class="timestamp">2 days ago</span>
+                    </div>
+                    <p class="notification-message">Dark mode is now available! Switch to dark mode in your settings for a better viewing experience.</p>
+                    <div class="notification-actions">
+                        <button class="action-btn view">Try Now</button>
+                        <button class="action-btn dismiss">Dismiss</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="notification-item read" data-status="read">
+                <div class="notification-icon success">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h3>Achievement Unlocked</h3>
+                        <span class="timestamp">1 week ago</span>
+                    </div>
+                    <p class="notification-message">Congratulations! You've completed 100 tasks this month. Keep up the great work!</p>
+                    <div class="notification-actions">
+                        <button class="action-btn view">View Stats</button>
+                        <button class="action-btn dismiss">Dismiss</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="empty-state" style="display: none;">
+            <i class="fas fa-bell-slash"></i>
+            <h2>No notifications</h2>
+            <p>You're all caught up! Check back later for new notifications.</p>
         </div>
     </div>
-
-    <!-- Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
 
     <script src="script.js"></script>
 </body>
