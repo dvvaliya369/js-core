@@ -3,36 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toast Message Component</title>
+    <title>Notifications</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="demo-container">
-        <h1>Toast Message Component Demo</h1>
-        <p>Click the buttons below to show different types of toast messages:</p>
-        
-        <div class="button-group">
-            <button onclick="showToast('success', 'Success! Your action was completed successfully.')">Success Toast</button>
-            <button onclick="showToast('error', 'Error! Something went wrong. Please try again.')">Error Toast</button>
-            <button onclick="showToast('warning', 'Warning! This action cannot be undone.')">Warning Toast</button>
-            <button onclick="showToast('info', 'Info: Your data has been updated.')">Info Toast</button>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-bell"></i> Notifications</h1>
+            <div class="header-actions">
+                <button class="mark-all-read" onclick="markAllAsRead()">
+                    <i class="fas fa-check-double"></i> Mark all as read
+                </button>
+                <button class="clear-all" onclick="clearAllNotifications()">
+                    <i class="fas fa-trash"></i> Clear all
+                </button>
+            </div>
+        </header>
+
+        <div class="filter-tabs">
+            <button class="tab-btn active" onclick="filterNotifications('all')">All</button>
+            <button class="tab-btn" onclick="filterNotifications('unread')">Unread</button>
+            <button class="tab-btn" onclick="filterNotifications('read')">Read</button>
         </div>
 
-        <div class="custom-toast-section">
-            <h2>Custom Toast</h2>
-            <input type="text" id="customMessage" placeholder="Enter your custom message..." />
-            <select id="customType">
-                <option value="success">Success</option>
-                <option value="error">Error</option>
-                <option value="warning">Warning</option>
-                <option value="info">Info</option>
-            </select>
-            <button onclick="showCustomToast()">Show Custom Toast</button>
+        <div class="notifications-container">
+            <!-- Success Notification -->
+            <div class="notification-item unread success" data-type="success">
+                <div class="notification-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h3>Profile Updated Successfully</h3>
+                        <div class="notification-meta">
+                            <span class="time">2 minutes ago</span>
+                            <div class="unread-indicator"></div>
+                        </div>
+                    </div>
+                    <p>Your profile information has been updated and saved successfully.</p>
+                </div>
+                <button class="notification-close" onclick="removeNotification(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Warning Notification -->
+            <div class="notification-item unread warning" data-type="warning">
+                <div class="notification-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h3>Payment Method Expiring Soon</h3>
+                        <div class="notification-meta">
+                            <span class="time">1 hour ago</span>
+                            <div class="unread-indicator"></div>
+                        </div>
+                    </div>
+                    <p>Your credit card ending in ****1234 will expire on 12/2024. Please update your payment method.</p>
+                </div>
+                <button class="notification-close" onclick="removeNotification(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Error Notification -->
+            <div class="notification-item unread error" data-type="error">
+                <div class="notification-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h3>Login Attempt Failed</h3>
+                        <div class="notification-meta">
+                            <span class="time">3 hours ago</span>
+                            <div class="unread-indicator"></div>
+                        </div>
+                    </div>
+                    <p>Multiple failed login attempts detected from an unknown device. Please check your account security.</p>
+                </div>
+                <button class="notification-close" onclick="removeNotification(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Info Notification -->
+            <div class="notification-item read info" data-type="info">
+                <div class="notification-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h3>New Feature Available</h3>
+                        <div class="notification-meta">
+                            <span class="time">1 day ago</span>
+                        </div>
+                    </div>
+                    <p>Check out our new dark mode feature! You can toggle it in your settings.</p>
+                </div>
+                <button class="notification-close" onclick="removeNotification(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Message Notification -->
+            <div class="notification-item read message" data-type="message">
+                <div class="notification-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h3>New Message from John Doe</h3>
+                        <div class="notification-meta">
+                            <span class="time">2 days ago</span>
+                        </div>
+                    </div>
+                    <p>Hey! I wanted to follow up on our conversation about the project timeline...</p>
+                </div>
+                <button class="notification-close" onclick="removeNotification(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- System Notification -->
+            <div class="notification-item read system" data-type="system">
+                <div class="notification-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h3>System Maintenance Scheduled</h3>
+                        <div class="notification-meta">
+                            <span class="time">1 week ago</span>
+                        </div>
+                    </div>
+                    <p>Scheduled maintenance will occur on Sunday, October 27th from 2:00 AM to 4:00 AM EST.</p>
+                </div>
+                <button class="notification-close" onclick="removeNotification(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="empty-state" style="display: none;">
+            <i class="fas fa-bell-slash"></i>
+            <h3>No notifications</h3>
+            <p>You're all caught up! Check back later for new notifications.</p>
         </div>
     </div>
-
-    <!-- Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
 
     <script src="script.js"></script>
 </body>
