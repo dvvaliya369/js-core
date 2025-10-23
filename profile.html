@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Toast Component App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="profile-styles.css">
+</head>
+<body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <span class="theme-icon">🌙</span>
+        <span class="theme-text">Dark</span>
+    </button>
+
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-link">← Back to Demo</a>
+            <h2 class="nav-title">User Profile</h2>
+        </div>
+    </nav>
+
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop&crop=face" 
+                     alt="User Avatar" id="profileAvatar" class="avatar-img">
+                <button class="avatar-edit-btn" onclick="changeAvatar()">📷</button>
+            </div>
+            <div class="profile-info">
+                <h1 class="profile-name" id="profileName">John Doe</h1>
+                <p class="profile-title" id="profileTitle">Frontend Developer</p>
+                <p class="profile-location" id="profileLocation">📍 San Francisco, CA</p>
+            </div>
+            <button class="edit-profile-btn" onclick="toggleEditMode()">
+                <span id="editBtnText">✏️ Edit Profile</span>
+            </button>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="profile-content">
+            <!-- About Section -->
+            <div class="profile-section">
+                <h3 class="section-title">About</h3>
+                <div class="section-content">
+                    <p id="profileBio" class="profile-bio">
+                        Passionate frontend developer with 5+ years of experience creating beautiful, 
+                        responsive web applications. Love working with modern JavaScript frameworks 
+                        and creating delightful user experiences.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Skills Section -->
+            <div class="profile-section">
+                <h3 class="section-title">Skills</h3>
+                <div class="section-content">
+                    <div class="skills-container" id="skillsContainer">
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">CSS</span>
+                        <span class="skill-tag">HTML</span>
+                        <span class="skill-tag">Node.js</span>
+                        <span class="skill-tag">TypeScript</span>
+                        <span class="skill-tag">Git</span>
+                        <span class="skill-tag">Responsive Design</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="profile-section">
+                <h3 class="section-title">Contact Information</h3>
+                <div class="section-content">
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <span class="contact-icon">📧</span>
+                            <span id="profileEmail">john.doe@email.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">📱</span>
+                            <span id="profilePhone">+1 (555) 123-4567</span>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">🌐</span>
+                            <a href="#" id="profileWebsite" class="profile-link">www.johndoe.dev</a>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">💼</span>
+                            <a href="#" id="profileLinkedin" class="profile-link">LinkedIn Profile</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="profile-section">
+                <h3 class="section-title">Statistics</h3>
+                <div class="section-content">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-number">42</span>
+                            <span class="stat-label">Projects</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">1.2k</span>
+                            <span class="stat-label">Commits</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">156</span>
+                            <span class="stat-label">Connections</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">5+</span>
+                            <span class="stat-label">Years Exp</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editName">Name:</label>
+                    <input type="text" id="editName" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="editTitle">Job Title:</label>
+                    <input type="text" id="editTitle" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="editLocation">Location:</label>
+                    <input type="text" id="editLocation" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="editBio">Bio:</label>
+                    <textarea id="editBio" class="form-textarea" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editEmail">Email:</label>
+                    <input type="email" id="editEmail" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="editPhone">Phone:</label>
+                    <input type="tel" id="editPhone" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="editWebsite">Website:</label>
+                    <input type="url" id="editWebsite" class="form-input">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="script.js"></script>
+    <script src="profile-script.js"></script>
+</body>
+</html>

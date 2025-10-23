@@ -123,6 +123,47 @@ body {
     box-shadow: 0 6px 20px var(--shadow-hover);
 }
 
+/* Navigation Section */
+.navigation-section {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+    margin: 30px 0;
+    text-align: center;
+}
+
+.navigation-section h2 {
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+}
+
+.navigation-section p {
+    color: var(--text-secondary);
+    margin-bottom: 25px;
+    font-size: 1.1rem;
+}
+
+.profile-link-btn {
+    display: inline-block;
+    padding: 15px 30px;
+    background: var(--button-bg);
+    color: var(--button-text);
+    text-decoration: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px var(--shadow-color);
+}
+
+.profile-link-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--shadow-hover);
+}
+
 .custom-toast-section {
     background: var(--card-bg);
     padding: 30px;
