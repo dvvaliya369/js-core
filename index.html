@@ -3,37 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toast Message Component</title>
+    <title>Sign In</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="demo-container">
-        <h1>Toast Message Component Demo</h1>
-        <p>Click the buttons below to show different types of toast messages:</p>
-        
-        <div class="button-group">
-            <button onclick="showToast('success', 'Success! Your action was completed successfully.')">Success Toast</button>
-            <button onclick="showToast('error', 'Error! Something went wrong. Please try again.')">Error Toast</button>
-            <button onclick="showToast('warning', 'Warning! This action cannot be undone.')">Warning Toast</button>
-            <button onclick="showToast('info', 'Info: Your data has been updated.')">Info Toast</button>
-        </div>
-
-        <div class="custom-toast-section">
-            <h2>Custom Toast</h2>
-            <input type="text" id="customMessage" placeholder="Enter your custom message..." />
-            <select id="customType">
-                <option value="success">Success</option>
-                <option value="error">Error</option>
-                <option value="warning">Warning</option>
-                <option value="info">Info</option>
-            </select>
-            <button onclick="showCustomToast()">Show Custom Toast</button>
+    <div class="container">
+        <div class="signin-card">
+            <div class="signin-header">
+                <h1>Welcome Back</h1>
+                <p>Sign in to your account</p>
+            </div>
+            
+            <form id="signinForm" class="signin-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="Enter your email"
+                        required
+                        aria-describedby="email-error"
+                    >
+                    <div id="email-error" class="error-message" role="alert"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Enter your password"
+                            required
+                            aria-describedby="password-error"
+                        >
+                        <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                            <span class="eye-icon">👁️</span>
+                        </button>
+                    </div>
+                    <div id="password-error" class="error-message" role="alert"></div>
+                </div>
+                
+                <div class="form-options">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+                
+                <button type="submit" class="signin-button">
+                    <span class="button-text">Sign In</span>
+                    <div class="loading-spinner" style="display: none;"></div>
+                </button>
+                
+                <div id="form-message" class="form-message" role="alert"></div>
+            </form>
+            
+            <div class="signin-footer">
+                <p>Don't have an account? <a href="#">Sign up</a></p>
+            </div>
         </div>
     </div>
-
-    <!-- Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
-
+    
     <script src="script.js"></script>
 </body>
 </html>
