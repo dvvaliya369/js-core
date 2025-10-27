@@ -60,6 +60,15 @@ body {
     box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
 
+.black-button {
+    background: #000 !important;
+    color: white !important;
+}
+
+.black-button:hover {
+    background: #333 !important;
+}
+
 .custom-toast-section {
     background: rgba(255,255,255,0.1);
     padding: 30px;
