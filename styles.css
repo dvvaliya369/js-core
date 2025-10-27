@@ -60,6 +60,11 @@ body {
     box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
 
+.white-button {
+    background: white !important;
+    color: #333 !important;
+}
+
 .custom-toast-section {
     background: rgba(255,255,255,0.1);
     padding: 30px;
