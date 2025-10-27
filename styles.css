@@ -60,6 +60,15 @@ body {
     box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
 
+.red-button {
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+    color: white !important;
+}
+
+.red-button:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+}
+
 .custom-toast-section {
     background: rgba(255,255,255,0.1);
     padding: 30px;
