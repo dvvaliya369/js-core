@@ -1,153 +1,167 @@
-class ToastManager {
+class TodoApp {
     constructor() {
-        this.container = document.getElementById('toast-container');
-        this.toasts = [];
-        this.toastCounter = 0;
+        this.todos = this.loadFromStorage();
+        this.currentFilter = 'all';
+        this.init();
     }
 
-    // Icons for different toast types
-    getIcon(type) {
-        const icons = {
-            success: '✓',
-            error: '✕',
-            warning: '⚠',
-            info: 'ⓘ'
+    init() {
+        this.todoInput = document.getElementById('todoInput');
+        this.addBtn = document.getElementById('addBtn');
+        this.todoList = document.getElementById('todoList');
+        this.todoCount = document.getElementById('todoCount');
+        this.clearCompletedBtn = document.getElementById('clearCompleted');
+        this.filterBtns = document.querySelectorAll('.filter-btn');
+
+        this.addBtn.addEventListener('click', () => this.addTodo());
+        this.todoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.addTodo();
+        });
+
+        this.clearCompletedBtn.addEventListener('click', () => this.clearCompleted());
+
+        this.filterBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.currentFilter = e.target.dataset.filter;
+                this.updateFilterButtons();
+                this.render();
+            });
+        });
+
+        this.render();
+    }
+
+    addTodo() {
+        const text = this.todoInput.value.trim();
+        
+        if (!text) {
+            this.todoInput.focus();
+            return;
+        }
+
+        const todo = {
+            id: Date.now(),
+            text: text,
+            completed: false,
+            createdAt: new Date().toISOString()
         };
-        return icons[type] || icons.info;
+
+        this.todos.unshift(todo);
+        this.todoInput.value = '';
+        this.todoInput.focus();
+        
+        this.saveToStorage();
+        this.render();
     }
 
-    // Create toast element
-    createToastElement(type, message, duration = 5000) {
-        const toastId = `toast-${++this.toastCounter}`;
-        
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.id = toastId;
-        
-        toast.innerHTML = `
-            <div class="toast-icon">${this.getIcon(type)}</div>
-            <div class="toast-message">${message}</div>
-            <button class="toast-close" onclick="toastManager.removeToast('${toastId}')" aria-label="Close">×</button>
-            <div class="toast-progress"></div>
-        `;
-
-        return { toast, toastId, duration };
-    }
-
-    // Show toast
-    showToast(type, message, duration = 5000) {
-        const { toast, toastId } = this.createToastElement(type, message, duration);
-        
-        // Add to container
-        this.container.appendChild(toast);
-        this.toasts.push(toastId);
-
-        // Trigger animation
-        setTimeout(() => {
-            toast.classList.add('show');
-        }, 10);
-
-        // Start progress bar animation
-        const progressBar = toast.querySelector('.toast-progress');
-        if (progressBar) {
-            setTimeout(() => {
-                progressBar.style.width = '100%';
-                progressBar.style.transition = `width ${duration}ms linear`;
-            }, 50);
+    toggleTodo(id) {
+        const todo = this.todos.find(t => t.id === id);
+        if (todo) {
+            todo.completed = !todo.completed;
+            this.saveToStorage();
+            this.render();
         }
-
-        // Auto remove after duration
-        if (duration > 0) {
-            setTimeout(() => {
-                this.removeToast(toastId);
-            }, duration);
-        }
-
-        return toastId;
     }
 
-    // Remove toast
-    removeToast(toastId) {
-        const toast = document.getElementById(toastId);
-        if (!toast) return;
+    deleteTodo(id) {
+        this.todos = this.todos.filter(t => t.id !== id);
+        this.saveToStorage();
+        this.render();
+    }
 
-        toast.classList.add('hide');
-        toast.classList.remove('show');
+    clearCompleted() {
+        this.todos = this.todos.filter(t => !t.completed);
+        this.saveToStorage();
+        this.render();
+    }
 
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.parentNode.removeChild(toast);
+    getFilteredTodos() {
+        switch (this.currentFilter) {
+            case 'active':
+                return this.todos.filter(t => !t.completed);
+            case 'completed':
+                return this.todos.filter(t => t.completed);
+            default:
+                return this.todos;
+        }
+    }
+
+    updateFilterButtons() {
+        this.filterBtns.forEach(btn => {
+            if (btn.dataset.filter === this.currentFilter) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
             }
-            this.toasts = this.toasts.filter(id => id !== toastId);
-        }, 400);
-    }
-
-    // Remove all toasts
-    removeAllToasts() {
-        this.toasts.forEach(toastId => {
-            this.removeToast(toastId);
         });
     }
 
-    // Show success toast
-    success(message, duration = 5000) {
-        return this.showToast('success', message, duration);
+    updateCount() {
+        const activeCount = this.todos.filter(t => !t.completed).length;
+        const text = activeCount === 1 ? 'task' : 'tasks';
+        this.todoCount.textContent = `${activeCount} ${text} remaining`;
     }
 
-    // Show error toast
-    error(message, duration = 5000) {
-        return this.showToast('error', message, duration);
+    render() {
+        const filteredTodos = this.getFilteredTodos();
+        
+        if (filteredTodos.length === 0) {
+            this.renderEmptyState();
+        } else {
+            this.todoList.innerHTML = filteredTodos.map(todo => this.createTodoHTML(todo)).join('');
+        }
+
+        this.updateCount();
     }
 
-    // Show warning toast
-    warning(message, duration = 5000) {
-        return this.showToast('warning', message, duration);
+    renderEmptyState() {
+        const emptyMessages = {
+            all: 'No tasks yet. Add one to get started!',
+            active: 'No active tasks. Great job!',
+            completed: 'No completed tasks yet.'
+        };
+
+        this.todoList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📝</div>
+                <div class="empty-state-text">${emptyMessages[this.currentFilter]}</div>
+            </div>
+        `;
     }
 
-    // Show info toast
-    info(message, duration = 5000) {
-        return this.showToast('info', message, duration);
+    createTodoHTML(todo) {
+        return `
+            <li class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
+                <div class="todo-checkbox" onclick="todoApp.toggleTodo(${todo.id})"></div>
+                <span class="todo-text">${this.escapeHtml(todo.text)}</span>
+                <button class="delete-btn" onclick="todoApp.deleteTodo(${todo.id})" aria-label="Delete task">×</button>
+            </li>
+        `;
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    saveToStorage() {
+        try {
+            localStorage.setItem('todos', JSON.stringify(this.todos));
+        } catch (e) {
+            console.error('Failed to save to localStorage:', e);
+        }
+    }
+
+    loadFromStorage() {
+        try {
+            const stored = localStorage.getItem('todos');
+            return stored ? JSON.parse(stored) : [];
+        } catch (e) {
+            console.error('Failed to load from localStorage:', e);
+            return [];
+        }
     }
 }
 
-// Initialize toast manager
-const toastManager = new ToastManager();
-
-// Global function for easy access
-function showToast(type, message, duration = 5000) {
-    return toastManager.showToast(type, message, duration);
-}
-
-// Custom toast function for the demo
-function showCustomToast() {
-    const messageInput = document.getElementById('customMessage');
-    const typeSelect = document.getElementById('customType');
-    
-    const message = messageInput.value.trim();
-    const type = typeSelect.value;
-    
-    if (!message) {
-        showToast('error', 'Please enter a message!');
-        return;
-    }
-    
-    showToast(type, message);
-    messageInput.value = ''; // Clear input after showing toast
-}
-
-// Add keyboard support for custom toast
-document.getElementById('customMessage')?.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        showCustomToast();
-    }
-});
-
-// Example of programmatic usage (uncomment to test)
-// setTimeout(() => {
-//     toastManager.success('Welcome! This toast was shown automatically after page load.');
-// }, 1000);
-
-// Export for module usage (if needed)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { ToastManager, showToast };
-}
+const todoApp = new TodoApp();
