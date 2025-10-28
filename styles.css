@@ -18,6 +18,26 @@ body {
     text-align: center;
 }
 
+.dark-pink-button {
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: #c2185b;
+    color: white;
+    box-shadow: 0 4px 15px rgba(194, 24, 91, 0.4);
+    transition: all 0.3s ease;
+    margin-bottom: 30px;
+}
+
+.dark-pink-button:hover {
+    background: #ad1457;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(194, 24, 91, 0.5);
+}
+
 .demo-container h1 {
     color: white;
     margin-bottom: 20px;
