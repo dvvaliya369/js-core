@@ -1,153 +1,235 @@
-class ToastManager {
+// Theme Management
+class ThemeManager {
     constructor() {
-        this.container = document.getElementById('toast-container');
-        this.toasts = [];
-        this.toastCounter = 0;
+        this.theme = this.getStoredTheme() || 'light';
+        this.themeToggle = document.getElementById('themeToggle');
+        this.init();
     }
 
-    // Icons for different toast types
-    getIcon(type) {
-        const icons = {
-            success: '✓',
-            error: '✕',
-            warning: '⚠',
-            info: 'ⓘ'
-        };
-        return icons[type] || icons.info;
+    init() {
+        this.applyTheme(this.theme);
+        this.themeToggle.addEventListener('click', () => this.toggleTheme());
     }
 
-    // Create toast element
-    createToastElement(type, message, duration = 5000) {
-        const toastId = `toast-${++this.toastCounter}`;
-        
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.id = toastId;
-        
-        toast.innerHTML = `
-            <div class="toast-icon">${this.getIcon(type)}</div>
-            <div class="toast-message">${message}</div>
-            <button class="toast-close" onclick="toastManager.removeToast('${toastId}')" aria-label="Close">×</button>
-            <div class="toast-progress"></div>
-        `;
-
-        return { toast, toastId, duration };
+    getStoredTheme() {
+        return localStorage.getItem('theme');
     }
 
-    // Show toast
-    showToast(type, message, duration = 5000) {
-        const { toast, toastId } = this.createToastElement(type, message, duration);
-        
-        // Add to container
-        this.container.appendChild(toast);
-        this.toasts.push(toastId);
+    setStoredTheme(theme) {
+        localStorage.setItem('theme', theme);
+    }
 
-        // Trigger animation
-        setTimeout(() => {
-            toast.classList.add('show');
-        }, 10);
+    applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        this.theme = theme;
+        this.setStoredTheme(theme);
+    }
 
-        // Start progress bar animation
-        const progressBar = toast.querySelector('.toast-progress');
-        if (progressBar) {
-            setTimeout(() => {
-                progressBar.style.width = '100%';
-                progressBar.style.transition = `width ${duration}ms linear`;
-            }, 50);
+    toggleTheme() {
+        const newTheme = this.theme === 'light' ? 'dark' : 'light';
+        this.applyTheme(newTheme);
+    }
+}
+
+// Form Validation
+class FormValidator {
+    constructor(formId) {
+        this.form = document.getElementById(formId);
+        this.emailInput = document.getElementById('email');
+        this.passwordInput = document.getElementById('password');
+        this.emailError = document.getElementById('emailError');
+        this.passwordError = document.getElementById('passwordError');
+        this.init();
+    }
+
+    init() {
+        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+        this.emailInput.addEventListener('blur', () => this.validateEmail());
+        this.passwordInput.addEventListener('blur', () => this.validatePassword());
+        this.emailInput.addEventListener('input', () => this.clearError('email'));
+        this.passwordInput.addEventListener('input', () => this.clearError('password'));
+    }
+
+    validateEmail() {
+        const email = this.emailInput.value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!email) {
+            this.showError('email', 'Email is required');
+            return false;
         }
 
-        // Auto remove after duration
-        if (duration > 0) {
-            setTimeout(() => {
-                this.removeToast(toastId);
-            }, duration);
+        if (!emailRegex.test(email)) {
+            this.showError('email', 'Please enter a valid email address');
+            return false;
         }
 
-        return toastId;
+        this.clearError('email');
+        return true;
     }
 
-    // Remove toast
-    removeToast(toastId) {
-        const toast = document.getElementById(toastId);
-        if (!toast) return;
+    validatePassword() {
+        const password = this.passwordInput.value;
 
-        toast.classList.add('hide');
-        toast.classList.remove('show');
+        if (!password) {
+            this.showError('password', 'Password is required');
+            return false;
+        }
 
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.parentNode.removeChild(toast);
-            }
-            this.toasts = this.toasts.filter(id => id !== toastId);
-        }, 400);
+        if (password.length < 6) {
+            this.showError('password', 'Password must be at least 6 characters');
+            return false;
+        }
+
+        this.clearError('password');
+        return true;
     }
 
-    // Remove all toasts
-    removeAllToasts() {
-        this.toasts.forEach(toastId => {
-            this.removeToast(toastId);
+    showError(field, message) {
+        if (field === 'email') {
+            this.emailError.textContent = message;
+            this.emailInput.classList.add('error');
+        } else if (field === 'password') {
+            this.passwordError.textContent = message;
+            this.passwordInput.classList.add('error');
+        }
+    }
+
+    clearError(field) {
+        if (field === 'email') {
+            this.emailError.textContent = '';
+            this.emailInput.classList.remove('error');
+        } else if (field === 'password') {
+            this.passwordError.textContent = '';
+            this.passwordInput.classList.remove('error');
+        }
+    }
+
+    async handleSubmit(e) {
+        e.preventDefault();
+
+        const isEmailValid = this.validateEmail();
+        const isPasswordValid = this.validatePassword();
+
+        if (!isEmailValid || !isPasswordValid) {
+            return;
+        }
+
+        const submitButton = this.form.querySelector('.signin-button');
+        const rememberMe = document.getElementById('rememberMe').checked;
+
+        // Show loading state
+        submitButton.classList.add('loading');
+
+        // Simulate API call
+        try {
+            await this.simulateSignIn();
+            
+            // Success
+            console.log('Sign in successful!');
+            console.log('Email:', this.emailInput.value);
+            console.log('Remember me:', rememberMe);
+            
+            // You can redirect or show success message here
+            alert('Sign in successful! (This is a demo)');
+            
+        } catch (error) {
+            console.error('Sign in failed:', error);
+            this.showError('password', 'Invalid email or password');
+        } finally {
+            submitButton.classList.remove('loading');
+        }
+    }
+
+    simulateSignIn() {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, 1500);
         });
     }
+}
 
-    // Show success toast
-    success(message, duration = 5000) {
-        return this.showToast('success', message, duration);
+// Password Toggle
+class PasswordToggle {
+    constructor() {
+        this.toggleButton = document.getElementById('togglePassword');
+        this.passwordInput = document.getElementById('password');
+        this.init();
     }
 
-    // Show error toast
-    error(message, duration = 5000) {
-        return this.showToast('error', message, duration);
+    init() {
+        this.toggleButton.addEventListener('click', () => this.toggle());
     }
 
-    // Show warning toast
-    warning(message, duration = 5000) {
-        return this.showToast('warning', message, duration);
-    }
-
-    // Show info toast
-    info(message, duration = 5000) {
-        return this.showToast('info', message, duration);
+    toggle() {
+        const type = this.passwordInput.type === 'password' ? 'text' : 'password';
+        this.passwordInput.type = type;
+        this.toggleButton.classList.toggle('active');
     }
 }
 
-// Initialize toast manager
-const toastManager = new ToastManager();
+// Social Sign In Handlers
+class SocialSignIn {
+    constructor() {
+        this.googleButton = document.querySelector('.social-button.google');
+        this.githubButton = document.querySelector('.social-button.github');
+        this.init();
+    }
 
-// Global function for easy access
-function showToast(type, message, duration = 5000) {
-    return toastManager.showToast(type, message, duration);
+    init() {
+        this.googleButton.addEventListener('click', () => this.signInWithGoogle());
+        this.githubButton.addEventListener('click', () => this.signInWithGithub());
+    }
+
+    signInWithGoogle() {
+        console.log('Sign in with Google clicked');
+        alert('Google sign-in would be implemented here');
+    }
+
+    signInWithGithub() {
+        console.log('Sign in with GitHub clicked');
+        alert('GitHub sign-in would be implemented here');
+    }
 }
 
-// Custom toast function for the demo
-function showCustomToast() {
-    const messageInput = document.getElementById('customMessage');
-    const typeSelect = document.getElementById('customType');
-    
-    const message = messageInput.value.trim();
-    const type = typeSelect.value;
-    
-    if (!message) {
-        showToast('error', 'Please enter a message!');
-        return;
+// Link Handlers
+class LinkHandlers {
+    constructor() {
+        this.forgotPasswordLink = document.querySelector('.forgot-password');
+        this.signupLink = document.querySelector('.signup-link');
+        this.init();
     }
-    
-    showToast(type, message);
-    messageInput.value = ''; // Clear input after showing toast
+
+    init() {
+        this.forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Forgot password clicked');
+            alert('Password reset functionality would be implemented here');
+        });
+
+        this.signupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Sign up clicked');
+            alert('Sign up page would be implemented here');
+        });
+    }
 }
 
-// Add keyboard support for custom toast
-document.getElementById('customMessage')?.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        showCustomToast();
-    }
+// Initialize all components when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    new ThemeManager();
+    new FormValidator('signinForm');
+    new PasswordToggle();
+    new SocialSignIn();
+    new LinkHandlers();
 });
 
-// Example of programmatic usage (uncomment to test)
-// setTimeout(() => {
-//     toastManager.success('Welcome! This toast was shown automatically after page load.');
-// }, 1000);
-
-// Export for module usage (if needed)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { ToastManager, showToast };
-}
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    // Alt + T to toggle theme
+    if (e.altKey && e.key === 't') {
+        e.preventDefault();
+        document.getElementById('themeToggle').click();
+    }
+});

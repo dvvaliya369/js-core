@@ -1,3 +1,51 @@
+/* CSS Variables for Theme */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-card: #ffffff;
+    --text-primary: #1a1a1a;
+    --text-secondary: #6c757d;
+    --text-tertiary: #adb5bd;
+    --border-color: #e9ecef;
+    --input-bg: #ffffff;
+    --input-border: #dee2e6;
+    --input-focus: #4a90e2;
+    --button-bg: #4a90e2;
+    --button-hover: #357abd;
+    --button-text: #ffffff;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --error-color: #dc3545;
+    --success-color: #28a745;
+    --social-border: #e9ecef;
+    --social-hover: #f8f9fa;
+}
+
+[data-theme="dark"] {
+    --bg-primary: #0f0f0f;
+    --bg-secondary: #1a1a1a;
+    --bg-card: #1e1e1e;
+    --text-primary: #f8f9fa;
+    --text-secondary: #adb5bd;
+    --text-tertiary: #6c757d;
+    --border-color: #2d2d2d;
+    --input-bg: #2a2a2a;
+    --input-border: #3d3d3d;
+    --input-focus: #5ba3f5;
+    --button-bg: #5ba3f5;
+    --button-hover: #4a90e2;
+    --button-text: #ffffff;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --error-color: #ff6b6b;
+    --success-color: #51cf66;
+    --social-border: #3d3d3d;
+    --social-hover: #2a2a2a;
+}
+
+/* Reset and Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -5,249 +53,460 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     min-height: 100vh;
-    color: #333;
-}
-
-.demo-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 40px 20px;
-    text-align: center;
-}
-
-.demo-container h1 {
-    color: white;
-    margin-bottom: 20px;
-    font-size: 2.5rem;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-
-.demo-container p {
-    color: white;
-    margin-bottom: 40px;
-    font-size: 1.1rem;
-    opacity: 0.9;
-}
-
-.button-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    margin-bottom: 50px;
-}
-
-.button-group button,
-.custom-toast-section button {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: white;
-    color: #333;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-
-.button-group button:hover,
-.custom-toast-section button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
-.custom-toast-section {
-    background: rgba(255,255,255,0.1);
-    padding: 30px;
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.2);
-}
-
-.custom-toast-section h2 {
-    color: white;
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-}
-
-.custom-toast-section input,
-.custom-toast-section select {
-    padding: 10px 15px;
-    margin: 0 10px 15px 10px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    width: 200px;
-    max-width: 100%;
-}
-
-.custom-toast-section input:focus,
-.custom-toast-section select:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
-}
-
-/* Toast Container */
-.toast-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 400px;
-    width: 100%;
-}
-
-/* Toast Message */
-.toast {
     display: flex;
     align-items: center;
-    padding: 16px 20px;
-    border-radius: 12px;
-    color: white;
-    font-weight: 500;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.1);
-    transform: translateX(100%);
-    opacity: 0;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    justify-content: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    padding: 20px;
+}
+
+/* Container */
+.container {
+    width: 100%;
+    max-width: 440px;
     position: relative;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: absolute;
+    top: -60px;
+    right: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    background: var(--bg-card);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
 }
 
-.toast.show {
-    transform: translateX(0);
+.theme-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
+.theme-toggle:active {
+    transform: scale(0.95);
+}
+
+.theme-icon {
+    font-size: 24px;
+    position: absolute;
+    transition: all 0.3s ease;
+}
+
+.theme-icon.sun {
     opacity: 1;
+    transform: rotate(0deg) scale(1);
 }
 
-.toast.hide {
-    transform: translateX(100%);
+.theme-icon.moon {
     opacity: 0;
+    transform: rotate(180deg) scale(0);
 }
 
-/* Toast Types */
-.toast.success {
-    background: linear-gradient(135deg, #48bb78, #38a169);
+[data-theme="dark"] .theme-icon.sun {
+    opacity: 0;
+    transform: rotate(-180deg) scale(0);
 }
 
-.toast.error {
-    background: linear-gradient(135deg, #f56565, #e53e3e);
+[data-theme="dark"] .theme-icon.moon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
 }
 
-.toast.warning {
-    background: linear-gradient(135deg, #ed8936, #dd6b20);
+/* Sign In Card */
+.signin-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
 }
 
-.toast.info {
-    background: linear-gradient(135deg, #4299e1, #3182ce);
+/* Sign In Header */
+.signin-header {
+    text-align: center;
+    margin-bottom: 32px;
 }
 
-/* Toast Icon */
-.toast-icon {
-    margin-right: 12px;
-    font-size: 1.2rem;
+.signin-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.signin-header p {
+    font-size: 15px;
+    color: var(--text-secondary);
+}
+
+/* Form Styles */
+.signin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.form-group input::placeholder {
+    color: var(--text-tertiary);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.form-group input.error {
+    border-color: var(--error-color);
+}
+
+.form-group input.error:focus {
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+/* Password Wrapper */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    padding-right: 48px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 50%;
-    flex-shrink: 0;
+    color: var(--text-tertiary);
+    transition: color 0.2s ease;
 }
 
-/* Toast Message */
-.toast-message {
-    flex: 1;
-    font-size: 0.95rem;
-    line-height: 1.4;
+.toggle-password:hover {
+    color: var(--text-secondary);
 }
 
-/* Toast Close Button */
-.toast-close {
-    margin-left: 12px;
-    background: none;
-    border: none;
-    color: white;
+.eye-icon {
+    font-size: 18px;
+    transition: all 0.2s ease;
+}
+
+.toggle-password .eye-icon.hide {
+    display: none;
+}
+
+.toggle-password.active .eye-icon.show {
+    display: none;
+}
+
+.toggle-password.active .eye-icon.hide {
+    display: block;
+}
+
+/* Error Message */
+.error-message {
+    font-size: 13px;
+    color: var(--error-color);
+    min-height: 18px;
+    display: block;
+}
+
+/* Form Options */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -8px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     cursor: pointer;
-    font-size: 1.2rem;
-    padding: 4px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-custom {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--input-border);
     border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
+    background: var(--button-bg);
+    border-color: var(--button-bg);
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkbox-custom::after {
+    content: '✓';
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.forgot-password {
+    font-size: 14px;
+    color: var(--button-bg);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.forgot-password:hover {
+    color: var(--button-hover);
+    text-decoration: underline;
+}
+
+/* Sign In Button */
+.signin-button {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--button-text);
+    background: var(--button-bg);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.signin-button:hover {
+    background: var(--button-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.signin-button:active {
+    transform: translateY(0);
+}
+
+.signin-button.loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.signin-button.loading .button-text {
+    opacity: 0;
+}
+
+.button-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    opacity: 0;
+}
+
+.signin-button.loading .button-loader {
+    opacity: 1;
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Sign In Footer */
+.signin-footer {
+    text-align: center;
+    margin-top: 24px;
+}
+
+.signin-footer p {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.signup-link {
+    color: var(--button-bg);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.signup-link:hover {
+    color: var(--button-hover);
+    text-decoration: underline;
+}
+
+/* Divider */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 28px 0;
+    color: var(--text-tertiary);
+    font-size: 13px;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.divider span {
+    padding: 0 16px;
+}
+
+/* Social Sign In */
+.social-signin {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.social-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: var(--bg-card);
+    border: 1px solid var(--social-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.social-button:hover {
+    background: var(--social-hover);
+    border-color: var(--input-border);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.social-button:active {
+    transform: translateY(0);
+}
+
+.social-button svg {
     flex-shrink: 0;
 }
 
-.toast-close:hover {
-    background: rgba(255,255,255,0.2);
-}
-
-/* Progress Bar */
-.toast-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 3px;
-    background: rgba(255,255,255,0.3);
-    transition: width linear;
-}
-
 /* Responsive Design */
-@media (max-width: 768px) {
-    .toast-container {
-        right: 10px;
-        left: 10px;
-        max-width: none;
+@media (max-width: 480px) {
+    .signin-card {
+        padding: 32px 24px;
     }
-    
-    .button-group {
+
+    .signin-header h1 {
+        font-size: 24px;
+    }
+
+    .theme-toggle {
+        top: -55px;
+        width: 45px;
+        height: 45px;
+    }
+
+    .theme-icon {
+        font-size: 20px;
+    }
+
+    .form-options {
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
+        gap: 12px;
     }
-    
-    .button-group button {
-        width: 200px;
-    }
-    
-    .custom-toast-section input,
-    .custom-toast-section select {
-        width: 100%;
-        margin: 5px 0;
-    }
-    
-    .demo-container h1 {
-        font-size: 2rem;
+
+    .social-signin {
+        grid-template-columns: 1fr;
     }
 }
 
-/* Animation for multiple toasts */
-@keyframes slideInRight {
+/* Animations */
+@keyframes fadeIn {
     from {
-        transform: translateX(100%);
         opacity: 0;
+        transform: translateY(10px);
     }
     to {
-        transform: translateX(0);
         opacity: 1;
+        transform: translateY(0);
     }
 }
 
-@keyframes slideOutRight {
-    from {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(100%);
-        opacity: 0;
-    }
+.signin-card {
+    animation: fadeIn 0.4s ease;
+}
+
+/* Focus Visible for Accessibility */
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--input-focus);
+    outline-offset: 2px;
 }
