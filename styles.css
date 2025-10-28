@@ -25,6 +25,15 @@ body {
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
+.red-box {
+    width: 200px;
+    height: 200px;
+    background-color: #e53e3e;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
 .demo-container p {
     color: white;
     margin-bottom: 40px;
