@@ -1,153 +1,317 @@
-class ToastManager {
-    constructor() {
-        this.container = document.getElementById('toast-container');
-        this.toasts = [];
-        this.toastCounter = 0;
+// Form elements
+const signupForm = document.getElementById('signupForm');
+const fullNameInput = document.getElementById('fullName');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+const confirmPasswordInput = document.getElementById('confirmPassword');
+const termsCheckbox = document.getElementById('terms');
+const submitBtn = document.getElementById('submitBtn');
+const togglePasswordBtn = document.getElementById('togglePassword');
+
+// Error message elements
+const fullNameError = document.getElementById('fullNameError');
+const emailError = document.getElementById('emailError');
+const passwordError = document.getElementById('passwordError');
+const confirmPasswordError = document.getElementById('confirmPasswordError');
+const termsError = document.getElementById('termsError');
+
+// Password strength elements
+const strengthBarFill = document.getElementById('strengthBarFill');
+const strengthText = document.getElementById('strengthText');
+
+// Toggle password visibility
+let passwordVisible = false;
+togglePasswordBtn.addEventListener('click', () => {
+    passwordVisible = !passwordVisible;
+    passwordInput.type = passwordVisible ? 'text' : 'password';
+    togglePasswordBtn.querySelector('.eye-icon').textContent = passwordVisible ? '👁️' : '👁️';
+    togglePasswordBtn.querySelector('.eye-icon').style.opacity = passwordVisible ? '1' : '0.6';
+});
+
+// Validation functions
+function validateFullName(name) {
+    if (!name || name.trim().length < 2) {
+        return 'Please enter your full name (at least 2 characters)';
     }
-
-    // Icons for different toast types
-    getIcon(type) {
-        const icons = {
-            success: '✓',
-            error: '✕',
-            warning: '⚠',
-            info: 'ⓘ'
-        };
-        return icons[type] || icons.info;
-    }
-
-    // Create toast element
-    createToastElement(type, message, duration = 5000) {
-        const toastId = `toast-${++this.toastCounter}`;
-        
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.id = toastId;
-        
-        toast.innerHTML = `
-            <div class="toast-icon">${this.getIcon(type)}</div>
-            <div class="toast-message">${message}</div>
-            <button class="toast-close" onclick="toastManager.removeToast('${toastId}')" aria-label="Close">×</button>
-            <div class="toast-progress"></div>
-        `;
-
-        return { toast, toastId, duration };
-    }
-
-    // Show toast
-    showToast(type, message, duration = 5000) {
-        const { toast, toastId } = this.createToastElement(type, message, duration);
-        
-        // Add to container
-        this.container.appendChild(toast);
-        this.toasts.push(toastId);
-
-        // Trigger animation
-        setTimeout(() => {
-            toast.classList.add('show');
-        }, 10);
-
-        // Start progress bar animation
-        const progressBar = toast.querySelector('.toast-progress');
-        if (progressBar) {
-            setTimeout(() => {
-                progressBar.style.width = '100%';
-                progressBar.style.transition = `width ${duration}ms linear`;
-            }, 50);
-        }
-
-        // Auto remove after duration
-        if (duration > 0) {
-            setTimeout(() => {
-                this.removeToast(toastId);
-            }, duration);
-        }
-
-        return toastId;
-    }
-
-    // Remove toast
-    removeToast(toastId) {
-        const toast = document.getElementById(toastId);
-        if (!toast) return;
-
-        toast.classList.add('hide');
-        toast.classList.remove('show');
-
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.parentNode.removeChild(toast);
-            }
-            this.toasts = this.toasts.filter(id => id !== toastId);
-        }, 400);
-    }
-
-    // Remove all toasts
-    removeAllToasts() {
-        this.toasts.forEach(toastId => {
-            this.removeToast(toastId);
-        });
-    }
-
-    // Show success toast
-    success(message, duration = 5000) {
-        return this.showToast('success', message, duration);
-    }
-
-    // Show error toast
-    error(message, duration = 5000) {
-        return this.showToast('error', message, duration);
-    }
-
-    // Show warning toast
-    warning(message, duration = 5000) {
-        return this.showToast('warning', message, duration);
-    }
-
-    // Show info toast
-    info(message, duration = 5000) {
-        return this.showToast('info', message, duration);
-    }
+    return '';
 }
 
-// Initialize toast manager
-const toastManager = new ToastManager();
-
-// Global function for easy access
-function showToast(type, message, duration = 5000) {
-    return toastManager.showToast(type, message, duration);
+function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+        return 'Email is required';
+    }
+    if (!emailRegex.test(email)) {
+        return 'Please enter a valid email address';
+    }
+    return '';
 }
 
-// Custom toast function for the demo
-function showCustomToast() {
-    const messageInput = document.getElementById('customMessage');
-    const typeSelect = document.getElementById('customType');
+function validatePassword(password) {
+    if (!password) {
+        return 'Password is required';
+    }
+    if (password.length < 8) {
+        return 'Password must be at least 8 characters long';
+    }
+    return '';
+}
+
+function validateConfirmPassword(password, confirmPassword) {
+    if (!confirmPassword) {
+        return 'Please confirm your password';
+    }
+    if (password !== confirmPassword) {
+        return 'Passwords do not match';
+    }
+    return '';
+}
+
+function validateTerms(checked) {
+    if (!checked) {
+        return 'You must agree to the terms and conditions';
+    }
+    return '';
+}
+
+// Password strength checker
+function checkPasswordStrength(password) {
+    let strength = 0;
     
-    const message = messageInput.value.trim();
-    const type = typeSelect.value;
+    if (password.length >= 8) strength++;
+    if (password.length >= 12) strength++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+    if (/\d/.test(password)) strength++;
+    if (/[^a-zA-Z\d]/.test(password)) strength++;
     
-    if (!message) {
-        showToast('error', 'Please enter a message!');
+    return strength;
+}
+
+function updatePasswordStrength(password) {
+    if (!password) {
+        strengthBarFill.className = 'strength-bar-fill';
+        strengthBarFill.style.width = '0%';
+        strengthText.textContent = '';
+        strengthText.className = 'strength-text';
         return;
     }
     
-    showToast(type, message);
-    messageInput.value = ''; // Clear input after showing toast
+    const strength = checkPasswordStrength(password);
+    
+    strengthBarFill.className = 'strength-bar-fill';
+    strengthText.className = 'strength-text';
+    
+    if (strength <= 2) {
+        strengthBarFill.classList.add('weak');
+        strengthText.classList.add('weak');
+        strengthText.textContent = 'Weak password';
+    } else if (strength <= 4) {
+        strengthBarFill.classList.add('medium');
+        strengthText.classList.add('medium');
+        strengthText.textContent = 'Medium password';
+    } else {
+        strengthBarFill.classList.add('strong');
+        strengthText.classList.add('strong');
+        strengthText.textContent = 'Strong password';
+    }
 }
 
-// Add keyboard support for custom toast
-document.getElementById('customMessage')?.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        showCustomToast();
+// Real-time validation
+fullNameInput.addEventListener('blur', () => {
+    const error = validateFullName(fullNameInput.value);
+    fullNameError.textContent = error;
+    if (error) {
+        fullNameInput.classList.add('error');
+    } else {
+        fullNameInput.classList.remove('error');
     }
 });
 
-// Example of programmatic usage (uncomment to test)
-// setTimeout(() => {
-//     toastManager.success('Welcome! This toast was shown automatically after page load.');
-// }, 1000);
+fullNameInput.addEventListener('input', () => {
+    if (fullNameError.textContent) {
+        fullNameError.textContent = '';
+        fullNameInput.classList.remove('error');
+    }
+});
 
-// Export for module usage (if needed)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { ToastManager, showToast };
-}
+emailInput.addEventListener('blur', () => {
+    const error = validateEmail(emailInput.value);
+    emailError.textContent = error;
+    if (error) {
+        emailInput.classList.add('error');
+    } else {
+        emailInput.classList.remove('error');
+    }
+});
+
+emailInput.addEventListener('input', () => {
+    if (emailError.textContent) {
+        emailError.textContent = '';
+        emailInput.classList.remove('error');
+    }
+});
+
+passwordInput.addEventListener('input', () => {
+    updatePasswordStrength(passwordInput.value);
+    if (passwordError.textContent) {
+        passwordError.textContent = '';
+        passwordInput.classList.remove('error');
+    }
+    if (confirmPasswordInput.value) {
+        const error = validateConfirmPassword(passwordInput.value, confirmPasswordInput.value);
+        confirmPasswordError.textContent = error;
+        if (error) {
+            confirmPasswordInput.classList.add('error');
+        } else {
+            confirmPasswordInput.classList.remove('error');
+        }
+    }
+});
+
+passwordInput.addEventListener('blur', () => {
+    const error = validatePassword(passwordInput.value);
+    passwordError.textContent = error;
+    if (error) {
+        passwordInput.classList.add('error');
+    } else {
+        passwordInput.classList.remove('error');
+    }
+});
+
+confirmPasswordInput.addEventListener('input', () => {
+    if (confirmPasswordError.textContent) {
+        const error = validateConfirmPassword(passwordInput.value, confirmPasswordInput.value);
+        confirmPasswordError.textContent = error;
+        if (error) {
+            confirmPasswordInput.classList.add('error');
+        } else {
+            confirmPasswordInput.classList.remove('error');
+        }
+    }
+});
+
+confirmPasswordInput.addEventListener('blur', () => {
+    const error = validateConfirmPassword(passwordInput.value, confirmPasswordInput.value);
+    confirmPasswordError.textContent = error;
+    if (error) {
+        confirmPasswordInput.classList.add('error');
+    } else {
+        confirmPasswordInput.classList.remove('error');
+    }
+});
+
+termsCheckbox.addEventListener('change', () => {
+    if (termsError.textContent) {
+        termsError.textContent = '';
+    }
+});
+
+// Form submission
+signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Clear all previous errors
+    fullNameError.textContent = '';
+    emailError.textContent = '';
+    passwordError.textContent = '';
+    confirmPasswordError.textContent = '';
+    termsError.textContent = '';
+    
+    // Remove error classes
+    fullNameInput.classList.remove('error');
+    emailInput.classList.remove('error');
+    passwordInput.classList.remove('error');
+    confirmPasswordInput.classList.remove('error');
+    
+    // Validate all fields
+    const fullNameErr = validateFullName(fullNameInput.value);
+    const emailErr = validateEmail(emailInput.value);
+    const passwordErr = validatePassword(passwordInput.value);
+    const confirmPasswordErr = validateConfirmPassword(passwordInput.value, confirmPasswordInput.value);
+    const termsErr = validateTerms(termsCheckbox.checked);
+    
+    // Display errors
+    let hasError = false;
+    
+    if (fullNameErr) {
+        fullNameError.textContent = fullNameErr;
+        fullNameInput.classList.add('error');
+        hasError = true;
+    }
+    
+    if (emailErr) {
+        emailError.textContent = emailErr;
+        emailInput.classList.add('error');
+        hasError = true;
+    }
+    
+    if (passwordErr) {
+        passwordError.textContent = passwordErr;
+        passwordInput.classList.add('error');
+        hasError = true;
+    }
+    
+    if (confirmPasswordErr) {
+        confirmPasswordError.textContent = confirmPasswordErr;
+        confirmPasswordInput.classList.add('error');
+        hasError = true;
+    }
+    
+    if (termsErr) {
+        termsError.textContent = termsErr;
+        hasError = true;
+    }
+    
+    if (hasError) {
+        return;
+    }
+    
+    // Show loading state
+    submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
+    
+    // Simulate API call
+    try {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Success
+        const formData = {
+            fullName: fullNameInput.value,
+            email: emailInput.value,
+            password: passwordInput.value
+        };
+        
+        console.log('Form submitted successfully:', formData);
+        
+        // Show success message
+        alert('Account created successfully! Welcome aboard! 🎉');
+        
+        // Reset form
+        signupForm.reset();
+        updatePasswordStrength('');
+        
+    } catch (error) {
+        console.error('Error submitting form:', error);
+        alert('An error occurred. Please try again.');
+    } finally {
+        submitBtn.classList.remove('loading');
+        submitBtn.disabled = false;
+    }
+});
+
+// Social button handlers
+document.querySelectorAll('.social-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const provider = e.currentTarget.classList.contains('google-btn') ? 'Google' : 'GitHub';
+        console.log(`Sign up with ${provider} clicked`);
+        alert(`Sign up with ${provider} - This would redirect to ${provider} OAuth`);
+    });
+});
+
+// Prevent default on links
+document.querySelectorAll('.link').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log('Link clicked:', e.target.textContent);
+    });
+});
