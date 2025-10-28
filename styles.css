@@ -60,6 +60,11 @@ body {
     box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
 
+.purple-button {
+    background: linear-gradient(135deg, #9333ea, #7e22ce) !important;
+    color: white !important;
+}
+
 .custom-toast-section {
     background: rgba(255,255,255,0.1);
     padding: 30px;
