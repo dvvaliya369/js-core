@@ -32,6 +32,31 @@ body {
     opacity: 0.9;
 }
 
+.dark-blue-button {
+    padding: 15px 40px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #1e3a8a;
+    color: white;
+    box-shadow: 0 6px 20px rgba(30, 58, 138, 0.4);
+    margin: 20px 0;
+}
+
+.dark-blue-button:hover {
+    background: #1e40af;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(30, 58, 138, 0.5);
+}
+
+.dark-blue-button:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(30, 58, 138, 0.4);
+}
+
 .button-group {
     display: flex;
     flex-wrap: wrap;
