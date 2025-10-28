@@ -18,6 +18,15 @@ body {
     text-align: center;
 }
 
+.blue-box {
+    width: 200px;
+    height: 200px;
+    background-color: #3182ce;
+    margin: 0 auto 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
 .demo-container h1 {
     color: white;
     margin-bottom: 20px;
