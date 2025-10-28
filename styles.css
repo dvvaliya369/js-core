@@ -4,250 +4,392 @@
     box-sizing: border-box;
 }
 
+:root {
+    --dark-red-900: #1a0000;
+    --dark-red-800: #2d0a0a;
+    --dark-red-700: #4a0e0e;
+    --dark-red-600: #6b1414;
+    --dark-red-500: #8b0000;
+    --red-500: #b91c1c;
+    --red-400: #dc143c;
+    --red-300: #ef4444;
+    --red-200: #fca5a5;
+    --red-100: #fee2e2;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--dark-red-900) 0%, var(--dark-red-700) 50%, var(--dark-red-800) 100%);
     min-height: 100vh;
-    color: #333;
-}
-
-.demo-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 40px 20px;
-    text-align: center;
-}
-
-.demo-container h1 {
-    color: white;
-    margin-bottom: 20px;
-    font-size: 2.5rem;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-
-.demo-container p {
-    color: white;
-    margin-bottom: 40px;
-    font-size: 1.1rem;
-    opacity: 0.9;
-}
-
-.button-group {
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
+    align-items: center;
     justify-content: center;
-    margin-bottom: 50px;
+    padding: 20px;
+    color: var(--gray-100);
 }
 
-.button-group button,
-.custom-toast-section button {
-    padding: 12px 24px;
+.app-container {
+    width: 100%;
+    max-width: 600px;
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.todo-wrapper {
+    background: rgba(45, 10, 10, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(220, 20, 60, 0.1);
+}
+
+.app-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.app-header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--red-400), var(--red-200));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    text-shadow: 0 0 30px rgba(220, 20, 60, 0.3);
+}
+
+.subtitle {
+    color: var(--red-200);
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+.todo-input-section {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.todo-input {
+    flex: 1;
+    padding: 16px 20px;
+    border: 2px solid var(--dark-red-600);
+    border-radius: 12px;
+    font-size: 1rem;
+    background: var(--dark-red-800);
+    color: var(--gray-100);
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.todo-input::placeholder {
+    color: var(--gray-400);
+}
+
+.todo-input:focus {
+    border-color: var(--red-400);
+    box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.2);
+    background: var(--dark-red-700);
+}
+
+.add-btn {
+    padding: 16px 32px;
+    background: linear-gradient(135deg, var(--red-500), var(--red-400));
+    color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    background: white;
-    color: #333;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
 }
 
-.button-group button:hover,
-.custom-toast-section button:hover {
+.add-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    box-shadow: 0 6px 20px rgba(220, 20, 60, 0.4);
+    background: linear-gradient(135deg, var(--red-400), var(--red-300));
 }
 
-.custom-toast-section {
-    background: rgba(255,255,255,0.1);
-    padding: 30px;
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.2);
+.add-btn:active {
+    transform: translateY(0);
 }
 
-.custom-toast-section h2 {
-    color: white;
+.todo-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
-    font-size: 1.5rem;
+    padding: 12px 20px;
+    background: var(--dark-red-800);
+    border-radius: 10px;
+    border: 1px solid var(--dark-red-600);
 }
 
-.custom-toast-section input,
-.custom-toast-section select {
-    padding: 10px 15px;
-    margin: 0 10px 15px 10px;
+.todo-count {
+    color: var(--red-200);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    background: var(--dark-red-800);
+    padding: 6px;
+    border-radius: 12px;
+    border: 1px solid var(--dark-red-600);
+}
+
+.filter-btn {
+    flex: 1;
+    padding: 10px 20px;
+    background: transparent;
+    color: var(--gray-300);
     border: none;
     border-radius: 8px;
-    font-size: 1rem;
-    width: 200px;
-    max-width: 100%;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.custom-toast-section input:focus,
-.custom-toast-section select:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+.filter-btn:hover {
+    color: var(--red-200);
+    background: var(--dark-red-700);
 }
 
-/* Toast Container */
-.toast-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 400px;
-    width: 100%;
+.filter-btn.active {
+    background: linear-gradient(135deg, var(--red-500), var(--red-400));
+    color: white;
+    box-shadow: 0 2px 8px rgba(220, 20, 60, 0.3);
 }
 
-/* Toast Message */
-.toast {
+.todo-list {
+    list-style: none;
+    margin-bottom: 24px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.todo-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.todo-list::-webkit-scrollbar-track {
+    background: var(--dark-red-800);
+    border-radius: 10px;
+}
+
+.todo-list::-webkit-scrollbar-thumb {
+    background: var(--dark-red-600);
+    border-radius: 10px;
+}
+
+.todo-list::-webkit-scrollbar-thumb:hover {
+    background: var(--red-500);
+}
+
+.todo-item {
     display: flex;
     align-items: center;
     padding: 16px 20px;
+    background: var(--dark-red-800);
+    border: 1px solid var(--dark-red-600);
     border-radius: 12px;
-    color: white;
-    font-weight: 500;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.1);
-    transform: translateX(100%);
-    opacity: 0;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-    overflow: hidden;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    animation: slideIn 0.3s ease;
 }
 
-.toast.show {
-    transform: translateX(0);
-    opacity: 1;
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
-.toast.hide {
-    transform: translateX(100%);
-    opacity: 0;
+.todo-item:hover {
+    border-color: var(--red-500);
+    box-shadow: 0 4px 12px rgba(220, 20, 60, 0.2);
+    transform: translateX(4px);
 }
 
-/* Toast Types */
-.toast.success {
-    background: linear-gradient(135deg, #48bb78, #38a169);
+.todo-item.completed {
+    opacity: 0.6;
 }
 
-.toast.error {
-    background: linear-gradient(135deg, #f56565, #e53e3e);
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+    color: var(--gray-400);
 }
 
-.toast.warning {
-    background: linear-gradient(135deg, #ed8936, #dd6b20);
-}
-
-.toast.info {
-    background: linear-gradient(135deg, #4299e1, #3182ce);
-}
-
-/* Toast Icon */
-.toast-icon {
-    margin-right: 12px;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.todo-checkbox {
     width: 24px;
     height: 24px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-
-/* Toast Message */
-.toast-message {
-    flex: 1;
-    font-size: 0.95rem;
-    line-height: 1.4;
-}
-
-/* Toast Close Button */
-.toast-close {
-    margin-left: 12px;
-    background: none;
-    border: none;
-    color: white;
+    border: 2px solid var(--dark-red-600);
+    border-radius: 6px;
+    margin-right: 16px;
     cursor: pointer;
-    font-size: 1.2rem;
-    padding: 4px;
-    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s;
+    transition: all 0.3s ease;
     flex-shrink: 0;
+    background: var(--dark-red-700);
 }
 
-.toast-close:hover {
-    background: rgba(255,255,255,0.2);
+.todo-checkbox:hover {
+    border-color: var(--red-400);
+    background: var(--dark-red-600);
 }
 
-/* Progress Bar */
-.toast-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 3px;
-    background: rgba(255,255,255,0.3);
-    transition: width linear;
+.todo-item.completed .todo-checkbox {
+    background: linear-gradient(135deg, var(--red-500), var(--red-400));
+    border-color: var(--red-400);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .toast-container {
-        right: 10px;
-        left: 10px;
-        max-width: none;
+.todo-checkbox::after {
+    content: '✓';
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.2s ease;
+}
+
+.todo-item.completed .todo-checkbox::after {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.todo-text {
+    flex: 1;
+    color: var(--gray-100);
+    font-size: 1rem;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.delete-btn {
+    padding: 8px 12px;
+    background: transparent;
+    color: var(--gray-400);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.todo-item:hover .delete-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.delete-btn:hover {
+    background: var(--red-500);
+    color: white;
+}
+
+.todo-footer {
+    display: flex;
+    justify-content: center;
+}
+
+.clear-btn {
+    padding: 12px 24px;
+    background: transparent;
+    color: var(--red-200);
+    border: 2px solid var(--dark-red-600);
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.clear-btn:hover {
+    background: var(--red-500);
+    color: white;
+    border-color: var(--red-500);
+    box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+}
+
+.clear-btn:active {
+    transform: scale(0.98);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--gray-400);
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state-text {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.empty-state-subtext {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+@media (max-width: 640px) {
+    .todo-wrapper {
+        padding: 24px;
     }
-    
-    .button-group {
+
+    .app-header h1 {
+        font-size: 2.5rem;
+    }
+
+    .todo-input-section {
         flex-direction: column;
-        align-items: center;
     }
-    
-    .button-group button {
-        width: 200px;
-    }
-    
-    .custom-toast-section input,
-    .custom-toast-section select {
+
+    .add-btn {
         width: 100%;
-        margin: 5px 0;
     }
-    
-    .demo-container h1 {
-        font-size: 2rem;
-    }
-}
 
-/* Animation for multiple toasts */
-@keyframes slideInRight {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
+    .filter-buttons {
+        flex-direction: column;
     }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
 
-@keyframes slideOutRight {
-    from {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(100%);
-        opacity: 0;
+    .filter-btn {
+        width: 100%;
     }
 }
