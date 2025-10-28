@@ -11,6 +11,15 @@ body {
     color: #333;
 }
 
+.white-box {
+    width: 300px;
+    height: 200px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    margin: 40px auto;
+}
+
 .demo-container {
     max-width: 800px;
     margin: 0 auto;
