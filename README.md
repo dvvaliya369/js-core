@@ -10,6 +10,7 @@ The `debounce` function delays the execution of a function until after a specifi
 
 #### Usage
 
+**JavaScript:**
 ```javascript
 const { debounce } = require('./utils.js');
 
@@ -20,6 +21,19 @@ debouncedSave(); // Will execute after 300ms of no further calls
 // Immediate execution
 const debouncedImmediate = debounce(saveData, 300, true);
 debouncedImmediate(); // Executes immediately, then debounces further calls
+```
+
+**TypeScript:**
+```typescript
+import { debounce } from './utils';
+
+// Type-safe usage with parameters
+const saveUser = (name: string, age: number) => {
+    console.log(`Saving ${name}, age ${age}`);
+};
+
+const debouncedSaveUser = debounce(saveUser, 300);
+debouncedSaveUser('John', 30); // Fully typed!
 ```
 
 #### Parameters
