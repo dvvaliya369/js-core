@@ -1,0 +1,14 @@
+{
+  "name": "debounce-utils-example",
+  "version": "1.0.0",
+  "description": "Example project with debounce utility functions",
+  "type": "module",
+  "main": "utils/index.js",
+  "scripts": {
+    "example": "node example-usage.js",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": ["debounce", "utilities", "javascript", "typescript"],
+  "author": "Blackbox AI",
+  "license": "MIT"
+}
