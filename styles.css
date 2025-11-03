@@ -9,6 +9,42 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     color: #333;
+    padding-top: 60px;
+}
+
+/* Navigation */
+.navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 15px 20px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    z-index: 100;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .demo-container {
@@ -94,7 +130,7 @@ body {
 /* Toast Container */
 .toast-container {
     position: fixed;
-    top: 20px;
+    top: 80px;
     right: 20px;
     z-index: 1000;
     display: flex;
@@ -203,10 +239,21 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+
+    .navigation {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
     .toast-container {
         right: 10px;
         left: 10px;
         max-width: none;
+        top: 90px;
     }
     
     .button-group {
