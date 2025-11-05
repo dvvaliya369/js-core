@@ -1,3 +1,42 @@
+class ThemeManager {
+    constructor() {
+        this.themeToggle = document.getElementById('themeToggle');
+        this.themeIcon = document.querySelector('.theme-icon');
+        this.init();
+    }
+
+    init() {
+        this.loadTheme();
+        this.attachEventListeners();
+    }
+
+    attachEventListeners() {
+        this.themeToggle.addEventListener('click', () => this.toggleTheme());
+    }
+
+    loadTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        this.applyTheme(savedTheme);
+    }
+
+    toggleTheme() {
+        const currentTheme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        this.applyTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+    }
+
+    applyTheme(theme) {
+        if (theme === 'dark') {
+            document.body.classList.add('dark-theme');
+            this.themeIcon.textContent = '☀️';
+        } else {
+            document.body.classList.remove('dark-theme');
+            this.themeIcon.textContent = '🌙';
+        }
+    }
+}
+
 class TodoManager {
     constructor() {
         this.todos = [];
@@ -206,18 +245,21 @@ class TodoManager {
     }
 }
 
-// Initialize todo manager when DOM is ready
+// Initialize theme and todo manager when DOM is ready
+let themeManager;
 let todoManager;
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
+        themeManager = new ThemeManager();
         todoManager = new TodoManager();
     });
 } else {
+    themeManager = new ThemeManager();
     todoManager = new TodoManager();
 }
 
 // Export for module usage (if needed)
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { TodoManager };
+    module.exports = { ThemeManager, TodoManager };
 }
