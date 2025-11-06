@@ -8,8 +8,11 @@ A collection of JavaScript utility functions for common programming tasks.
 
 The `debounce` function delays the execution of a function until after a specified wait time has passed since the last time it was invoked. This is useful for limiting the rate at which a function can fire, such as in search inputs or resize events.
 
+**TypeScript Support:** Full TypeScript type definitions are included in `utils.d.ts` for enhanced type safety and IDE autocomplete.
+
 #### Usage
 
+**JavaScript:**
 ```javascript
 const { debounce } = require('./utils.js');
 
@@ -20,6 +23,19 @@ debouncedSave(); // Will execute after 300ms of no further calls
 // Immediate execution
 const debouncedImmediate = debounce(saveData, 300, true);
 debouncedImmediate(); // Executes immediately, then debounces further calls
+```
+
+**TypeScript:**
+```typescript
+import { debounce } from './utils';
+
+// Type-safe usage with full IDE support
+const handleSearch = (query: string) => {
+    console.log('Searching for:', query);
+};
+
+const debouncedSearch = debounce(handleSearch, 300);
+debouncedSearch('example'); // Fully typed!
 ```
 
 #### Parameters
