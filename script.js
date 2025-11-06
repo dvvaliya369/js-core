@@ -27,7 +27,7 @@ class ToastManager {
         toast.innerHTML = `
             <div class="toast-icon">${this.getIcon(type)}</div>
             <div class="toast-message">${message}</div>
-            <button class="toast-close" onclick="toastManager.removeToast('${toastId}')" aria-label="Close">×</button>
+            <button type="button" class="toast-close" data-toast-id="${toastId}" aria-label="Close">×</button>
             <div class="toast-progress"></div>
         `;
 
@@ -135,10 +135,49 @@ function showCustomToast() {
     messageInput.value = ''; // Clear input after showing toast
 }
 
-// Add keyboard support for custom toast
-document.getElementById('customMessage')?.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        showCustomToast();
+// Initialize event listeners when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Event delegation for toast buttons
+    const buttonGroup = document.querySelector('.button-group');
+    if (buttonGroup) {
+        buttonGroup.addEventListener('click', function(e) {
+            const button = e.target.closest('button[data-toast-type]');
+            if (button) {
+                const type = button.dataset.toastType;
+                const message = button.dataset.toastMessage;
+                showToast(type, message);
+            }
+        });
+    }
+
+    // Custom toast button
+    const customToastBtn = document.getElementById('showCustomToastBtn');
+    if (customToastBtn) {
+        customToastBtn.addEventListener('click', showCustomToast);
+    }
+
+    // Add keyboard support for custom toast
+    const customMessageInput = document.getElementById('customMessage');
+    if (customMessageInput) {
+        customMessageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                showCustomToast();
+            }
+        });
+    }
+
+    // Event delegation for toast close buttons
+    const toastContainer = document.getElementById('toast-container');
+    if (toastContainer) {
+        toastContainer.addEventListener('click', function(e) {
+            const closeButton = e.target.closest('.toast-close');
+            if (closeButton) {
+                const toastId = closeButton.dataset.toastId;
+                if (toastId) {
+                    toastManager.removeToast(toastId);
+                }
+            }
+        });
     }
 });
 
