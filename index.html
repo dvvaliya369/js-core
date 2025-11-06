@@ -3,36 +3,321 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toast Message Component</title>
+    <title>Elite Cuts - Premium Barber Shop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="demo-container">
-        <h1>Toast Message Component Demo</h1>
-        <p>Click the buttons below to show different types of toast messages:</p>
-        
-        <div class="button-group">
-            <button onclick="showToast('success', 'Success! Your action was completed successfully.')">Success Toast</button>
-            <button onclick="showToast('error', 'Error! Something went wrong. Please try again.')">Error Toast</button>
-            <button onclick="showToast('warning', 'Warning! This action cannot be undone.')">Warning Toast</button>
-            <button onclick="showToast('info', 'Info: Your data has been updated.')">Info Toast</button>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <h2>ELITE CUTS</h2>
+                </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#home" class="nav-link">Home</a></li>
+                    <li><a href="#services" class="nav-link">Services</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#gallery" class="nav-link">Gallery</a></li>
+                    <li><a href="#pricing" class="nav-link">Pricing</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+                <button class="book-btn-nav">Book Now</button>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
         </div>
+    </nav>
 
-        <div class="custom-toast-section">
-            <h2>Custom Toast</h2>
-            <input type="text" id="customMessage" placeholder="Enter your custom message..." />
-            <select id="customType">
-                <option value="success">Success</option>
-                <option value="error">Error</option>
-                <option value="warning">Warning</option>
-                <option value="info">Info</option>
-            </select>
-            <button onclick="showCustomToast()">Show Custom Toast</button>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Where Style Meets Precision</h1>
+                <p class="hero-subtitle">Experience the art of traditional barbering with a modern twist</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary">Book Appointment</button>
+                    <button class="btn btn-secondary">View Services</button>
+                </div>
+            </div>
         </div>
-    </div>
+        <div class="scroll-indicator">
+            <span>Scroll Down</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
 
-    <!-- Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Services</h2>
+                <p class="section-subtitle">Premium grooming services tailored to your style</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">✂</div>
+                    <h3>Classic Haircut</h3>
+                    <p>Traditional cuts with modern techniques for a timeless look</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🪒</div>
+                    <h3>Hot Towel Shave</h3>
+                    <p>Luxurious straight razor shave with premium products</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">💈</div>
+                    <h3>Beard Trim</h3>
+                    <p>Expert beard sculpting and maintenance for the perfect shape</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">✨</div>
+                    <h3>Hair Styling</h3>
+                    <p>Professional styling for any occasion or event</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🎨</div>
+                    <h3>Hair Coloring</h3>
+                    <p>Expert color treatments and highlights</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">👔</div>
+                    <h3>Grooming Package</h3>
+                    <p>Complete grooming experience from head to toe</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-image">
+                    <div class="image-placeholder">
+                        <span>Premium Barbering</span>
+                    </div>
+                </div>
+                <div class="about-text">
+                    <h2 class="section-title">Crafting Excellence Since 2010</h2>
+                    <p>At Elite Cuts, we believe that a great haircut is more than just a service—it's an experience. Our master barbers combine traditional techniques with contemporary styles to deliver exceptional results every time.</p>
+                    <p>With over a decade of experience, we've built a reputation for precision, attention to detail, and unparalleled customer service. Step into our shop and discover the difference that true craftsmanship makes.</p>
+                    <div class="about-stats">
+                        <div class="stat">
+                            <h3>15+</h3>
+                            <p>Years Experience</p>
+                        </div>
+                        <div class="stat">
+                            <h3>10K+</h3>
+                            <p>Happy Clients</p>
+                        </div>
+                        <div class="stat">
+                            <h3>5</h3>
+                            <p>Master Barbers</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Work</h2>
+                <p class="section-subtitle">A showcase of our finest cuts and styles</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">Cut 1</div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">Cut 2</div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">Cut 3</div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">Cut 4</div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">Cut 5</div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">Cut 6</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Pricing</h2>
+                <p class="section-subtitle">Transparent pricing for premium services</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Basic</h3>
+                    <div class="price">$35</div>
+                    <ul class="pricing-features">
+                        <li>Classic Haircut</li>
+                        <li>Wash & Style</li>
+                        <li>30 Minutes</li>
+                    </ul>
+                    <button class="btn btn-primary">Book Now</button>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="popular-badge">Most Popular</div>
+                    <h3>Premium</h3>
+                    <div class="price">$65</div>
+                    <ul class="pricing-features">
+                        <li>Haircut & Beard Trim</li>
+                        <li>Hot Towel Treatment</li>
+                        <li>Wash & Style</li>
+                        <li>60 Minutes</li>
+                    </ul>
+                    <button class="btn btn-primary">Book Now</button>
+                </div>
+                <div class="pricing-card">
+                    <h3>Deluxe</h3>
+                    <div class="price">$95</div>
+                    <ul class="pricing-features">
+                        <li>Full Grooming Package</li>
+                        <li>Hot Towel Shave</li>
+                        <li>Facial Treatment</li>
+                        <li>Wash & Style</li>
+                        <li>90 Minutes</li>
+                    </ul>
+                    <button class="btn btn-primary">Book Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2 class="section-title">Get In Touch</h2>
+                    <p>Ready for a fresh new look? Book your appointment today or reach out with any questions.</p>
+                    <div class="info-items">
+                        <div class="info-item">
+                            <div class="info-icon">📍</div>
+                            <div>
+                                <h4>Location</h4>
+                                <p>123 Main Street, Downtown<br>New York, NY 10001</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">📞</div>
+                            <div>
+                                <h4>Phone</h4>
+                                <p>(555) 123-4567</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">🕐</div>
+                            <div>
+                                <h4>Hours</h4>
+                                <p>Mon-Fri: 9AM - 8PM<br>Sat-Sun: 10AM - 6PM</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">✉️</div>
+                            <div>
+                                <h4>Email</h4>
+                                <p>info@elitecuts.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3>Book Your Appointment</h3>
+                    <form id="bookingForm">
+                        <div class="form-group">
+                            <input type="text" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" placeholder="Phone Number" required>
+                        </div>
+                        <div class="form-group">
+                            <select required>
+                                <option value="">Select Service</option>
+                                <option value="haircut">Classic Haircut</option>
+                                <option value="shave">Hot Towel Shave</option>
+                                <option value="beard">Beard Trim</option>
+                                <option value="styling">Hair Styling</option>
+                                <option value="coloring">Hair Coloring</option>
+                                <option value="package">Grooming Package</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="date" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Additional Notes" rows="4"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Book Appointment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ELITE CUTS</h3>
+                    <p>Where tradition meets modern style. Experience the finest in men's grooming.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#pricing">Haircuts</a></li>
+                        <li><a href="#pricing">Shaves</a></li>
+                        <li><a href="#pricing">Beard Grooming</a></li>
+                        <li><a href="#pricing">Styling</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link">Facebook</a>
+                        <a href="#" class="social-link">Instagram</a>
+                        <a href="#" class="social-link">Twitter</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Elite Cuts. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>
