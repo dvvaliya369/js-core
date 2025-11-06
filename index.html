@@ -12,10 +12,10 @@
         <p>Click the buttons below to show different types of toast messages:</p>
         
         <div class="button-group">
-            <button onclick="showToast('success', 'Success! Your action was completed successfully.')">Success Toast</button>
-            <button onclick="showToast('error', 'Error! Something went wrong. Please try again.')">Error Toast</button>
-            <button onclick="showToast('warning', 'Warning! This action cannot be undone.')">Warning Toast</button>
-            <button onclick="showToast('info', 'Info: Your data has been updated.')">Info Toast</button>
+            <button type="button" data-toast-type="success" data-toast-message="Success! Your action was completed successfully.">Success Toast</button>
+            <button type="button" data-toast-type="error" data-toast-message="Error! Something went wrong. Please try again.">Error Toast</button>
+            <button type="button" data-toast-type="warning" data-toast-message="Warning! This action cannot be undone.">Warning Toast</button>
+            <button type="button" data-toast-type="info" data-toast-message="Info: Your data has been updated.">Info Toast</button>
         </div>
 
         <div class="custom-toast-section">
@@ -27,7 +27,7 @@
                 <option value="warning">Warning</option>
                 <option value="info">Info</option>
             </select>
-            <button onclick="showCustomToast()">Show Custom Toast</button>
+            <button type="button" id="showCustomToastBtn">Show Custom Toast</button>
         </div>
     </div>
 
