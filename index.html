@@ -3,36 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toast Message Component</title>
+    <title>Analog Watch</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="demo-container">
-        <h1>Toast Message Component Demo</h1>
-        <p>Click the buttons below to show different types of toast messages:</p>
+    <div class="container">
+        <h1>Analog Watch</h1>
         
-        <div class="button-group">
-            <button onclick="showToast('success', 'Success! Your action was completed successfully.')">Success Toast</button>
-            <button onclick="showToast('error', 'Error! Something went wrong. Please try again.')">Error Toast</button>
-            <button onclick="showToast('warning', 'Warning! This action cannot be undone.')">Warning Toast</button>
-            <button onclick="showToast('info', 'Info: Your data has been updated.')">Info Toast</button>
+        <div class="watch">
+            <div class="watch-face">
+                <!-- Hour markers -->
+                <div class="hour-marker" style="--i: 1;"><span>1</span></div>
+                <div class="hour-marker" style="--i: 2;"><span>2</span></div>
+                <div class="hour-marker" style="--i: 3;"><span>3</span></div>
+                <div class="hour-marker" style="--i: 4;"><span>4</span></div>
+                <div class="hour-marker" style="--i: 5;"><span>5</span></div>
+                <div class="hour-marker" style="--i: 6;"><span>6</span></div>
+                <div class="hour-marker" style="--i: 7;"><span>7</span></div>
+                <div class="hour-marker" style="--i: 8;"><span>8</span></div>
+                <div class="hour-marker" style="--i: 9;"><span>9</span></div>
+                <div class="hour-marker" style="--i: 10;"><span>10</span></div>
+                <div class="hour-marker" style="--i: 11;"><span>11</span></div>
+                <div class="hour-marker" style="--i: 12;"><span>12</span></div>
+                
+                <!-- Minute markers -->
+                <div class="minute-markers">
+                    <div class="minute-marker" style="--i: 1;"></div>
+                    <div class="minute-marker" style="--i: 2;"></div>
+                    <div class="minute-marker" style="--i: 3;"></div>
+                    <div class="minute-marker" style="--i: 4;"></div>
+                    <div class="minute-marker" style="--i: 5;"></div>
+                    <div class="minute-marker" style="--i: 6;"></div>
+                    <div class="minute-marker" style="--i: 7;"></div>
+                    <div class="minute-marker" style="--i: 8;"></div>
+                    <div class="minute-marker" style="--i: 9;"></div>
+                    <div class="minute-marker" style="--i: 10;"></div>
+                    <div class="minute-marker" style="--i: 11;"></div>
+                    <div class="minute-marker" style="--i: 12;"></div>
+                    <div class="minute-marker" style="--i: 13;"></div>
+                    <div class="minute-marker" style="--i: 14;"></div>
+                    <div class="minute-marker" style="--i: 15;"></div>
+                    <div class="minute-marker" style="--i: 16;"></div>
+                    <div class="minute-marker" style="--i: 17;"></div>
+                    <div class="minute-marker" style="--i: 18;"></div>
+                    <div class="minute-marker" style="--i: 19;"></div>
+                    <div class="minute-marker" style="--i: 20;"></div>
+                    <div class="minute-marker" style="--i: 21;"></div>
+                    <div class="minute-marker" style="--i: 22;"></div>
+                    <div class="minute-marker" style="--i: 23;"></div>
+                    <div class="minute-marker" style="--i: 24;"></div>
+                    <div class="minute-marker" style="--i: 25;"></div>
+                    <div class="minute-marker" style="--i: 26;"></div>
+                    <div class="minute-marker" style="--i: 27;"></div>
+                    <div class="minute-marker" style="--i: 28;"></div>
+                    <div class="minute-marker" style="--i: 29;"></div>
+                    <div class="minute-marker" style="--i: 30;"></div>
+                    <div class="minute-marker" style="--i: 31;"></div>
+                    <div class="minute-marker" style="--i: 32;"></div>
+                    <div class="minute-marker" style="--i: 33;"></div>
+                    <div class="minute-marker" style="--i: 34;"></div>
+                    <div class="minute-marker" style="--i: 35;"></div>
+                    <div class="minute-marker" style="--i: 36;"></div>
+                    <div class="minute-marker" style="--i: 37;"></div>
+                    <div class="minute-marker" style="--i: 38;"></div>
+                    <div class="minute-marker" style="--i: 39;"></div>
+                    <div class="minute-marker" style="--i: 40;"></div>
+                    <div class="minute-marker" style="--i: 41;"></div>
+                    <div class="minute-marker" style="--i: 42;"></div>
+                    <div class="minute-marker" style="--i: 43;"></div>
+                    <div class="minute-marker" style="--i: 44;"></div>
+                    <div class="minute-marker" style="--i: 45;"></div>
+                    <div class="minute-marker" style="--i: 46;"></div>
+                    <div class="minute-marker" style="--i: 47;"></div>
+                    <div class="minute-marker" style="--i: 48;"></div>
+                    <div class="minute-marker" style="--i: 49;"></div>
+                    <div class="minute-marker" style="--i: 50;"></div>
+                    <div class="minute-marker" style="--i: 51;"></div>
+                    <div class="minute-marker" style="--i: 52;"></div>
+                    <div class="minute-marker" style="--i: 53;"></div>
+                    <div class="minute-marker" style="--i: 54;"></div>
+                    <div class="minute-marker" style="--i: 55;"></div>
+                    <div class="minute-marker" style="--i: 56;"></div>
+                    <div class="minute-marker" style="--i: 57;"></div>
+                    <div class="minute-marker" style="--i: 58;"></div>
+                    <div class="minute-marker" style="--i: 59;"></div>
+                    <div class="minute-marker" style="--i: 60;"></div>
+                </div>
+                
+                <!-- Clock hands -->
+                <div class="hand hour-hand" id="hourHand"></div>
+                <div class="hand minute-hand" id="minuteHand"></div>
+                <div class="hand second-hand" id="secondHand"></div>
+                
+                <!-- Center pin -->
+                <div class="center-pin"></div>
+            </div>
         </div>
-
-        <div class="custom-toast-section">
-            <h2>Custom Toast</h2>
-            <input type="text" id="customMessage" placeholder="Enter your custom message..." />
-            <select id="customType">
-                <option value="success">Success</option>
-                <option value="error">Error</option>
-                <option value="warning">Warning</option>
-                <option value="info">Info</option>
-            </select>
-            <button onclick="showCustomToast()">Show Custom Toast</button>
-        </div>
+        
+        <div class="digital-time" id="digitalTime"></div>
     </div>
-
-    <!-- Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
 
     <script src="script.js"></script>
 </body>

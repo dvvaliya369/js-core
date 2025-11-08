@@ -8,246 +8,296 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: #333;
 }
 
-.demo-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 40px 20px;
+.container {
     text-align: center;
+    padding: 20px;
 }
 
-.demo-container h1 {
-    color: white;
-    margin-bottom: 20px;
-    font-size: 2.5rem;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-
-.demo-container p {
+h1 {
     color: white;
     margin-bottom: 40px;
-    font-size: 1.1rem;
-    opacity: 0.9;
+    font-size: 2.5rem;
+    text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    letter-spacing: 2px;
 }
 
-.button-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    margin-bottom: 50px;
+.watch {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    margin: 0 auto;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));
 }
 
-.button-group button,
-.custom-toast-section button {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
+.watch-face {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    border-radius: 50%;
+    border: 12px solid #2c3e50;
+    box-shadow: 
+        inset 0 0 30px rgba(0,0,0,0.1),
+        0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* Hour markers */
+.hour-marker {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    transform: rotate(calc(var(--i) * 30deg));
+}
+
+.hour-marker span {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) rotate(calc(var(--i) * -30deg));
+    font-size: 24px;
+    font-weight: 700;
+    color: #2c3e50;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Minute markers */
+.minute-markers {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.minute-marker {
+    position: absolute;
+    width: 2px;
+    height: 8px;
+    background: #95a5a6;
+    top: 8px;
+    left: 50%;
+    transform-origin: center 188px;
+    transform: translateX(-50%) rotate(calc(var(--i) * 6deg));
+}
+
+/* Hide minute markers at hour positions */
+.minute-marker:nth-child(5n) {
+    display: none;
+}
+
+/* Clock hands */
+.hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    border-radius: 10px;
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.hour-hand {
+    width: 8px;
+    height: 100px;
+    background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+    margin-left: -4px;
+    z-index: 3;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.minute-hand {
+    width: 6px;
+    height: 140px;
+    background: linear-gradient(180deg, #34495e 0%, #546e7a 100%);
+    margin-left: -3px;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.second-hand {
+    width: 3px;
+    height: 160px;
+    background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%);
+    margin-left: -1.5px;
+    z-index: 4;
+    box-shadow: 0 2px 6px rgba(231, 76, 60, 0.4);
+}
+
+/* Center pin */
+.center-pin {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, #e74c3c 0%, #c0392b 100%);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    box-shadow: 
+        0 0 0 3px #2c3e50,
+        0 4px 8px rgba(0,0,0,0.3);
+}
+
+.center-pin::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.3;
+}
+
+/* Digital time display */
+.digital-time {
+    margin-top: 40px;
+    font-size: 2rem;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: white;
-    color: #333;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-
-.button-group button:hover,
-.custom-toast-section button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
-.custom-toast-section {
+    color: white;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    letter-spacing: 3px;
     background: rgba(255,255,255,0.1);
-    padding: 30px;
+    padding: 15px 30px;
     border-radius: 15px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255,255,255,0.2);
+    display: inline-block;
 }
 
-.custom-toast-section h2 {
-    color: white;
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-}
-
-.custom-toast-section input,
-.custom-toast-section select {
-    padding: 10px 15px;
-    margin: 0 10px 15px 10px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    width: 200px;
-    max-width: 100%;
-}
-
-.custom-toast-section input:focus,
-.custom-toast-section select:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
-}
-
-/* Toast Container */
-.toast-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 400px;
-    width: 100%;
-}
-
-/* Toast Message */
-.toast {
-    display: flex;
-    align-items: center;
-    padding: 16px 20px;
-    border-radius: 12px;
-    color: white;
-    font-weight: 500;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.1);
-    transform: translateX(100%);
-    opacity: 0;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-    overflow: hidden;
-}
-
-.toast.show {
-    transform: translateX(0);
-    opacity: 1;
-}
-
-.toast.hide {
-    transform: translateX(100%);
-    opacity: 0;
-}
-
-/* Toast Types */
-.toast.success {
-    background: linear-gradient(135deg, #48bb78, #38a169);
-}
-
-.toast.error {
-    background: linear-gradient(135deg, #f56565, #e53e3e);
-}
-
-.toast.warning {
-    background: linear-gradient(135deg, #ed8936, #dd6b20);
-}
-
-.toast.info {
-    background: linear-gradient(135deg, #4299e1, #3182ce);
-}
-
-/* Toast Icon */
-.toast-icon {
-    margin-right: 12px;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-
-/* Toast Message */
-.toast-message {
-    flex: 1;
-    font-size: 0.95rem;
-    line-height: 1.4;
-}
-
-/* Toast Close Button */
-.toast-close {
-    margin-left: 12px;
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 1.2rem;
-    padding: 4px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
-    flex-shrink: 0;
-}
-
-.toast-close:hover {
-    background: rgba(255,255,255,0.2);
-}
-
-/* Progress Bar */
-.toast-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 3px;
-    background: rgba(255,255,255,0.3);
-    transition: width linear;
-}
-
-/* Responsive Design */
+/* Responsive design */
 @media (max-width: 768px) {
-    .toast-container {
-        right: 10px;
-        left: 10px;
-        max-width: none;
-    }
-    
-    .button-group {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .button-group button {
-        width: 200px;
-    }
-    
-    .custom-toast-section input,
-    .custom-toast-section select {
-        width: 100%;
-        margin: 5px 0;
-    }
-    
-    .demo-container h1 {
+    h1 {
         font-size: 2rem;
+        margin-bottom: 30px;
+    }
+    
+    .watch {
+        width: 320px;
+        height: 320px;
+    }
+    
+    .watch-face {
+        border: 10px solid #2c3e50;
+    }
+    
+    .hour-marker span {
+        font-size: 20px;
+        top: 15px;
+    }
+    
+    .minute-marker {
+        transform-origin: center 150px;
+    }
+    
+    .hour-hand {
+        width: 7px;
+        height: 80px;
+        margin-left: -3.5px;
+    }
+    
+    .minute-hand {
+        width: 5px;
+        height: 110px;
+        margin-left: -2.5px;
+    }
+    
+    .second-hand {
+        width: 2px;
+        height: 130px;
+        margin-left: -1px;
+    }
+    
+    .center-pin {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .digital-time {
+        font-size: 1.5rem;
+        padding: 12px 24px;
     }
 }
 
-/* Animation for multiple toasts */
-@keyframes slideInRight {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
     }
-    to {
-        transform: translateX(0);
-        opacity: 1;
+    
+    .watch {
+        width: 280px;
+        height: 280px;
+    }
+    
+    .watch-face {
+        border: 8px solid #2c3e50;
+    }
+    
+    .hour-marker span {
+        font-size: 18px;
+        top: 12px;
+    }
+    
+    .minute-marker {
+        transform-origin: center 132px;
+        height: 6px;
+    }
+    
+    .hour-hand {
+        width: 6px;
+        height: 70px;
+        margin-left: -3px;
+    }
+    
+    .minute-hand {
+        width: 4px;
+        height: 95px;
+        margin-left: -2px;
+    }
+    
+    .second-hand {
+        width: 2px;
+        height: 110px;
+        margin-left: -1px;
+    }
+    
+    .center-pin {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .digital-time {
+        font-size: 1.2rem;
+        padding: 10px 20px;
+        letter-spacing: 2px;
     }
 }
 
-@keyframes slideOutRight {
-    from {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(100%);
-        opacity: 0;
-    }
+/* Smooth animation for second hand */
+.second-hand {
+    transition: transform 0.05s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Add subtle glow effect to watch face */
+.watch-face::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 40%;
+    height: 40%;
+    background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
 }
