@@ -1,153 +1,62 @@
-class ToastManager {
+class AnalogWatch {
     constructor() {
-        this.container = document.getElementById('toast-container');
-        this.toasts = [];
-        this.toastCounter = 0;
-    }
-
-    // Icons for different toast types
-    getIcon(type) {
-        const icons = {
-            success: '✓',
-            error: '✕',
-            warning: '⚠',
-            info: 'ⓘ'
-        };
-        return icons[type] || icons.info;
-    }
-
-    // Create toast element
-    createToastElement(type, message, duration = 5000) {
-        const toastId = `toast-${++this.toastCounter}`;
+        this.hourHand = document.getElementById('hourHand');
+        this.minuteHand = document.getElementById('minuteHand');
+        this.secondHand = document.getElementById('secondHand');
+        this.digitalTime = document.getElementById('digitalTime');
         
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.id = toastId;
+        this.init();
+    }
+
+    init() {
+        this.updateClock();
+        setInterval(() => this.updateClock(), 1000);
+    }
+
+    updateClock() {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+        const milliseconds = now.getMilliseconds();
+
+        // Calculate degrees for each hand
+        // Second hand: 6 degrees per second (360/60)
+        // Add smooth sub-second movement
+        const secondDegrees = (seconds * 6) + (milliseconds * 0.006);
         
-        toast.innerHTML = `
-            <div class="toast-icon">${this.getIcon(type)}</div>
-            <div class="toast-message">${message}</div>
-            <button class="toast-close" onclick="toastManager.removeToast('${toastId}')" aria-label="Close">×</button>
-            <div class="toast-progress"></div>
-        `;
-
-        return { toast, toastId, duration };
-    }
-
-    // Show toast
-    showToast(type, message, duration = 5000) {
-        const { toast, toastId } = this.createToastElement(type, message, duration);
+        // Minute hand: 6 degrees per minute (360/60)
+        // Add smooth movement based on seconds
+        const minuteDegrees = (minutes * 6) + (seconds * 0.1);
         
-        // Add to container
-        this.container.appendChild(toast);
-        this.toasts.push(toastId);
+        // Hour hand: 30 degrees per hour (360/12)
+        // Add smooth movement based on minutes
+        const hourDegrees = (hours % 12) * 30 + (minutes * 0.5);
 
-        // Trigger animation
-        setTimeout(() => {
-            toast.classList.add('show');
-        }, 10);
+        // Apply rotation to hands
+        this.secondHand.style.transform = `rotate(${secondDegrees}deg)`;
+        this.minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
+        this.hourHand.style.transform = `rotate(${hourDegrees}deg)`;
 
-        // Start progress bar animation
-        const progressBar = toast.querySelector('.toast-progress');
-        if (progressBar) {
-            setTimeout(() => {
-                progressBar.style.width = '100%';
-                progressBar.style.transition = `width ${duration}ms linear`;
-            }, 50);
-        }
-
-        // Auto remove after duration
-        if (duration > 0) {
-            setTimeout(() => {
-                this.removeToast(toastId);
-            }, duration);
-        }
-
-        return toastId;
+        // Update digital time display
+        this.updateDigitalTime(hours, minutes, seconds);
     }
 
-    // Remove toast
-    removeToast(toastId) {
-        const toast = document.getElementById(toastId);
-        if (!toast) return;
-
-        toast.classList.add('hide');
-        toast.classList.remove('show');
-
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.parentNode.removeChild(toast);
-            }
-            this.toasts = this.toasts.filter(id => id !== toastId);
-        }, 400);
-    }
-
-    // Remove all toasts
-    removeAllToasts() {
-        this.toasts.forEach(toastId => {
-            this.removeToast(toastId);
-        });
-    }
-
-    // Show success toast
-    success(message, duration = 5000) {
-        return this.showToast('success', message, duration);
-    }
-
-    // Show error toast
-    error(message, duration = 5000) {
-        return this.showToast('error', message, duration);
-    }
-
-    // Show warning toast
-    warning(message, duration = 5000) {
-        return this.showToast('warning', message, duration);
-    }
-
-    // Show info toast
-    info(message, duration = 5000) {
-        return this.showToast('info', message, duration);
+    updateDigitalTime(hours, minutes, seconds) {
+        const formattedHours = String(hours).padStart(2, '0');
+        const formattedMinutes = String(minutes).padStart(2, '0');
+        const formattedSeconds = String(seconds).padStart(2, '0');
+        
+        this.digitalTime.textContent = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
     }
 }
 
-// Initialize toast manager
-const toastManager = new ToastManager();
-
-// Global function for easy access
-function showToast(type, message, duration = 5000) {
-    return toastManager.showToast(type, message, duration);
-}
-
-// Custom toast function for the demo
-function showCustomToast() {
-    const messageInput = document.getElementById('customMessage');
-    const typeSelect = document.getElementById('customType');
-    
-    const message = messageInput.value.trim();
-    const type = typeSelect.value;
-    
-    if (!message) {
-        showToast('error', 'Please enter a message!');
-        return;
-    }
-    
-    showToast(type, message);
-    messageInput.value = ''; // Clear input after showing toast
-}
-
-// Add keyboard support for custom toast
-document.getElementById('customMessage')?.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        showCustomToast();
-    }
+// Initialize the watch when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    new AnalogWatch();
 });
-
-// Example of programmatic usage (uncomment to test)
-// setTimeout(() => {
-//     toastManager.success('Welcome! This toast was shown automatically after page load.');
-// }, 1000);
 
 // Export for module usage (if needed)
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { ToastManager, showToast };
+    module.exports = { AnalogWatch };
 }
