@@ -3,36 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toast Message Component</title>
+    <title>Ludo Game - Play Online</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="demo-container">
-        <h1>Toast Message Component Demo</h1>
-        <p>Click the buttons below to show different types of toast messages:</p>
-        
-        <div class="button-group">
-            <button onclick="showToast('success', 'Success! Your action was completed successfully.')">Success Toast</button>
-            <button onclick="showToast('error', 'Error! Something went wrong. Please try again.')">Error Toast</button>
-            <button onclick="showToast('warning', 'Warning! This action cannot be undone.')">Warning Toast</button>
-            <button onclick="showToast('info', 'Info: Your data has been updated.')">Info Toast</button>
-        </div>
+    <div class="game-container">
+        <header class="game-header">
+            <h1>🎲 Ludo Game</h1>
+            <div class="game-info">
+                <div class="current-player">
+                    Current Player: <span id="currentPlayerName">Red</span>
+                </div>
+                <button id="newGameBtn" class="btn btn-primary">New Game</button>
+            </div>
+        </header>
 
-        <div class="custom-toast-section">
-            <h2>Custom Toast</h2>
-            <input type="text" id="customMessage" placeholder="Enter your custom message..." />
-            <select id="customType">
-                <option value="success">Success</option>
-                <option value="error">Error</option>
-                <option value="warning">Warning</option>
-                <option value="info">Info</option>
-            </select>
-            <button onclick="showCustomToast()">Show Custom Toast</button>
+        <div class="game-content">
+            <div class="game-board-wrapper">
+                <div id="ludoBoard" class="ludo-board">
+                    <!-- Red Home Area -->
+                    <div class="home-area red-home">
+                        <div class="home-title">RED</div>
+                        <div class="token-base">
+                            <div class="token red-token" data-player="red" data-token="0"></div>
+                            <div class="token red-token" data-player="red" data-token="1"></div>
+                            <div class="token red-token" data-player="red" data-token="2"></div>
+                            <div class="token red-token" data-player="red" data-token="3"></div>
+                        </div>
+                    </div>
+
+                    <!-- Green Home Area -->
+                    <div class="home-area green-home">
+                        <div class="home-title">GREEN</div>
+                        <div class="token-base">
+                            <div class="token green-token" data-player="green" data-token="0"></div>
+                            <div class="token green-token" data-player="green" data-token="1"></div>
+                            <div class="token green-token" data-player="green" data-token="2"></div>
+                            <div class="token green-token" data-player="green" data-token="3"></div>
+                        </div>
+                    </div>
+
+                    <!-- Yellow Home Area -->
+                    <div class="home-area yellow-home">
+                        <div class="home-title">YELLOW</div>
+                        <div class="token-base">
+                            <div class="token yellow-token" data-player="yellow" data-token="0"></div>
+                            <div class="token yellow-token" data-player="yellow" data-token="1"></div>
+                            <div class="token yellow-token" data-player="yellow" data-token="2"></div>
+                            <div class="token yellow-token" data-player="yellow" data-token="3"></div>
+                        </div>
+                    </div>
+
+                    <!-- Blue Home Area -->
+                    <div class="home-area blue-home">
+                        <div class="home-title">BLUE</div>
+                        <div class="token-base">
+                            <div class="token blue-token" data-player="blue" data-token="0"></div>
+                            <div class="token blue-token" data-player="blue" data-token="1"></div>
+                            <div class="token blue-token" data-player="blue" data-token="2"></div>
+                            <div class="token blue-token" data-player="blue" data-token="3"></div>
+                        </div>
+                    </div>
+
+                    <!-- Center Area -->
+                    <div class="center-area">
+                        <div class="center-triangle red-triangle"></div>
+                        <div class="center-triangle green-triangle"></div>
+                        <div class="center-triangle yellow-triangle"></div>
+                        <div class="center-triangle blue-triangle"></div>
+                        <div class="center-star">★</div>
+                    </div>
+
+                    <!-- Path Cells -->
+                    <div id="pathCells" class="path-cells"></div>
+                </div>
+            </div>
+
+            <div class="game-controls">
+                <div class="dice-section">
+                    <div class="dice-container">
+                        <div id="dice" class="dice">
+                            <div class="dice-face">?</div>
+                        </div>
+                        <button id="rollDiceBtn" class="btn btn-roll">Roll Dice</button>
+                    </div>
+                    <div id="diceResult" class="dice-result"></div>
+                </div>
+
+                <div class="players-status">
+                    <h3>Players</h3>
+                    <div class="player-card red-player active" data-player="red">
+                        <div class="player-color"></div>
+                        <div class="player-info">
+                            <div class="player-name">Red</div>
+                            <div class="player-tokens">Home: <span class="tokens-home">4</span> | Out: <span class="tokens-out">0</span></div>
+                        </div>
+                    </div>
+                    <div class="player-card green-player" data-player="green">
+                        <div class="player-color"></div>
+                        <div class="player-info">
+                            <div class="player-name">Green</div>
+                            <div class="player-tokens">Home: <span class="tokens-home">4</span> | Out: <span class="tokens-out">0</span></div>
+                        </div>
+                    </div>
+                    <div class="player-card yellow-player" data-player="yellow">
+                        <div class="player-color"></div>
+                        <div class="player-info">
+                            <div class="player-name">Yellow</div>
+                            <div class="player-tokens">Home: <span class="tokens-home">4</span> | Out: <span class="tokens-out">0</span></div>
+                        </div>
+                    </div>
+                    <div class="player-card blue-player" data-player="blue">
+                        <div class="player-color"></div>
+                        <div class="player-info">
+                            <div class="player-name">Blue</div>
+                            <div class="player-tokens">Home: <span class="tokens-home">4</span> | Out: <span class="tokens-out">0</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-log">
+                    <h3>Game Log</h3>
+                    <div id="gameLog" class="log-content">
+                        <div class="log-entry">Game started! Red's turn.</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
+    <!-- Winner Modal -->
+    <div id="winnerModal" class="modal">
+        <div class="modal-content">
+            <h2>🎉 Congratulations! 🎉</h2>
+            <p id="winnerText"></p>
+            <button id="playAgainBtn" class="btn btn-primary">Play Again</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
