@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ludo Game Board</title>
+    <link rel="stylesheet" href="ludo.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="game-title">LUDO GAME</h1>
+        
+        <div class="game-wrapper">
+            <div class="ludo-board">
+                <!-- Top Left - Green Home -->
+                <div class="home-area green-home">
+                    <div class="home-content">
+                        <div class="token-container">
+                            <div class="token green-token"></div>
+                            <div class="token green-token"></div>
+                            <div class="token green-token"></div>
+                            <div class="token green-token"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Path -->
+                <div class="path-section top-path">
+                    <div class="path-row">
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell safe-cell yellow-safe"></div>
+                    </div>
+                    <div class="path-row">
+                        <div class="cell"></div>
+                        <div class="cell yellow-arrow"></div>
+                        <div class="cell"></div>
+                    </div>
+                    <div class="path-row">
+                        <div class="cell green-start"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                    </div>
+                </div>
+
+                <!-- Top Right - Yellow Home -->
+                <div class="home-area yellow-home">
+                    <div class="home-content">
+                        <div class="token-container">
+                            <div class="token yellow-token"></div>
+                            <div class="token yellow-token"></div>
+                            <div class="token yellow-token"></div>
+                            <div class="token yellow-token"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Left Path -->
+                <div class="path-section left-path">
+                    <div class="path-column">
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell safe-cell green-safe"></div>
+                    </div>
+                    <div class="path-column">
+                        <div class="cell"></div>
+                        <div class="cell green-arrow"></div>
+                        <div class="cell"></div>
+                    </div>
+                    <div class="path-column">
+                        <div class="cell blue-start"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                    </div>
+                </div>
+
+                <!-- Center Area -->
+                <div class="center-area">
+                    <div class="center-triangle green-triangle"></div>
+                    <div class="center-triangle yellow-triangle"></div>
+                    <div class="center-triangle blue-triangle"></div>
+                    <div class="center-triangle red-triangle"></div>
+                    <div class="center-star"></div>
+                </div>
+
+                <!-- Right Path -->
+                <div class="path-section right-path">
+                    <div class="path-column">
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell yellow-start"></div>
+                    </div>
+                    <div class="path-column">
+                        <div class="cell"></div>
+                        <div class="cell red-arrow"></div>
+                        <div class="cell"></div>
+                    </div>
+                    <div class="path-column">
+                        <div class="cell safe-cell red-safe"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                    </div>
+                </div>
+
+                <!-- Bottom Left - Blue Home -->
+                <div class="home-area blue-home">
+                    <div class="home-content">
+                        <div class="token-container">
+                            <div class="token blue-token"></div>
+                            <div class="token blue-token"></div>
+                            <div class="token blue-token"></div>
+                            <div class="token blue-token"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Path -->
+                <div class="path-section bottom-path">
+                    <div class="path-row">
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell red-start"></div>
+                    </div>
+                    <div class="path-row">
+                        <div class="cell"></div>
+                        <div class="cell blue-arrow"></div>
+                        <div class="cell"></div>
+                    </div>
+                    <div class="path-row">
+                        <div class="cell safe-cell blue-safe"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                    </div>
+                </div>
+
+                <!-- Bottom Right - Red Home -->
+                <div class="home-area red-home">
+                    <div class="home-content">
+                        <div class="token-container">
+                            <div class="token red-token"></div>
+                            <div class="token red-token"></div>
+                            <div class="token red-token"></div>
+                            <div class="token red-token"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Controls -->
+            <div class="game-controls">
+                <div class="dice-container">
+                    <div class="dice" id="dice">
+                        <div class="dice-face">
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <button class="roll-button">Roll Dice</button>
+                </div>
+                
+                <div class="player-info">
+                    <div class="player-turn">
+                        <h3>Current Turn</h3>
+                        <div class="turn-indicator green-turn">Green Player</div>
+                    </div>
+                    
+                    <div class="game-stats">
+                        <div class="stat">
+                            <span class="stat-label">Dice Roll:</span>
+                            <span class="stat-value" id="diceValue">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
