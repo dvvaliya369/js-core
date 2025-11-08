@@ -3,36 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toast Message Component</title>
+    <title>Digital Watch</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="demo-container">
-        <h1>Toast Message Component Demo</h1>
-        <p>Click the buttons below to show different types of toast messages:</p>
-        
-        <div class="button-group">
-            <button onclick="showToast('success', 'Success! Your action was completed successfully.')">Success Toast</button>
-            <button onclick="showToast('error', 'Error! Something went wrong. Please try again.')">Error Toast</button>
-            <button onclick="showToast('warning', 'Warning! This action cannot be undone.')">Warning Toast</button>
-            <button onclick="showToast('info', 'Info: Your data has been updated.')">Info Toast</button>
-        </div>
-
-        <div class="custom-toast-section">
-            <h2>Custom Toast</h2>
-            <input type="text" id="customMessage" placeholder="Enter your custom message..." />
-            <select id="customType">
-                <option value="success">Success</option>
-                <option value="error">Error</option>
-                <option value="warning">Warning</option>
-                <option value="info">Info</option>
-            </select>
-            <button onclick="showCustomToast()">Show Custom Toast</button>
+    <div class="watch-container">
+        <div class="watch-card">
+            <div class="date-display">
+                <span id="day" class="day"></span>
+                <span id="date" class="date"></span>
+            </div>
+            
+            <div class="time-display">
+                <div class="time-group">
+                    <span id="hours" class="time-unit">00</span>
+                    <span class="separator">:</span>
+                    <span id="minutes" class="time-unit">00</span>
+                    <span class="separator">:</span>
+                    <span id="seconds" class="time-unit">00</span>
+                </div>
+                <span id="period" class="period">AM</span>
+            </div>
+            
+            <div class="decorative-line"></div>
         </div>
     </div>
-
-    <!-- Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
 
     <script src="script.js"></script>
 </body>
