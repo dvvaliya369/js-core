@@ -1,153 +1,219 @@
-class ToastManager {
-    constructor() {
-        this.container = document.getElementById('toast-container');
-        this.toasts = [];
-        this.toastCounter = 0;
-    }
+// Mobile Navigation Toggle
+const hamburger = document.querySelector('.hamburger');
+const navMenu = document.querySelector('.nav-menu');
+const navLinks = document.querySelectorAll('.nav-link');
 
-    // Icons for different toast types
-    getIcon(type) {
-        const icons = {
-            success: '✓',
-            error: '✕',
-            warning: '⚠',
-            info: 'ⓘ'
-        };
-        return icons[type] || icons.info;
-    }
+hamburger.addEventListener('click', () => {
+    navMenu.classList.toggle('active');
+    hamburger.classList.toggle('active');
+});
 
-    // Create toast element
-    createToastElement(type, message, duration = 5000) {
-        const toastId = `toast-${++this.toastCounter}`;
-        
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.id = toastId;
-        
-        toast.innerHTML = `
-            <div class="toast-icon">${this.getIcon(type)}</div>
-            <div class="toast-message">${message}</div>
-            <button class="toast-close" onclick="toastManager.removeToast('${toastId}')" aria-label="Close">×</button>
-            <div class="toast-progress"></div>
-        `;
+// Close mobile menu when clicking on a link
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+        hamburger.classList.remove('active');
+    });
+});
 
-        return { toast, toastId, duration };
-    }
-
-    // Show toast
-    showToast(type, message, duration = 5000) {
-        const { toast, toastId } = this.createToastElement(type, message, duration);
-        
-        // Add to container
-        this.container.appendChild(toast);
-        this.toasts.push(toastId);
-
-        // Trigger animation
-        setTimeout(() => {
-            toast.classList.add('show');
-        }, 10);
-
-        // Start progress bar animation
-        const progressBar = toast.querySelector('.toast-progress');
-        if (progressBar) {
-            setTimeout(() => {
-                progressBar.style.width = '100%';
-                progressBar.style.transition = `width ${duration}ms linear`;
-            }, 50);
+// Smooth scrolling for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            const offset = 70;
+            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
         }
+    });
+});
 
-        // Auto remove after duration
-        if (duration > 0) {
-            setTimeout(() => {
-                this.removeToast(toastId);
-            }, duration);
+// Active navigation link on scroll
+const sections = document.querySelectorAll('section[id]');
+
+function highlightNavigation() {
+    const scrollY = window.pageYOffset;
+
+    sections.forEach(section => {
+        const sectionHeight = section.offsetHeight;
+        const sectionTop = section.offsetTop - 100;
+        const sectionId = section.getAttribute('id');
+        const navLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
+
+        if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+            navLink?.classList.add('active');
+        } else {
+            navLink?.classList.remove('active');
         }
-
-        return toastId;
-    }
-
-    // Remove toast
-    removeToast(toastId) {
-        const toast = document.getElementById(toastId);
-        if (!toast) return;
-
-        toast.classList.add('hide');
-        toast.classList.remove('show');
-
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.parentNode.removeChild(toast);
-            }
-            this.toasts = this.toasts.filter(id => id !== toastId);
-        }, 400);
-    }
-
-    // Remove all toasts
-    removeAllToasts() {
-        this.toasts.forEach(toastId => {
-            this.removeToast(toastId);
-        });
-    }
-
-    // Show success toast
-    success(message, duration = 5000) {
-        return this.showToast('success', message, duration);
-    }
-
-    // Show error toast
-    error(message, duration = 5000) {
-        return this.showToast('error', message, duration);
-    }
-
-    // Show warning toast
-    warning(message, duration = 5000) {
-        return this.showToast('warning', message, duration);
-    }
-
-    // Show info toast
-    info(message, duration = 5000) {
-        return this.showToast('info', message, duration);
-    }
+    });
 }
 
-// Initialize toast manager
-const toastManager = new ToastManager();
+window.addEventListener('scroll', highlightNavigation);
 
-// Global function for easy access
-function showToast(type, message, duration = 5000) {
-    return toastManager.showToast(type, message, duration);
-}
+// Navbar background on scroll
+const navbar = document.querySelector('.navbar');
 
-// Custom toast function for the demo
-function showCustomToast() {
-    const messageInput = document.getElementById('customMessage');
-    const typeSelect = document.getElementById('customType');
-    
-    const message = messageInput.value.trim();
-    const type = typeSelect.value;
-    
-    if (!message) {
-        showToast('error', 'Please enter a message!');
-        return;
-    }
-    
-    showToast(type, message);
-    messageInput.value = ''; // Clear input after showing toast
-}
-
-// Add keyboard support for custom toast
-document.getElementById('customMessage')?.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        showCustomToast();
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) {
+        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+        navbar.style.boxShadow = '0 2px 30px rgba(0, 0, 0, 0.15)';
+    } else {
+        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+        navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
     }
 });
 
-// Example of programmatic usage (uncomment to test)
-// setTimeout(() => {
-//     toastManager.success('Welcome! This toast was shown automatically after page load.');
-// }, 1000);
+// Intersection Observer for fade-in animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
 
-// Export for module usage (if needed)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { ToastManager, showToast };
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, observerOptions);
+
+// Observe elements for animation
+const animateElements = document.querySelectorAll('.skill-card, .project-card, .stat');
+animateElements.forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+});
+
+// Contact form handling
+const contactForm = document.getElementById('contactForm');
+
+contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+
+    if (name && email && message) {
+        alert('Thank you for your message! I will get back to you soon.');
+        contactForm.reset();
+    } else {
+        alert('Please fill in all fields.');
+    }
+});
+
+// Typing effect for hero title (optional)
+function typeWriter(element, text, speed = 100) {
+    let i = 0;
+    element.textContent = '';
+
+    function type() {
+        if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+        }
+    }
+
+    type();
 }
+
+// Project cards hover effect enhancement
+const projectCards = document.querySelectorAll('.project-card');
+
+projectCards.forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-15px) scale(1.02)';
+    });
+
+    card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
+    });
+});
+
+// Skill cards animation on hover
+const skillCards = document.querySelectorAll('.skill-card');
+
+skillCards.forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        const icon = this.querySelector('.skill-icon');
+        icon.style.transform = 'scale(1.2) rotate(5deg)';
+        icon.style.transition = 'transform 0.3s ease';
+    });
+
+    card.addEventListener('mouseleave', function() {
+        const icon = this.querySelector('.skill-icon');
+        icon.style.transform = 'scale(1) rotate(0deg)';
+    });
+});
+
+// Add scroll to top button
+const scrollToTopBtn = document.createElement('button');
+scrollToTopBtn.innerHTML = '↑';
+scrollToTopBtn.className = 'scroll-to-top';
+scrollToTopBtn.style.cssText = `
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 999;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+`;
+
+document.body.appendChild(scrollToTopBtn);
+
+window.addEventListener('scroll', () => {
+    if (window.pageYOffset > 500) {
+        scrollToTopBtn.style.opacity = '1';
+    } else {
+        scrollToTopBtn.style.opacity = '0';
+    }
+});
+
+scrollToTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
+scrollToTopBtn.addEventListener('mouseenter', function() {
+    this.style.transform = 'scale(1.1)';
+});
+
+scrollToTopBtn.addEventListener('mouseleave', function() {
+    this.style.transform = 'scale(1)';
+});
+
+// Add parallax effect to hero section
+window.addEventListener('scroll', () => {
+    const hero = document.querySelector('.hero');
+    const scrolled = window.pageYOffset;
+    const heroContent = document.querySelector('.hero-content');
+
+    if (heroContent && scrolled < window.innerHeight) {
+        heroContent.style.transform = `translateY(${scrolled * 0.5}px)`;
+        heroContent.style.opacity = 1 - scrolled / 700;
+    }
+});
+
+// Initialize animations on page load
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Portfolio website loaded successfully!');
+});
