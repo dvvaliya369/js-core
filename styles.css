@@ -32,6 +32,24 @@
     --navbar-scroll-bg: rgba(45, 55, 72, 0.98);
 }
 
+[data-theme="dark"] .btn-primary {
+    background: linear-gradient(135deg, #1e3a8a, #1e40af);
+    color: white;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+    background: linear-gradient(135deg, #1e40af, #2563eb);
+}
+
+[data-theme="dark"] .contact-form .btn-primary {
+    background: linear-gradient(135deg, #1e3a8a, #1e40af);
+    color: white;
+}
+
+[data-theme="dark"] .contact-form .btn-primary:hover {
+    background: linear-gradient(135deg, #1e40af, #2563eb);
+}
+
 html {
     scroll-behavior: smooth;
 }
