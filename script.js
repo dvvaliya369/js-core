@@ -1,3 +1,25 @@
+// Theme Toggle Functionality
+const themeToggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+
+// Check for saved theme preference or default to light mode
+const currentTheme = localStorage.getItem('theme') || 'light';
+html.setAttribute('data-theme', currentTheme);
+
+themeToggle.addEventListener('click', () => {
+    const theme = html.getAttribute('data-theme');
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+
+    // Add a small animation effect
+    themeToggle.style.transform = 'rotate(360deg)';
+    setTimeout(() => {
+        themeToggle.style.transform = 'rotate(0deg)';
+    }, 300);
+});
+
 // Mobile Navigation Toggle
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
@@ -57,14 +79,24 @@ window.addEventListener('scroll', highlightNavigation);
 // Navbar background on scroll
 const navbar = document.querySelector('.navbar');
 
-window.addEventListener('scroll', () => {
+function updateNavbarBackground() {
+    const theme = html.getAttribute('data-theme');
+    const isDark = theme === 'dark';
+
     if (window.scrollY > 100) {
-        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+        navbar.style.background = isDark ? 'rgba(45, 55, 72, 0.98)' : 'rgba(255, 255, 255, 0.98)';
         navbar.style.boxShadow = '0 2px 30px rgba(0, 0, 0, 0.15)';
     } else {
-        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+        navbar.style.background = isDark ? 'rgba(45, 55, 72, 0.95)' : 'rgba(255, 255, 255, 0.95)';
         navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
     }
+}
+
+window.addEventListener('scroll', updateNavbarBackground);
+
+// Update navbar when theme changes
+themeToggle.addEventListener('click', () => {
+    setTimeout(updateNavbarBackground, 10);
 });
 
 // Intersection Observer for fade-in animations
