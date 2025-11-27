@@ -15,6 +15,20 @@
     --border: #e5e7eb;
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --navbar-bg: rgba(255, 255, 255, 0.95);
+    --footer-bg: #1f2937;
+}
+
+[data-theme="dark"] {
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --bg-light: #1f2937;
+    --bg-white: #111827;
+    --border: #374151;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+    --navbar-bg: rgba(17, 24, 39, 0.95);
+    --footer-bg: #0f172a;
 }
 
 body {
@@ -22,6 +36,7 @@ body {
     color: var(--text-primary);
     line-height: 1.6;
     background: var(--bg-white);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -36,11 +51,12 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--navbar-bg);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border);
     z-index: 1000;
     padding: 1rem 0;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .nav-wrapper {
@@ -91,6 +107,39 @@ body {
     height: 2px;
     background: var(--text-primary);
     transition: all 0.3s;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.theme-toggle {
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    border-color: var(--primary);
+}
+
+.theme-icon {
+    font-size: 1.25rem;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover .theme-icon {
+    transform: rotate(20deg);
 }
 
 /* Buttons */
@@ -254,11 +303,12 @@ body {
 }
 
 .feature-card {
-    background: white;
+    background: var(--bg-white);
     padding: 2rem;
     border-radius: 1rem;
     box-shadow: var(--shadow);
     transition: all 0.3s;
+    border: 1px solid var(--border);
 }
 
 .feature-card:hover {
@@ -309,9 +359,10 @@ body {
 
 /* Footer */
 .footer {
-    background: var(--text-primary);
+    background: var(--footer-bg);
     color: white;
     padding: 4rem 0 2rem;
+    transition: background-color 0.3s ease;
 }
 
 .footer-content {
@@ -365,6 +416,15 @@ body {
 
     .mobile-menu-toggle {
         display: flex;
+    }
+
+    .nav-actions {
+        gap: 0.5rem;
+    }
+
+    .nav-actions .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
     }
 
     .hero {
