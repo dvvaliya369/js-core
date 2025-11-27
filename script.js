@@ -1,153 +1,146 @@
-class ToastManager {
-    constructor() {
-        this.container = document.getElementById('toast-container');
-        this.toasts = [];
-        this.toastCounter = 0;
-    }
+// Mobile menu toggle
+const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+const navMenu = document.querySelector('.nav-menu');
 
-    // Icons for different toast types
-    getIcon(type) {
-        const icons = {
-            success: '✓',
-            error: '✕',
-            warning: '⚠',
-            info: 'ⓘ'
-        };
-        return icons[type] || icons.info;
-    }
+if (mobileMenuToggle) {
+    mobileMenuToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+        mobileMenuToggle.classList.toggle('active');
+    });
+}
 
-    // Create toast element
-    createToastElement(type, message, duration = 5000) {
-        const toastId = `toast-${++this.toastCounter}`;
-        
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.id = toastId;
-        
-        toast.innerHTML = `
-            <div class="toast-icon">${this.getIcon(type)}</div>
-            <div class="toast-message">${message}</div>
-            <button class="toast-close" onclick="toastManager.removeToast('${toastId}')" aria-label="Close">×</button>
-            <div class="toast-progress"></div>
-        `;
-
-        return { toast, toastId, duration };
-    }
-
-    // Show toast
-    showToast(type, message, duration = 5000) {
-        const { toast, toastId } = this.createToastElement(type, message, duration);
-        
-        // Add to container
-        this.container.appendChild(toast);
-        this.toasts.push(toastId);
-
-        // Trigger animation
-        setTimeout(() => {
-            toast.classList.add('show');
-        }, 10);
-
-        // Start progress bar animation
-        const progressBar = toast.querySelector('.toast-progress');
-        if (progressBar) {
-            setTimeout(() => {
-                progressBar.style.width = '100%';
-                progressBar.style.transition = `width ${duration}ms linear`;
-            }, 50);
-        }
-
-        // Auto remove after duration
-        if (duration > 0) {
-            setTimeout(() => {
-                this.removeToast(toastId);
-            }, duration);
-        }
-
-        return toastId;
-    }
-
-    // Remove toast
-    removeToast(toastId) {
-        const toast = document.getElementById(toastId);
-        if (!toast) return;
-
-        toast.classList.add('hide');
-        toast.classList.remove('show');
-
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.parentNode.removeChild(toast);
+// Smooth scrolling for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            
+            // Close mobile menu if open
+            if (navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                mobileMenuToggle.classList.remove('active');
             }
-            this.toasts = this.toasts.filter(id => id !== toastId);
-        }, 400);
-    }
-
-    // Remove all toasts
-    removeAllToasts() {
-        this.toasts.forEach(toastId => {
-            this.removeToast(toastId);
-        });
-    }
-
-    // Show success toast
-    success(message, duration = 5000) {
-        return this.showToast('success', message, duration);
-    }
-
-    // Show error toast
-    error(message, duration = 5000) {
-        return this.showToast('error', message, duration);
-    }
-
-    // Show warning toast
-    warning(message, duration = 5000) {
-        return this.showToast('warning', message, duration);
-    }
-
-    // Show info toast
-    info(message, duration = 5000) {
-        return this.showToast('info', message, duration);
-    }
-}
-
-// Initialize toast manager
-const toastManager = new ToastManager();
-
-// Global function for easy access
-function showToast(type, message, duration = 5000) {
-    return toastManager.showToast(type, message, duration);
-}
-
-// Custom toast function for the demo
-function showCustomToast() {
-    const messageInput = document.getElementById('customMessage');
-    const typeSelect = document.getElementById('customType');
-    
-    const message = messageInput.value.trim();
-    const type = typeSelect.value;
-    
-    if (!message) {
-        showToast('error', 'Please enter a message!');
-        return;
-    }
-    
-    showToast(type, message);
-    messageInput.value = ''; // Clear input after showing toast
-}
-
-// Add keyboard support for custom toast
-document.getElementById('customMessage')?.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        showCustomToast();
-    }
+        }
+    });
 });
 
-// Example of programmatic usage (uncomment to test)
-// setTimeout(() => {
-//     toastManager.success('Welcome! This toast was shown automatically after page load.');
-// }, 1000);
+// Navbar scroll effect
+let lastScroll = 0;
+const navbar = document.querySelector('.navbar');
 
-// Export for module usage (if needed)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { ToastManager, showToast };
-}
+window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    
+    if (currentScroll > 100) {
+        navbar.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+    } else {
+        navbar.style.boxShadow = 'none';
+    }
+    
+    lastScroll = currentScroll;
+});
+
+// Intersection Observer for fade-in animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, observerOptions);
+
+// Observe feature cards
+document.querySelectorAll('.feature-card').forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(30px)';
+    card.style.transition = `all 0.6s ease ${index * 0.1}s`;
+    observer.observe(card);
+});
+
+// Button click handlers
+document.querySelectorAll('.btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+        // Skip if it's a navigation link
+        if (button.closest('a[href^="#"]')) return;
+        
+        // Add ripple effect
+        const ripple = document.createElement('span');
+        const rect = button.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.classList.add('ripple');
+        
+        button.appendChild(ripple);
+        
+        setTimeout(() => ripple.remove(), 600);
+    });
+});
+
+// Add ripple styles dynamically
+const style = document.createElement('style');
+style.textContent = `
+    .btn {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.6);
+        transform: scale(0);
+        animation: ripple-animation 0.6s ease-out;
+        pointer-events: none;
+    }
+    
+    @keyframes ripple-animation {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+    
+    .nav-menu.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        gap: 1rem;
+    }
+    
+    .mobile-menu-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+    
+    .mobile-menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .mobile-menu-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -6px);
+    }
+`;
+document.head.appendChild(style);
+
+console.log('Landing page loaded successfully!');
