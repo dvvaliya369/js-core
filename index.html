@@ -29,11 +29,60 @@
             </select>
             <button onclick="showCustomToast()">Show Custom Toast</button>
         </div>
+
+        <div class="custom-toast-section" style="margin-top: 2rem;">
+            <h2>Throttle Utility Demo</h2>
+            <p style="margin-bottom: 1rem; color: #555;">
+                Click the button rapidly — the handler fires <strong>at most once every 1000 ms</strong>, no matter how fast you click.
+                Compare with the raw click counter to see throttling in action.
+            </p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem;">
+                <button id="throttleBtn">Click me fast!</button>
+                <button onclick="resetThrottleDemo()" style="background:#6c757d;">Reset</button>
+            </div>
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                <div style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:8px; padding:1rem; min-width:160px; text-align:center;">
+                    <div style="font-size:2rem; font-weight:bold; color:#4CAF50;" id="throttleFireCount">0</div>
+                    <div style="font-size:0.85rem; color:#555; margin-top:4px;">Throttled fires (≤ 1/sec)</div>
+                </div>
+                <div style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:8px; padding:1rem; min-width:160px; text-align:center;">
+                    <div style="font-size:2rem; font-weight:bold; color:#e53935;" id="rawClickCount">0</div>
+                    <div style="font-size:0.85rem; color:#555; margin-top:4px;">Raw clicks</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
 
+    <script src="utils.js"></script>
     <script src="script.js"></script>
+    <script>
+        // --- Throttle Demo ---
+        let rawClicks = 0;
+        let throttleFires = 0;
+
+        const throttledHandler = throttle(function () {
+            throttleFires++;
+            document.getElementById('throttleFireCount').textContent = throttleFires;
+            showToast('info', 'Throttled handler fired! (' + throttleFires + ' total)');
+        }, 1000);
+
+        document.getElementById('throttleBtn').addEventListener('click', function () {
+            rawClicks++;
+            document.getElementById('rawClickCount').textContent = rawClicks;
+            throttledHandler();
+        });
+
+        function resetThrottleDemo() {
+            rawClicks = 0;
+            throttleFires = 0;
+            throttledHandler.cancel();
+            document.getElementById('rawClickCount').textContent = '0';
+            document.getElementById('throttleFireCount').textContent = '0';
+            showToast('success', 'Throttle demo reset.');
+        }
+    </script>
 </body>
 </html>
