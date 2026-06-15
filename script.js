@@ -142,6 +142,39 @@ document.getElementById('customMessage')?.addEventListener('keypress', function(
     }
 });
 
+// ---------------------------------------------------------------------------
+// Throttle Demo
+// ---------------------------------------------------------------------------
+(function initThrottleDemo() {
+    const trackArea = document.getElementById('throttleTrackArea');
+    if (!trackArea) return;
+
+    let rawCount = 0;
+    let throttledCount = 0;
+
+    const rawEl = document.getElementById('rawCount');
+    const throttledEl = document.getElementById('throttledCount');
+
+    // Throttled handler — fires at most once every 500 ms
+    const throttledHandler = window.throttle(function () {
+        throttledCount++;
+        throttledEl.textContent = throttledCount;
+        throttledEl.classList.add('bump');
+        setTimeout(() => throttledEl.classList.remove('bump'), 200);
+    }, 500);
+
+    trackArea.addEventListener('mousemove', function () {
+        rawCount++;
+        rawEl.textContent = rawCount;
+        throttledHandler();
+    });
+})();
+
+function resetThrottleDemo() {
+    document.getElementById('rawCount').textContent = '0';
+    document.getElementById('throttledCount').textContent = '0';
+}
+
 // Example of programmatic usage (uncomment to test)
 // setTimeout(() => {
 //     toastManager.success('Welcome! This toast was shown automatically after page load.');

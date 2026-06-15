@@ -18,6 +18,35 @@
             <button onclick="showToast('info', 'Info: Your data has been updated.')">Info Toast</button>
         </div>
 
+        <!-- Throttle Demo Section -->
+        <div class="throttle-demo-section">
+            <h2>Throttle Utility Demo</h2>
+            <p class="section-desc">
+                Move your mouse over the box below. The <strong>raw counter</strong> updates on every
+                mouse-move event; the <strong>throttled counter</strong> (500 ms limit) shows how
+                <code>throttle()</code> from <em>utils.js</em> reduces the call rate.
+            </p>
+
+            <div class="throttle-track-area" id="throttleTrackArea">
+                Move your mouse here
+            </div>
+
+            <div class="throttle-counters">
+                <div class="counter-card">
+                    <span class="counter-label">Raw events</span>
+                    <span class="counter-value" id="rawCount">0</span>
+                </div>
+                <div class="counter-card throttled-card">
+                    <span class="counter-label">Throttled calls (500 ms)</span>
+                    <span class="counter-value" id="throttledCount">0</span>
+                </div>
+            </div>
+
+            <div class="throttle-actions">
+                <button onclick="resetThrottleDemo()">Reset Counters</button>
+            </div>
+        </div>
+
         <div class="custom-toast-section">
             <h2>Custom Toast</h2>
             <input type="text" id="customMessage" placeholder="Enter your custom message..." />
@@ -34,6 +63,7 @@
     <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
 
+    <script src="utils.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
