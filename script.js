@@ -47,12 +47,14 @@ class ToastManager {
             toast.classList.add('show');
         }, 10);
 
-        // Start progress bar animation
+        // Start progress bar animation (shrinks from 100% → 0% to show time remaining)
         const progressBar = toast.querySelector('.toast-progress');
         if (progressBar) {
+            // Set initial width synchronously so the transition starts from 100%
+            progressBar.style.width = '100%';
             setTimeout(() => {
-                progressBar.style.width = '100%';
                 progressBar.style.transition = `width ${duration}ms linear`;
+                progressBar.style.width = '0%';
             }, 50);
         }
 
@@ -84,7 +86,9 @@ class ToastManager {
 
     // Remove all toasts
     removeAllToasts() {
-        this.toasts.forEach(toastId => {
+        // Snapshot the array before iterating — removeToast() asynchronously
+        // mutates this.toasts via filter, so iterating the live array is unsafe.
+        [...this.toasts].forEach(toastId => {
             this.removeToast(toastId);
         });
     }
