@@ -47,12 +47,13 @@ class ToastManager {
             toast.classList.add('show');
         }, 10);
 
-        // Start progress bar animation
+        // Start progress bar animation (shrinks from 100% to 0% to indicate time remaining)
         const progressBar = toast.querySelector('.toast-progress');
         if (progressBar) {
+            progressBar.style.width = '100%';
             setTimeout(() => {
-                progressBar.style.width = '100%';
                 progressBar.style.transition = `width ${duration}ms linear`;
+                progressBar.style.width = '0%';
             }, 50);
         }
 
