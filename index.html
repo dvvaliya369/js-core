@@ -29,11 +29,45 @@
             </select>
             <button onclick="showCustomToast()">Show Custom Toast</button>
         </div>
+
+        <div class="custom-toast-section" style="margin-top:2rem;">
+            <h2>Throttle Utility Demo</h2>
+            <p style="margin-bottom:1rem; color:#555;">
+                Click the button rapidly — the throttled handler fires at most once per 500ms,
+                while the raw click count updates on every single click.
+            </p>
+            <div class="button-group">
+                <button id="throttle-btn">Click Me Fast!</button>
+            </div>
+            <div style="margin-top:1rem; font-family: monospace; font-size:0.95rem;">
+                <div>Raw clicks: <strong id="raw-count">0</strong></div>
+                <div>Throttled fires: <strong id="throttled-count">0</strong></div>
+                <div>Last throttled at: <strong id="throttled-time">—</strong></div>
+            </div>
+        </div>
     </div>
 
     <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
 
+    <script src="utils.js"></script>
     <script src="script.js"></script>
+    <script>
+        // Throttle demo
+        var rawCount = 0;
+        var throttledCount = 0;
+
+        var throttledHandler = throttle(function() {
+            throttledCount++;
+            document.getElementById('throttled-count').textContent = throttledCount;
+            document.getElementById('throttled-time').textContent = new Date().toLocaleTimeString();
+        }, 500);
+
+        document.getElementById('throttle-btn').addEventListener('click', function() {
+            rawCount++;
+            document.getElementById('raw-count').textContent = rawCount;
+            throttledHandler();
+        });
+    </script>
 </body>
 </html>
