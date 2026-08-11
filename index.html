@@ -1,39 +1,703 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toast Message Component</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nimbus — Ship Faster, Scale Smarter</title>
+  <meta name="description" content="Nimbus is the all-in-one platform that helps modern teams build, deploy, and scale products with confidence." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --surface: #121933;
+      --surface-2: #182147;
+      --text: #eef1ff;
+      --muted: #9aa4c7;
+      --accent: #6c8cff;
+      --accent-2: #a06bff;
+      --accent-grad: linear-gradient(135deg, #6c8cff 0%, #a06bff 100%);
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+      --radius: 14px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .container {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Background glow */
+    .glow {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.35;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .glow-1 { width: 500px; height: 500px; background: #6c8cff; top: -150px; left: -100px; }
+    .glow-2 { width: 450px; height: 450px; background: #a06bff; top: 200px; right: -120px; }
+
+    /* Navbar */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(14px);
+      background: rgba(11, 16, 32, 0.72);
+      border-bottom: 1px solid var(--border);
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+    }
+    .brand .logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--accent-grad);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      box-shadow: 0 6px 18px rgba(108, 140, 255, 0.45);
+    }
+    .nav-links {
+      display: flex;
+      gap: 34px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 15px;
+      transition: color 0.2s ease;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 11px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.2s ease;
+    }
+    .btn-primary {
+      background: var(--accent-grad);
+      color: #fff;
+      box-shadow: 0 10px 26px rgba(108, 140, 255, 0.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(108, 140, 255, 0.55); }
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .btn-ghost:hover { background: rgba(255, 255, 255, 0.09); transform: translateY(-2px); }
+    .btn-lg { padding: 15px 30px; font-size: 16px; }
+
+    .menu-toggle { display: none; background: none; border: none; color: var(--text); font-size: 26px; cursor: pointer; }
+
+    /* Hero */
+    .hero { padding: 90px 0 70px; text-align: center; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 16px;
+      border-radius: 999px;
+      background: rgba(108, 140, 255, 0.12);
+      border: 1px solid rgba(108, 140, 255, 0.3);
+      color: #b9c6ff;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 26px;
+    }
+    .badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #6c8cff; box-shadow: 0 0 10px #6c8cff; }
+    .hero h1 {
+      font-size: clamp(38px, 6vw, 68px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 22px;
+    }
+    .hero h1 .grad {
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--muted);
+      max-width: 640px;
+      margin: 0 auto 36px;
+    }
+    .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .trusted {
+      margin-top: 56px;
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .logos {
+      display: flex;
+      gap: 44px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      opacity: 0.7;
+      font-weight: 700;
+      font-size: 19px;
+    }
+    .logos span { color: #c4ccec; }
+
+    /* Preview mockup */
+    .preview {
+      margin: 64px auto 0;
+      max-width: 960px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .preview-bar {
+      display: flex;
+      gap: 8px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+    .preview-bar span { width: 12px; height: 12px; border-radius: 50%; }
+    .preview-bar .r { background: #ff5f57; }
+    .preview-bar .y { background: #febc2e; }
+    .preview-bar .g { background: #28c840; }
+    .preview-body {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      min-height: 320px;
+    }
+    .preview-side {
+      background: var(--surface-2);
+      padding: 22px 18px;
+      border-right: 1px solid var(--border);
+    }
+    .preview-side .item {
+      height: 12px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.07);
+      margin-bottom: 16px;
+    }
+    .preview-side .item.active { background: var(--accent-grad); width: 70%; }
+    .preview-main { padding: 26px; }
+    .stat-row { display: flex; gap: 16px; margin-bottom: 24px; }
+    .stat-card {
+      flex: 1;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .stat-card .n { font-size: 26px; font-weight: 800; }
+    .stat-card .l { color: var(--muted); font-size: 13px; }
+    .chart {
+      height: 150px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      padding: 18px;
+    }
+    .chart .bar { flex: 1; border-radius: 6px 6px 0 0; background: var(--accent-grad); opacity: 0.85; }
+
+    /* Sections */
+    section { padding: 90px 0; }
+    .section-head { text-align: center; max-width: 640px; margin: 0 auto 56px; }
+    .section-head .eyebrow {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .section-head h2 {
+      font-size: clamp(30px, 4vw, 44px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .section-head p { color: var(--muted); font-size: 18px; }
+
+    /* Features */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 30px;
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+    }
+    .feature:hover {
+      transform: translateY(-6px);
+      border-color: rgba(108, 140, 255, 0.45);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+    }
+    .feature .ico {
+      width: 52px;
+      height: 52px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      background: rgba(108, 140, 255, 0.14);
+      border: 1px solid rgba(108, 140, 255, 0.3);
+      margin-bottom: 20px;
+    }
+    .feature h3 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+    .feature p { color: var(--muted); font-size: 15px; }
+
+    /* Stats band */
+    .stats-band {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 46px 30px;
+    }
+    .stats-band .item { text-align: center; }
+    .stats-band .item .num {
+      font-size: clamp(32px, 4vw, 46px);
+      font-weight: 900;
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stats-band .item .lbl { color: var(--muted); font-size: 15px; margin-top: 4px; }
+
+    /* Pricing */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+    .plan {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 34px 30px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+    .plan:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(0,0,0,0.4); }
+    .plan.featured {
+      border-color: rgba(108, 140, 255, 0.55);
+      background: linear-gradient(180deg, rgba(108,140,255,0.12), var(--surface));
+      position: relative;
+    }
+    .plan.featured .tag {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent-grad);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 999px;
+      letter-spacing: 0.04em;
+    }
+    .plan h3 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .plan .price { font-size: 44px; font-weight: 900; letter-spacing: -0.02em; }
+    .plan .price span { font-size: 16px; font-weight: 500; color: var(--muted); }
+    .plan .desc { color: var(--muted); font-size: 14px; margin: 8px 0 22px; }
+    .plan ul { list-style: none; margin-bottom: 28px; flex: 1; }
+    .plan ul li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      color: #cdd4ee;
+      font-size: 15px;
+      margin-bottom: 13px;
+    }
+    .plan ul li .chk { color: #4fd18b; font-weight: 800; }
+
+    /* CTA */
+    .cta-box {
+      background: var(--accent-grad);
+      border-radius: 24px;
+      padding: 64px 40px;
+      text-align: center;
+      box-shadow: 0 30px 70px rgba(108, 140, 255, 0.4);
+    }
+    .cta-box h2 { font-size: clamp(30px, 4vw, 42px); font-weight: 900; margin-bottom: 14px; }
+    .cta-box p { color: rgba(255,255,255,0.9); font-size: 18px; margin-bottom: 32px; }
+    .cta-box .btn-primary { background: #fff; color: #3b3a8c; }
+    .cta-box .btn-primary:hover { background: #f0f0ff; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 56px 0 34px;
+      color: var(--muted);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    .footer-grid h4 { color: var(--text); font-size: 15px; margin-bottom: 16px; }
+    .footer-grid a { display: block; color: var(--muted); font-size: 14px; margin-bottom: 10px; transition: color 0.2s; }
+    .footer-grid a:hover { color: var(--text); }
+    .footer-col p { font-size: 14px; max-width: 260px; margin-top: 12px; }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      font-size: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* Reveal animation */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* Responsive */
+    @media (max-width: 860px) {
+      .features-grid, .pricing-grid { grid-template-columns: 1fr; }
+      .stats-band { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .preview-body { grid-template-columns: 1fr; }
+      .preview-side { display: none; }
+      .nav-links { display: none; }
+      .nav-cta .btn-ghost { display: none; }
+      .menu-toggle { display: block; }
+    }
+    @media (max-width: 480px) {
+      .stats-band { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-    <div class="demo-container">
-        <h1>Toast Message Component Demo</h1>
-        <p>Click the buttons below to show different types of toast messages:</p>
-        
-        <div class="button-group">
-            <button onclick="showToast('success', 'Success! Your action was completed successfully.')">Success Toast</button>
-            <button onclick="showToast('error', 'Error! Something went wrong. Please try again.')">Error Toast</button>
-            <button onclick="showToast('warning', 'Warning! This action cannot be undone.')">Warning Toast</button>
-            <button onclick="showToast('info', 'Info: Your data has been updated.')">Info Toast</button>
-        </div>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
 
-        <div class="custom-toast-section">
-            <h2>Custom Toast</h2>
-            <input type="text" id="customMessage" placeholder="Enter your custom message..." />
-            <select id="customType">
-                <option value="success">Success</option>
-                <option value="error">Error</option>
-                <option value="warning">Warning</option>
-                <option value="info">Info</option>
-            </select>
-            <button onclick="showCustomToast()">Show Custom Toast</button>
+  <header>
+    <div class="container">
+      <nav>
+        <a href="#" class="brand">
+          <span class="logo">◆</span>
+          Nimbus
+        </a>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#stats">Results</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#faq">FAQ</a>
         </div>
+        <div class="nav-cta">
+          <a href="#" class="btn btn-ghost">Sign in</a>
+          <a href="#pricing" class="btn btn-primary">Get started</a>
+          <button class="menu-toggle" aria-label="Open menu">☰</button>
+        </div>
+      </nav>
     </div>
+  </header>
 
-    <!-- Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <div class="badge"><span class="dot"></span> New: Realtime collaboration is live</div>
+        <h1>Ship faster.<br /><span class="grad">Scale smarter.</span></h1>
+        <p>Nimbus is the all-in-one platform that helps modern teams build, deploy, and scale products with confidence — without the operational overhead.</p>
+        <div class="hero-actions">
+          <a href="#pricing" class="btn btn-primary btn-lg">Start free trial →</a>
+          <a href="#features" class="btn btn-ghost btn-lg">▶ Watch demo</a>
+        </div>
 
-    <script src="script.js"></script>
+        <div class="trusted">Trusted by fast-growing teams</div>
+        <div class="logos">
+          <span>Vertex</span>
+          <span>Lumen</span>
+          <span>Orbit</span>
+          <span>Fathom</span>
+          <span>Quanta</span>
+        </div>
+
+        <!-- Dashboard preview -->
+        <div class="preview reveal">
+          <div class="preview-bar"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+          <div class="preview-body">
+            <div class="preview-side">
+              <div class="item active"></div>
+              <div class="item"></div>
+              <div class="item"></div>
+              <div class="item"></div>
+              <div class="item"></div>
+            </div>
+            <div class="preview-main">
+              <div class="stat-row">
+                <div class="stat-card"><div class="n">98.9%</div><div class="l">Uptime</div></div>
+                <div class="stat-card"><div class="n">42ms</div><div class="l">Avg latency</div></div>
+                <div class="stat-card"><div class="n">1.2M</div><div class="l">Requests / day</div></div>
+              </div>
+              <div class="chart">
+                <div class="bar" style="height:45%"></div>
+                <div class="bar" style="height:70%"></div>
+                <div class="bar" style="height:55%"></div>
+                <div class="bar" style="height:85%"></div>
+                <div class="bar" style="height:65%"></div>
+                <div class="bar" style="height:95%"></div>
+                <div class="bar" style="height:78%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="eyebrow">Everything you need</div>
+          <h2>Powerful features, zero friction</h2>
+          <p>From your first commit to your millionth user, Nimbus scales with you at every step.</p>
+        </div>
+        <div class="features-grid">
+          <div class="feature reveal">
+            <div class="ico">⚡</div>
+            <h3>Lightning deploys</h3>
+            <p>Push to production in seconds with instant global rollouts and automatic rollbacks when something breaks.</p>
+          </div>
+          <div class="feature reveal">
+            <div class="ico">🔒</div>
+            <h3>Enterprise security</h3>
+            <p>SOC 2 Type II, end-to-end encryption, and granular access controls keep your data locked down by default.</p>
+          </div>
+          <div class="feature reveal">
+            <div class="ico">📊</div>
+            <h3>Realtime analytics</h3>
+            <p>Understand exactly how your product performs with live dashboards, alerts, and actionable insights.</p>
+          </div>
+          <div class="feature reveal">
+            <div class="ico">🤝</div>
+            <h3>Team collaboration</h3>
+            <p>Comment, review, and ship together with shared environments and live presence across your whole team.</p>
+          </div>
+          <div class="feature reveal">
+            <div class="ico">🔌</div>
+            <h3>100+ integrations</h3>
+            <p>Connect the tools you already love — Slack, GitHub, Linear, Datadog and dozens more in a click.</p>
+          </div>
+          <div class="feature reveal">
+            <div class="ico">🌍</div>
+            <h3>Global edge network</h3>
+            <p>Serve your users from 35+ regions worldwide with automatic caching and sub-50ms response times.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section id="stats" style="padding-top:0;">
+      <div class="container">
+        <div class="stats-band reveal">
+          <div class="item"><div class="num">12K+</div><div class="lbl">Teams onboarded</div></div>
+          <div class="item"><div class="num">99.99%</div><div class="lbl">Guaranteed uptime</div></div>
+          <div class="item"><div class="num">4.2B</div><div class="lbl">Requests served daily</div></div>
+          <div class="item"><div class="num">35+</div><div class="lbl">Global regions</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="eyebrow">Simple pricing</div>
+          <h2>Plans that grow with you</h2>
+          <p>Start free, upgrade when you're ready. No hidden fees, cancel anytime.</p>
+        </div>
+        <div class="pricing-grid">
+          <div class="plan reveal">
+            <h3>Starter</h3>
+            <div class="price">$0<span>/mo</span></div>
+            <div class="desc">Perfect for side projects and early experiments.</div>
+            <ul>
+              <li><span class="chk">✓</span> Up to 3 projects</li>
+              <li><span class="chk">✓</span> Community support</li>
+              <li><span class="chk">✓</span> 10 GB bandwidth</li>
+              <li><span class="chk">✓</span> Basic analytics</li>
+            </ul>
+            <a href="#" class="btn btn-ghost">Get started</a>
+          </div>
+          <div class="plan featured reveal">
+            <div class="tag">MOST POPULAR</div>
+            <h3>Pro</h3>
+            <div class="price">$29<span>/mo</span></div>
+            <div class="desc">For growing teams that need power and speed.</div>
+            <ul>
+              <li><span class="chk">✓</span> Unlimited projects</li>
+              <li><span class="chk">✓</span> Priority support</li>
+              <li><span class="chk">✓</span> 1 TB bandwidth</li>
+              <li><span class="chk">✓</span> Advanced analytics</li>
+              <li><span class="chk">✓</span> Team collaboration</li>
+            </ul>
+            <a href="#" class="btn btn-primary">Start free trial</a>
+          </div>
+          <div class="plan reveal">
+            <h3>Enterprise</h3>
+            <div class="price">Custom</div>
+            <div class="desc">Advanced controls and support for scale.</div>
+            <ul>
+              <li><span class="chk">✓</span> Everything in Pro</li>
+              <li><span class="chk">✓</span> Dedicated manager</li>
+              <li><span class="chk">✓</span> SSO &amp; SAML</li>
+              <li><span class="chk">✓</span> 99.99% SLA</li>
+              <li><span class="chk">✓</span> Custom contracts</li>
+            </ul>
+            <a href="#" class="btn btn-ghost">Contact sales</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="faq" style="padding-top:0;">
+      <div class="container">
+        <div class="cta-box reveal">
+          <h2>Ready to build something great?</h2>
+          <p>Join thousands of teams shipping faster with Nimbus. Get started in minutes.</p>
+          <a href="#" class="btn btn-primary btn-lg">Start your free trial →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <a href="#" class="brand"><span class="logo">◆</span> Nimbus</a>
+          <p>The all-in-one platform for modern teams to build, deploy, and scale with confidence.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#">Changelog</a>
+          <a href="#">Docs</a>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <a href="#">About</a>
+          <a href="#">Blog</a>
+          <a href="#">Careers</a>
+          <a href="#">Contact</a>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Security</a>
+          <a href="#">Status</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Nimbus Inc. All rights reserved.</span>
+        <span>Built for teams that move fast.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+    // Mobile menu toggle
+    const toggle = document.querySelector('.menu-toggle');
+    const links = document.querySelector('.nav-links');
+    toggle && toggle.addEventListener('click', () => {
+      const shown = links.style.display === 'flex';
+      links.style.display = shown ? 'none' : 'flex';
+      links.style.position = 'absolute';
+      links.style.top = '72px';
+      links.style.left = '0';
+      links.style.right = '0';
+      links.style.flexDirection = 'column';
+      links.style.background = 'rgba(11,16,32,0.97)';
+      links.style.padding = '20px 24px';
+      links.style.gap = '18px';
+      links.style.borderBottom = '1px solid rgba(255,255,255,0.08)';
+    });
+  </script>
 </body>
 </html>
